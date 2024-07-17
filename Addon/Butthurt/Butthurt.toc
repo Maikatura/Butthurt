@@ -1,0 +1,9 @@
+## Interface: 30402
+## Title: Butthurt
+## Notes: Alerts when the player takes damage.
+## Author: Maikatura
+## Version: 1.0
+## SavedVariables: ButthurtSavedVariables
+
+PixelFlashOnHit.lua
+PixelFlashOnHit.xml
