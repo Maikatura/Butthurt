@@ -1,9 +1,21 @@
-## Interface: 30402
+## Interface: 100207,110000,110002
 ## Title: Butthurt
-## Notes: Alerts when the player takes damage.
+## Notes: Alert yourself from dangerous situations.
 ## Author: Maikatura
-## Version: 1.0
-## SavedVariables: ButthurtSavedVariables
+## IconTexture: 982414
+## Version: v0.0.1
+## OptionalDeps: Ace3
+## X-Embeds: Ace3
+## SavedVariables: ButthurtDB
 
-PixelFlashOnHit.lua
-PixelFlashOnHit.xml
+# Libraries
+Libs\Libs.xml
+
+# UI 
+UI\PixelFlash.xml
+
+# Add-On
+Butthurt.lua
+
+# Events
+Events\Butthurt_Combat.lua
