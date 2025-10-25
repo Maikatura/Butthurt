@@ -1,5 +1,5 @@
 ﻿using Buttplug.Client;
-using Buttplug.Client.Connectors.WebsocketConnector;
+using Buttplug.Client;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;

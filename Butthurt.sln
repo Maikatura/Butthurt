@@ -2,6 +2,10 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butthurt", "Butthurt\Butthurt.csproj", "{3B160422-3969-4AA4-B6F8-0995018B0216}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butthurt.Contracts", "Butthurt.Contracts\Butthurt.Contracts.csproj", "{A4F0AE25-2B34-4E6D-9048-F36839E9E5FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butthurt.Desktop", "Butthurt.Desktop\Butthurt.Desktop.csproj", "{E23FDF15-A35C-48A1-81BA-164FC3A26FAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +16,13 @@ Global
 		{3B160422-3969-4AA4-B6F8-0995018B0216}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B160422-3969-4AA4-B6F8-0995018B0216}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B160422-3969-4AA4-B6F8-0995018B0216}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4F0AE25-2B34-4E6D-9048-F36839E9E5FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4F0AE25-2B34-4E6D-9048-F36839E9E5FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4F0AE25-2B34-4E6D-9048-F36839E9E5FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4F0AE25-2B34-4E6D-9048-F36839E9E5FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E23FDF15-A35C-48A1-81BA-164FC3A26FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E23FDF15-A35C-48A1-81BA-164FC3A26FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E23FDF15-A35C-48A1-81BA-164FC3A26FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E23FDF15-A35C-48A1-81BA-164FC3A26FAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

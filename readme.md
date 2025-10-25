@@ -1,9 +1,18 @@
-# Welcome to Butthurt
+
+## THIS IS A NEW BRANCH!
+
+I am remaking this whole program, so instead of just a console application, I will now have its own GUI. I am not 
+planing to add support for some games that support addons without modding them. Here is a preview on how the new GUI 
+will look like!
+
+![Preview](/img/preview.png)
+
+## Welcome to Butthurt
 So you wanna spice up your world of warcraft gameplay?<br>
 Well why not try Butthurt?<br><br>
 Connect your faviorite lovense toy and play world of warcraft like you never have done before!
 
-## Setup
+### Setup
 
 1. Install Intiface Central. https://intiface.com/central/
 2. Install addon into world of warcraft addon folder.
@@ -13,4 +22,3 @@ Connect your faviorite lovense toy and play world of warcraft like you never hav
 6. Now everything should be setup.
 
 Enjoy your new style of playing World of Warcraft :3
-

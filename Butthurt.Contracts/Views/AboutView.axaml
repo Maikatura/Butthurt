@@ -1,0 +1,54 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             x:Class="Butthurt.Contracts.Views.AboutView"
+             Background="Transparent">
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Border Background="#0d0d0d" CornerRadius="12" Padding="20" MaxWidth="450" MinHeight="400">
+            <StackPanel HorizontalAlignment="Center" Spacing="15">
+
+                <!-- Profile Picture -->
+                <Border Width="120" Height="120" CornerRadius="60" Background="#1a1a1a" ClipToBounds="True">
+                    <Image Source="avares://Butthurt.Contracts/Assets/profile.png"
+                           Stretch="UniformToFill"/>
+                </Border>
+
+                <!-- Name -->
+                <TextBlock Text="Maikatura" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+
+                <!-- Social Media Links -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="10,5,10,0">
+                    <!-- Twitter -->
+                    <Button Background="Transparent" BorderBrush="Transparent" Cursor="Hand" Click="TwitterButton_Click">
+                        <iconPacks:PackIconSimpleIcons Kind="X" Width="28" Height="28" Foreground="#FFFFFF"/>
+                    </Button>
+
+                    <!-- GitHub -->
+                    <Button Background="Transparent" BorderBrush="Transparent" Cursor="Hand" Click="GitHubButton_Click">
+                        <iconPacks:PackIconSimpleIcons Kind="Github" Width="28" Height="28" Foreground="#FFFFFF"/>
+                    </Button>
+                    
+                </StackPanel>
+                
+                <!-- Description -->
+                <Border Background="#1a1a1a" CornerRadius="10" Padding="15" Margin="10">
+                    <TextBlock Text="I created this tool to simplify plugin management for the games I enjoy. My goal was to build something both fun and practical for anyone who loves pleasure!"
+                               TextWrapping="Wrap"
+                               Foreground="#dddddd"
+                               FontSize="15"
+                               LineHeight="22"
+                               TextAlignment="DetectFromContent"
+                               MaxWidth="360"
+                               FontWeight="Medium"/>
+                </Border>
+
+                <!-- Optional Footer / Callout -->
+                <TextBlock Text="Thanks for checking out Butthurt!" 
+                           Foreground="#888888" 
+                           FontStyle="Italic"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>
