@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj": {}
+    "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\Butthurt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj": {
+    "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\Butthurt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj",
+        "projectUniqueName": "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
         "projectName": "Butthurt",
-        "projectPath": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj",
+        "projectPath": "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
         "packagesPath": "C:\\Users\\maika\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\obj\\",
+        "outputPath": "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\maika\\AppData\\Roaming\\NuGet\\NuGet.Config"

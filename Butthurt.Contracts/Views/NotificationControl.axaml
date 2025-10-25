@@ -1,24 +1,16 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:viewModels="clr-namespace:Butthurt.Contracts.ViewModels"
-             x:Class="Butthurt.Contracts.Views.RoadmapView">
-
-    <!-- <UserControl.DataContext> -->
-    <!--     <viewModels:RoadmapViewModel/> -->
-    <!-- </UserControl.DataContext> -->
-    <!-- -->
-    <!-- <ScrollViewer HorizontalScrollBarVisibility="Disabled"> -->
-    <!--     <ItemsControl Items="{Binding Items}"> -->
-    <!--         <ItemsControl.ItemTemplate> -->
-    <!--             <DataTemplate> -->
-    <!--                 <Border Background="#1a1a1a" CornerRadius="10" Padding="15" Margin="0,0,0,10"> -->
-    <!--                     <StackPanel Spacing="5"> -->
-    <!--                         <TextBlock Text="{Binding DisplayTitle}" FontSize="18" FontWeight="Bold" Foreground="White"/> -->
-    <!--                         <TextBlock Text="{Binding Description}" FontSize="14" Foreground="#cccccc" TextWrapping="Wrap"/> -->
-    <!--                     </StackPanel> -->
-    <!--                 </Border> -->
-    <!--             </DataTemplate> -->
-    <!--         </ItemsControl.ItemTemplate> -->
-    <!--     </ItemsControl> -->
-    <!-- </ScrollViewer> -->
+             xmlns:local="clr-namespace:Butthurt.Contracts.Views"
+             x:Class="Butthurt.Contracts.Views.NotificationControl"
+             x:DataType="local:NotificationControl">
+  
+    <Border x:Name="RootBorder"
+            Background="{DynamicResource NotificationBackground}"
+            CornerRadius="5"
+            Padding="10"
+            Opacity="0">
+        <TextBlock x:Name="MessageTextBlock"
+                   Text="{Binding Message}"
+                   Foreground="{DynamicResource NotificationForeground}"/>
+    </Border>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -15,6 +16,8 @@ public class ButthurtService
     public static EventHandler<DeviceAddedEventArgs>? DeviceAdded;
     public static EventHandler<DeviceRemovedEventArgs>? DeviceRemoved;
 
+    public static bool IsConnected => myClient.Connected;
+    
     public static async Task Start()
     {
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
@@ -56,42 +59,11 @@ public class ButthurtService
             DeviceRemoved?.Invoke(obj, removeArgs);
         };
 
+
         
         Console.WriteLine("Butthurt Service connected.",Color.Green);
     }
-
-    private static void OnProcessExit(object sender, EventArgs e)
-    {
-        try
-        {
-            // Run cleanup work in the background, don't block Avalonia dispatcher
-            Task.Run(async () =>
-            {
-                try
-                {
-                    await Stop();
-                }
-                catch (TaskCanceledException)
-                {
-                    // Expected during shutdown, no problem
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Exception during async cleanup: {ex}");
-                }
-            }).Wait(2000); // optional: wait up to 2s for graceful shutdown
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Exception on exit: {ex}");
-        }
-        
-        Console.WriteLine("Butthurt service stopped", Color.Green);
-    }
-
-
-
-
+    
     public static async Task<List<string>?> ScanForDevices()
     {
         if (!myClient.Connected)
@@ -121,7 +93,45 @@ public class ButthurtService
             return;
         }
 
-        await myClient.DisconnectAsync();
-        //await myClient.DisposeAsync();
+        await myClient.DisconnectAsync(); ;
+    }
+    
+    private static void OnProcessExit(object sender, EventArgs e)
+    {
+        try
+        {
+            // Run cleanup work in the background, don't block Avalonia dispatcher
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await Stop();
+                }
+                catch (TaskCanceledException)
+                {
+                    // Expected during shutdown, no problem
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Exception during async cleanup: {ex}");
+                }
+            }).Wait(2000); // optional: wait up to 2s for graceful shutdown
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Exception on exit: {ex}");
+        }
+        
+        Console.WriteLine("Butthurt service stopped", Color.Green);
+    }
+
+    public static List<string> GetDevices()
+    {
+        if (!myClient.Connected)
+        {
+            return new List<string>();
+        }
+        
+        return myClient.Devices.Select(x => x.Name).ToList();
     }
 }

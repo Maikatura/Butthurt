@@ -2,8 +2,12 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Styling;
+using Avalonia.Threading;
 using Butthurt.Contracts.Models;
 using Butthurt.Contracts.ViewModels;
 
@@ -11,43 +15,78 @@ namespace Butthurt.Contracts.Views;
 
 public partial class NotificationControl : Border
 {
-    private TextBlock _messageText;
+    // Bindable Message property
+        public static readonly StyledProperty<string> MessageProperty =
+            AvaloniaProperty.Register<NotificationControl, string>(nameof(Message));
 
-    public NotificationControl(string message)
-    {
-        CornerRadius = new CornerRadius(5);
-        Background = Brushes.DimGray;
-        Padding = new Thickness(10);
-        Opacity = 0; // start invisible
-        _messageText = new TextBlock
+        public string Message
         {
-            Text = message,
-            Foreground = Brushes.White
-        };
-        Child = _messageText;
-    }
-
-    public async Task ShowAsync(StackPanel parent, int durationMs = 3000)
-    {
-        parent.Children.Add(this);
-
-        // Fade in
-        for (double i = 0; i <= 1; i += 0.1)
-        {
-            Opacity = i;
-            await Task.Delay(20);
+            get => GetValue(MessageProperty);
+            set => SetValue(MessageProperty, value);
         }
 
-        // Wait duration
-        await Task.Delay(durationMs);
-
-        // Fade out
-        for (double i = 1; i >= 0; i -= 0.1)
+        public NotificationControl()
         {
-            Opacity = i;
-            await Task.Delay(20);
+            InitializeComponent();
         }
 
-        parent.Children.Remove(this);
-    }
+        public NotificationControl(string message) : this()
+        {
+            Message = message;
+        }
+
+        public async Task ShowAsync(StackPanel parent, int durationMs = 3000)
+        {
+            parent.Children.Add(this);
+
+                // Fade in
+                 var fadeIn = new Animation
+                 {
+                     Duration = TimeSpan.FromMilliseconds(200),
+                     Children =
+                     {
+                         new KeyFrame
+                         {
+                             Cue = new Cue(0),
+                             Setters = { new Setter(Border.OpacityProperty, 0d) }
+                         },
+                         new KeyFrame
+                         {
+                             Cue = new Cue(1),
+                             Setters = { new Setter(Border.OpacityProperty, 1d) }
+                         }
+                     },
+                     Easing = new CubicEaseOut()
+                 };
+
+                await fadeIn.RunAsync(RootBorder);
+
+                await Task.Delay(durationMs);
+
+                 // Fade out
+                 var fadeOut = new Animation
+                 {
+                     Duration = TimeSpan.FromMilliseconds(200),
+                     Children =
+                     {
+                         new KeyFrame
+                         {
+                             Cue = new Cue(0),
+                             Setters = { new Setter(Border.OpacityProperty, 1d) }
+                         },
+                         new KeyFrame
+                         {
+                             Cue = new Cue(1),
+                             Setters = { new Setter(Border.OpacityProperty, 0d) }
+                         }
+                     },
+                     Easing = new CubicEaseIn()
+                 };
+
+                await fadeOut.RunAsync(RootBorder);
+
+                parent.Children.Remove(this);
+        }
+
+    
 }
