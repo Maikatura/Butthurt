@@ -41,5 +41,8 @@
         <DependentUpon>PopupView.axaml</DependentUpon>
         <SubType>Code</SubType>
       </Compile>
+      <Compile Update="Views\RainLayer.cs">
+        <SubType>Code</SubType>
+      </Compile>
     </ItemGroup>
 </Project>

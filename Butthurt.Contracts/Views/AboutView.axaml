@@ -1,11 +1,18 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             xmlns:views="clr-namespace:Butthurt.Contracts.Views"
              x:Class="Butthurt.Contracts.Views.AboutView"
              Background="Transparent">
 
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Border Background="#0d0d0d" CornerRadius="12" Padding="20" MaxWidth="450" MinHeight="400">
+        
+        <!-- <views:RainLayer HorizontalAlignment="Stretch" -->
+        <!--                  VerticalAlignment="Stretch" -->
+        <!--                  IsHitTestVisible="False"/> -->
+
+        
+        <Border Background="Transparent" CornerRadius="12" Padding="20" MaxWidth="450" MinHeight="400">
             <StackPanel HorizontalAlignment="Center" Spacing="15">
 
                 <!-- Profile Picture -->
@@ -20,12 +27,16 @@
                 <!-- Social Media Links -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="10,5,10,0">
                     <!-- Twitter -->
-                    <Button Background="Transparent" BorderBrush="Transparent" Cursor="Hand" Click="TwitterButton_Click">
+                    <Button Background="#1a1a1a" BorderBrush="#FFFFFF" Cursor="Hand" Click="WebsiteButton_Click">
+                        <iconPacks:PackIconBootstrapIcons Kind="Globe2" Width="28" Height="28" Foreground="#FFFFFF" />
+                    </Button>
+                    
+                    <Button Background="#1a1a1a" BorderBrush="#FFFFFF" Cursor="Hand" Click="TwitterButton_Click">
                         <iconPacks:PackIconSimpleIcons Kind="X" Width="28" Height="28" Foreground="#FFFFFF"/>
                     </Button>
 
                     <!-- GitHub -->
-                    <Button Background="Transparent" BorderBrush="Transparent" Cursor="Hand" Click="GitHubButton_Click">
+                    <Button Background="#1a1a1a" BorderBrush="#FFFFFF" Cursor="Hand" Click="GitHubButton_Click">
                         <iconPacks:PackIconSimpleIcons Kind="Github" Width="28" Height="28" Foreground="#FFFFFF"/>
                     </Button>
                     
