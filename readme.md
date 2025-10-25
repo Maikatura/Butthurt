@@ -5,7 +5,7 @@ I am remaking this whole program, so instead of just a console application, I wi
 planing to add support for some games that support addons without modding them. Here is a preview on how the new GUI 
 will look like!
 
-![Preview](/img/preview.png)
+![](/img/preview.png)
 
 ## Welcome to Butthurt
 So you wanna spice up your world of warcraft gameplay?<br>
