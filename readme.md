@@ -1,9 +1,12 @@
-# Welcome to Butthurt
+## This branch is old, check out new one [here](https://github.com/Maikatura/Butthurt/tree/New-Interface).
+
+
+## Welcome to Butthurt
 So you wanna spice up your world of warcraft gameplay?<br>
 Well why not try Butthurt?<br><br>
 Connect your faviorite lovense toy and play world of warcraft like you never have done before!
 
-## Setup
+### Setup
 
 1. Install Intiface Central. https://intiface.com/central/
 2. Install addon into world of warcraft addon folder.

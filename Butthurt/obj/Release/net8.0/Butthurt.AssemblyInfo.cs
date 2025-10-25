@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Butthurt")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+398d1fe0cc0a41f5ac04e9351dd1558e33be6f24")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60948b9bbf49b4ac8f927b2d45fb5d28ba74878e")]
 [assembly: System.Reflection.AssemblyProductAttribute("Butthurt")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Butthurt")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
