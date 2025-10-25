@@ -1,0 +1,78 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Butthurt.Desktop.Views.MainWindow"
+        Title="Butthurt.Desktop"
+        Background="#000000">
+
+    <Window.Styles>
+        <!-- Sidebar buttons style -->
+        <Style Selector="Button.sidebar-button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#ffffff"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="0">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <FluentTheme />
+
+
+        </Style>
+
+        <!-- Button hover effect -->
+        <Style Selector="Button.hoverable:pointerover">
+            <Setter Property="Background" Value="#1a1a1a"/>
+        </Style>
+
+        <!-- Rounded borders -->
+        <Style Selector="Border.rounded">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="#000000"/>
+        </Style>
+
+        <!-- Main content area -->
+        <Style Selector="Border.main-content">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="#0d0d0d"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#000000" BlurRadius="8" Opacity="0.4"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Styles>
+
+    <Grid ColumnDefinitions="200,*" Background="#000000">
+
+        <!-- === SIDEBAR === -->
+        <Border Classes="rounded" Padding="15" Margin="10">
+            <StackPanel x:Name="Sidebar" Spacing="15"/>
+        </Border>
+
+        <!-- === MAIN CONTENT AREA === -->
+        <Border Grid.Column="1" Classes="main-content" Margin="10">
+            <ContentControl x:Name="MainContent"/>
+        </Border>
+        <StackPanel Grid.Column="0" x:Name="NotificationPanel"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right"
+                    Margin="10"
+                    Spacing="5" />
+    </Grid>
+    
+    
+</Window>

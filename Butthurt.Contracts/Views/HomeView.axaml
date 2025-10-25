@@ -1,0 +1,8 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Butthurt.Contracts.Views.HomeView">
+    <StackPanel Spacing="10">
+        <TextBlock Text="🏠 Home Page" FontSize="20" Foreground="White"/>
+        <TextBlock Text="Welcome to the main screen!" Foreground="White"/>
+    </StackPanel>
+</UserControl> 

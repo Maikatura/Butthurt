@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AvaloniaProject">
+    <option name="projectPerEditor">
+      <map>
+        <entry key="Butthurt.Contracts/Views/AboutView.axaml" value="Butthurt.Desktop/Butthurt.Desktop.csproj" />
+        <entry key="Butthurt.Contracts/Views/HomeView.axaml" value="Butthurt.Desktop/Butthurt.Desktop.csproj" />
+        <entry key="Butthurt.Contracts/Views/InfoView.axaml" value="Butthurt.Desktop/Butthurt.Desktop.csproj" />
+        <entry key="Butthurt.Contracts/Views/MainWindow.axaml" value="Butthurt.Contracts/Butthurt.Contracts.csproj" />
+        <entry key="Butthurt.Contracts/Views/NotificationControl.axaml" value="Butthurt.Desktop/Butthurt.Desktop.csproj" />
+        <entry key="Butthurt.Contracts/Views/PopupView.axaml" value="Butthurt.Desktop/Butthurt.Desktop.csproj" />
+        <entry key="Butthurt.Contracts/Views/RoadmapView.axaml" value="Butthurt.Desktop/Butthurt.Desktop.csproj" />
+        <entry key="Butthurt.Desktop/App.axaml" value="Butthurt.Desktop/Butthurt.Desktop.csproj" />
+        <entry key="Butthurt.Desktop/Views/MainWindow.axaml" value="Butthurt.Desktop/Butthurt.Desktop.csproj" />
+      </map>
+    </option>
+  </component>
+</project>
