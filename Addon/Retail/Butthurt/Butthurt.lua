@@ -23,11 +23,30 @@ function Butthurt:GetPixelFlashFrame()
 end
 
 function Butthurt:Triggered()
-    local color = Butthurt.pixelFlashFrame.selectedColor or {1, 0, 0, 1}
-    Butthurt.pixelFlashFrame.texture:SetColorTexture(unpack(color)) -- Use selected color
-    local duration = Butthurt.pixelFlashFrame.flashDuration or 0.2
-    C_Timer.After(duration, function() Butthurt.pixelFlashFrame.texture:SetColorTexture(0, 0, 0, 1) end) -- Back to black after duration     
+    local frame = Butthurt.pixelFlashFrame
+    if not frame then
+        -- Create frame if missing
+        frame = CreateFrame("Frame", "ButthurtPixelFlashFrame", UIParent)
+        frame:SetSize(100, 100)
+        frame:SetPoint("CENTER")
+        frame.texture = frame:CreateTexture(nil, "OVERLAY")
+        frame.texture:SetAllPoints()
+        frame.texture:SetColorTexture(0, 0, 0, 1)
+        frame:Hide()
+        Butthurt.pixelFlashFrame = frame
+    end
+
+    local color = frame.selectedColor or {1, 0, 0, 1}
+    frame.texture:SetColorTexture(unpack(color))
+    frame:Show()
+
+    local duration = frame.flashDuration or 0.2
+    C_Timer.After(duration, function()
+        frame.texture:SetColorTexture(0, 0, 0, 1)
+        frame:Hide()
+    end)
 end
+
 
 function Butthurt:AddEvent(callbackName, event, callback)
     table.insert(self.Events, {event = event, callback = callback, callbackName = callbackName})

@@ -1,15 +1,17 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-    <Frame name="PixelFlashFrame" hidden="false" frameStrata="HIGH">
+    <Frame name="PixelFlashFrame" frameStrata="HIGH">
         <Size>
             <AbsDimension x="10" y="10"/>
         </Size>
         <Anchors>
-            <Anchor point="TOPLEFT"/>
+            <Anchor point="TOPLEFT" relativeTo="UIParent" relativePoint="TOPLEFT" x="0" y="0"/>
         </Anchors>
-        <Backdrops>
-            <Backdrop bgFile="Interface\\DialogFrame\\UI-DialogBox-Background">
-                <Color r="0" g="0" b="0" a="1"/>
-            </Backdrop>
-        </Backdrops>
+        <Layers>
+            <Background>
+                <Texture name="$parentBG" file="Interface\DialogFrame\UI-DialogBox-Background" setAllPoints="true">
+                    <Color r="0" g="0" b="0" a="1"/>
+                </Texture>
+            </Background>
+        </Layers>
     </Frame>
 </Ui>

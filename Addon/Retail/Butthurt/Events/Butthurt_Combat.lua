@@ -8,16 +8,19 @@ local Butthurt = LibStub("AceAddon-3.0"):GetAddon(name);
 if not Butthurt then return; end
 
 
-local function CombatEvent(self, event)
-    local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand, multistrike =CombatLogGetCurrentEventInfo()
+local function PlayerHit(self, unitTarget, eventType, flagText, amount, schoolMask)
+    Butthurt:Debug("Dmg " .. tostring(amount) .. " (" .. tostring(eventType) .. ")")
 
-    if subEvent == "SWING_DAMAGE" or subEvent == "RANGE_DAMAGE" or subEvent == "SPELL_DAMAGE" then
-        if destGUID == UnitGUID("player") then
-            Butthurt:Triggered()
-        end
+    if eventType ~= "HEAL" and amount and amount > 0 then
+        Butthurt:Triggered()
     end
 end
 
-Butthurt:AddEvent("Combat", "COMBAT_LOG_EVENT_UNFILTERED", function(self, event)
-     CombatEvent(self, event)
+
+-- Register the event
+--Butthurt:RegisterEvent("UNIT_COMBAT", PlayerHit)
+
+
+Butthurt:AddEvent("Combat", "UNIT_COMBAT", function(self, unitTarget, eventType, flagText, amount, schoolMask)
+     PlayerHit(self, unitTarget, eventType, flagText, amount, schoolMask)
 end)

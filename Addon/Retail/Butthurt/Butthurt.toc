@@ -1,4 +1,4 @@
-## Interface: 100207,110000,110002
+## Interface: 120001
 ## Title: Butthurt
 ## Notes: Alert yourself from dangerous situations.
 ## Author: Maikatura
@@ -11,8 +11,7 @@
 # Libraries
 Libs\Libs.xml
 
-# UI 
-UI\PixelFlash.xml
+
 
 # Add-On
 Butthurt.lua
