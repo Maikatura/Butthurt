@@ -30,3 +30,7 @@ Enjoy your new style of playing World of Warcraft :3
 - [ ] Functional UI for Toys.
 - [ ] User guide how to setup and add new events.
 - [ ] 
+
+#### Note!
+
+I will not be able to finish the new UI for midnight release because this is not the most priority program I make. If you wanna use it on release with Midnight refer to the old console version that can be found [here](https://github.com/Maikatura/Butthurt).
