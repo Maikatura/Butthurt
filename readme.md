@@ -22,3 +22,11 @@ Connect your faviorite lovense toy and play world of warcraft like you never hav
 6. Now everything should be setup.
 
 Enjoy your new style of playing World of Warcraft :3
+
+### Todo list
+- [x] Update addon to 12.0
+- [ ] Addon settings in app (this program will change the addon dynamicly).
+- [ ] Add addon install button. (I dont wanna download anything from a server at this time)
+- [ ] Functional UI for Toys.
+- [ ] User guide how to setup and add new events.
+- [ ] 
