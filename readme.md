@@ -1,7 +1,7 @@
 
 ## THIS IS A NEW BRANCH!
 
-I am remaking this whole program, so instead of just a console application, I will now have its own GUI. I am not 
+I am remaking this whole program, so instead of just a console application, It will now have its own GUI. I am not 
 planing to add support for some games that support addons without modding them. Here is a preview on how the new GUI 
 will look like!
 
@@ -29,7 +29,6 @@ Enjoy your new style of playing World of Warcraft :3
 - [ ] Add addon install button. (I dont wanna download anything from a server at this time)
 - [ ] Functional UI for Toys.
 - [ ] User guide how to setup and add new events.
-- [ ] 
 
 #### Note!
 
