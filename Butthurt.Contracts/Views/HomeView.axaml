@@ -12,9 +12,9 @@
                 <Grid ColumnDefinitions="*,Auto">
                     <StackPanel Spacing="6" VerticalAlignment="Center">
                         <TextBlock Classes="caption" Text="BUTTHURT" Foreground="#D8B4FE"/>
-                        <TextBlock Classes="h1" Text="Get physically notified."/>
-                        <TextBlock Classes="muted" MaxWidth="520" HorizontalAlignment="Left"
-                                   Text="Connect your toy through Intiface Central, start World of Warcraft with the Butthurt addon and feel every hit you take."/>
+                        <TextBlock x:Name="HeroTitle" Classes="h1" Text="Get physically notified."/>
+                        <TextBlock x:Name="HeroText" Classes="muted" MaxWidth="520" HorizontalAlignment="Left"
+                                   Text="Connect your toy through Intiface Central and feel every hit you take in game, and every cheer, sub and redeem on stream."/>
                     </StackPanel>
                     <Button x:Name="StartStopButton" Grid.Column="1" Classes="bt primary" Padding="22,12"
                             VerticalAlignment="Center" Click="StartStopButton_Click">
@@ -26,9 +26,9 @@
                 </Grid>
             </Border>
 
-            <!-- Status cards -->
-            <UniformGrid Columns="3" x:Name="StatusGrid">
-                <Border Classes="card" Margin="0,0,8,0">
+            <!-- Status cards: Intiface and toys, then one card per plugin (added in code) -->
+            <UniformGrid Columns="4" x:Name="StatusGrid" Margin="0,0,-12,-12">
+                <Border x:Name="IntifaceCard" Classes="card" Margin="0,0,12,12">
                     <StackPanel Spacing="14">
                         <Grid ColumnDefinitions="Auto,*">
                             <Border Classes="iconbox">
@@ -44,7 +44,7 @@
                     </StackPanel>
                 </Border>
 
-                <Border Classes="card" Margin="4,0">
+                <Border x:Name="ToysCard" Classes="card" Margin="0,0,12,12">
                     <StackPanel Spacing="14">
                         <Grid ColumnDefinitions="Auto,*">
                             <Border Classes="iconbox">
@@ -61,36 +61,11 @@
                         </StackPanel>
                     </StackPanel>
                 </Border>
-
-                <Border Classes="card" Margin="8,0,0,0">
-                    <StackPanel Spacing="14">
-                        <Grid ColumnDefinitions="Auto,*">
-                            <Border Classes="iconbox">
-                                <iconPacks:PackIconLucide Kind="Gamepad2" Width="20" Height="20" Foreground="#D8B4FE"
-                                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                            </Border>
-                            <Button Grid.Column="1" Classes="bt ghost small" HorizontalAlignment="Right"
-                                    Content="Configure" Click="ManageWow_Click"/>
-                        </Grid>
-                        <StackPanel Spacing="2">
-                            <TextBlock Classes="caption" Text="WORLD OF WARCRAFT"/>
-                            <TextBlock x:Name="WowText" Classes="stat" Text="Stopped"/>
-                            <TextBlock x:Name="WowSubText" Classes="muted" FontSize="12"/>
-                        </StackPanel>
-                        <Button x:Name="AutoInstallButton" Classes="bt small" HorizontalAlignment="Left"
-                                Click="AutoInstallButton_Click">
-                            <StackPanel Orientation="Horizontal" Spacing="6">
-                                <iconPacks:PackIconLucide Kind="Download" Width="14" Height="14" VerticalAlignment="Center"/>
-                                <TextBlock Text="Auto install addon" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                </Border>
             </UniformGrid>
 
             <Grid ColumnDefinitions="*,16,1.4*">
-                <!-- Quick test -->
-                <Border Classes="card" VerticalAlignment="Stretch">
+                <!-- Quick test (toys only) -->
+                <Border x:Name="QuickTestCard" Classes="card" VerticalAlignment="Stretch">
                     <StackPanel Spacing="14">
                         <StackPanel Spacing="4">
                             <TextBlock Classes="h2" Text="Quick test"/>
@@ -114,7 +89,7 @@
                 </Border>
 
                 <!-- Activity -->
-                <Border Grid.Column="2" Classes="card">
+                <Border x:Name="ActivityCard" Grid.Column="2" Classes="card">
                     <DockPanel>
                         <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,12">
                             <TextBlock Classes="h2" Text="Recent activity"/>

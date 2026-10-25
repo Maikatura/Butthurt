@@ -15,10 +15,27 @@
 
             <StackPanel Spacing="4">
                 <TextBlock Classes="h1" Text="Settings"/>
-                <TextBlock Classes="muted" Text="Everything is saved automatically."/>
+                <TextBlock Classes="muted" Text="Everything is saved automatically. Game and streaming settings live on their own pages."/>
             </StackPanel>
 
             <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Toys" Margin="0,0,0,6"/>
+
+                    <Border Classes="row">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="Toy features"/>
+                                <TextBlock Classes="muted" FontSize="12"
+                                           Text="Intiface, the Toys page, vibration rules and toy-only plugins like World of Warcraft. Turn it off to use Butthurt just for streaming and VRChat. Your toy settings are kept for when you turn it back on."/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="ToysToggle" Grid.Column="1"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="StartupCard" Classes="card">
                 <StackPanel Spacing="8">
                     <TextBlock Classes="h2" Text="Startup" Margin="0,0,0,6"/>
 
@@ -31,35 +48,21 @@
                             <ToggleSwitch x:Name="AutoConnectToggle" Grid.Column="1"/>
                         </Grid>
                     </Border>
+                </StackPanel>
+            </Border>
 
-                    <Border Classes="row">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <StackPanel Spacing="2">
-                                <TextBlock Classes="h3" Text="Start the game watcher when Butthurt starts"/>
-                                <TextBlock Classes="muted" FontSize="12" Text="It sits idle until a game window is in focus."/>
-                            </StackPanel>
-                            <ToggleSwitch x:Name="AutoWatchToggle" Grid.Column="1"/>
-                        </Grid>
-                    </Border>
+            <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Plugins" Margin="0,0,0,6"/>
+                    <StackPanel x:Name="PluginList" Spacing="8"/>
+                    <TextBlock Classes="muted" FontSize="12"
+                               Text="Turned off plugins aren't loaded at all and disappear from the sidebar. Extra plugins can be dropped into the Plugins folder next to Butthurt.exe."/>
                 </StackPanel>
             </Border>
 
             <Border Classes="card">
                 <StackPanel Spacing="8">
                     <TextBlock Classes="h2" Text="Advanced" Margin="0,0,0,6"/>
-
-                    <Border Classes="row">
-                        <StackPanel Spacing="6">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <StackPanel Spacing="2">
-                                    <TextBlock Classes="h3" Text="Check the game every"/>
-                                    <TextBlock Classes="muted" FontSize="12" Text="Lower is snappier, higher uses less CPU. 50 ms is plenty for most people."/>
-                                </StackPanel>
-                                <TextBlock x:Name="PollText" Grid.Column="1" Classes="stat" FontSize="18" VerticalAlignment="Center"/>
-                            </Grid>
-                            <Slider x:Name="PollSlider" Minimum="10" Maximum="250"/>
-                        </StackPanel>
-                    </Border>
 
                     <Border Classes="row">
                         <Grid ColumnDefinitions="*,Auto">
@@ -76,7 +79,7 @@
                         <Grid ColumnDefinitions="*,Auto">
                             <StackPanel Spacing="2">
                                 <TextBlock Classes="h3" Text="Reset everything"/>
-                                <TextBlock Classes="muted" FontSize="12" Text="Puts every setting and event back to its default."/>
+                                <TextBlock Classes="muted" FontSize="12" Text="Puts every setting, event and rule back to its default. This also forgets your Twitch login."/>
                             </StackPanel>
                             <Button x:Name="ResetButton" Grid.Column="1" Classes="bt small danger" Content="Reset"
                                     VerticalAlignment="Center" Click="Reset_Click"/>

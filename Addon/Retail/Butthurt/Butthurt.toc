@@ -3,10 +3,11 @@
 ## Notes: Alert yourself from dangerous situations.
 ## Author: Maikatura
 ## IconTexture: 982414
-## Version: v0.1.0
+## Version: v0.2.0
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 ## SavedVariables: ButthurtDB
+## AddonCompartmentFunc: Butthurt_OnAddonCompartmentClick
 
 # Libraries
 Libs\Libs.xml
@@ -15,6 +16,7 @@ Libs\Libs.xml
 
 # Add-On
 Butthurt.lua
+UI\Butthurt_Window.lua
 
 # Events
 Events\Butthurt_Combat.lua

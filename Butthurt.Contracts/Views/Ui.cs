@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
@@ -11,7 +8,7 @@ using Butthurt.Contracts.Services;
 namespace Butthurt.Contracts.Views;
 
 /// <summary>Small helpers for building UI from code with the theme in Styles/Theme.axaml.</summary>
-internal static class Ui
+public static class Ui
 {
     public static IBrush Brush(string key) =>
         Application.Current?.FindResource(key) as IBrush ?? Brushes.White;
@@ -63,25 +60,119 @@ internal static class Ui
         }
     };
 
-    /// <summary>Runs <see cref="AddonInstaller.AutoInstall"/> and tells the user how it went.</summary>
-    public static async Task AutoInstallAddon()
+    /// <summary>A card with a heading, an optional subtitle and content below.</summary>
+    public static Border Card(string title, string? subtitle, params Control[] content)
     {
-        try
+        var stack = new StackPanel { Spacing = 14 };
+        var header = new StackPanel { Spacing = 4, Children = { Text(title, "h2") } };
+        if (subtitle != null) header.Children.Add(Text(subtitle, "muted"));
+        stack.Children.Add(header);
+        foreach (var control in content) stack.Children.Add(control);
+
+        return new Border { Classes = { "card" }, Child = stack };
+    }
+
+    /// <summary>A step with a round gradient number in front, used by the guides.</summary>
+    public static Control NumberedStep(int number, string title, string body) => new Grid
+    {
+        ColumnDefinitions = new ColumnDefinitions("Auto,*"),
+        Children =
         {
-            var installed = AddonInstaller.AutoInstall();
-            await NotificationService.ShowAsync(installed.Count == 0
-                ? "Found World of Warcraft but no game versions to install into."
-                : $"Addon installed for {string.Join(", ", installed.Select(f => f.DisplayName))}. Type /reload in game.", 5000);
+            new Border
+            {
+                Width = 28, Height = 28, CornerRadius = new CornerRadius(14),
+                Background = Brush("AccentGradient"),
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new Thickness(0, 0, 14, 0),
+                Child = new TextBlock
+                {
+                    Text = number.ToString(), FontWeight = FontWeight.Bold, FontSize = 13, Foreground = Brushes.White,
+                    HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center
+                }
+            },
+            WithColumn(new StackPanel
+            {
+                Spacing = 2,
+                Children = { Text(title, "h3"), Text(body, "muted") }
+            }, 1)
         }
-        catch (UnauthorizedAccessException)
+    };
+
+    public static Control CodeBlock(string code) => new Border
+    {
+        Classes = { "codeblock" },
+        Margin = new Thickness(42, 0, 0, 0),
+        Child = new ScrollViewer
         {
-            await NotificationService.ShowAsync("Windows blocked the install. Try running Butthurt as administrator.", 5000);
+            HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto,
+            VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Disabled,
+            Content = Text(code, "code")
         }
-        catch (Exception e)
+    };
+
+    /// <summary>A bordered row with a bold title and a muted line, e.g. a troubleshooting tip.</summary>
+    public static Control InfoRow(string title, string body) => new Border
+    {
+        Classes = { "row" },
+        Child = new StackPanel { Spacing = 2, Children = { Text(title, "h3"), Text(body, "muted", 12) } }
+    };
+
+    /// <summary>A muted label above an input.</summary>
+    public static Control Field(string label, Control input) => new StackPanel
+    {
+        Spacing = 6,
+        Children = { Text(label, "muted", 12), input }
+    };
+
+    /// <summary>A whole-number box that reports every change.</summary>
+    public static NumericUpDown Number(int value, int minimum, int maximum, System.Action<int> changed)
+    {
+        var box = new NumericUpDown
         {
-            ActivityLog.Add($"Addon install failed: {e.Message}", LogLevel.Error);
-            await NotificationService.ShowAsync(e.Message, 5000);
-        }
+            Value = value,
+            Minimum = minimum,
+            Maximum = maximum,
+            Increment = 1,
+            FormatString = "0",
+            MinWidth = 140,
+            HorizontalAlignment = HorizontalAlignment.Left
+        };
+        box.ValueChanged += (_, e) =>
+        {
+            if (e.NewValue is { } newValue) changed((int)newValue);
+        };
+        return box;
+    }
+
+    /// <summary>A slider with its title on the left and its current value on the right.</summary>
+    public static Control SliderBlock(string title, TextBlock valueLabel, Slider slider)
+    {
+        Grid.SetColumn(valueLabel, 1);
+        return new StackPanel
+        {
+            Children =
+            {
+                new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto"), Children = { Text(title, "muted", 12), valueLabel } },
+                slider
+            }
+        };
+    }
+
+    public static string FormatDuration(int ms) => ms < 1000 ? $"{ms} ms" : $"{ms / 1000.0:0.#} s";
+
+    /// <summary>Small ghost button with just an icon (tooltip and screen reader name included).</summary>
+    public static Button IconButton(IconPacks.Avalonia.Lucide.PackIconLucideKind icon, string tooltip)
+    {
+        var button = new Button
+        {
+            Classes = { "bt", "ghost", "small" },
+            Content = new IconPacks.Avalonia.Lucide.PackIconLucide { Kind = icon, Width = 14, Height = 14 },
+            Margin = new Thickness(4, 0, 0, 0),
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        ToolTip.SetTip(button, tooltip);
+        Avalonia.Automation.AutomationProperties.SetName(button, tooltip);
+        return button;
     }
 
     public static T WithColumn<T>(T control, int column) where T : Control

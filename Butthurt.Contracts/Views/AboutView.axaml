@@ -46,6 +46,7 @@
                 
                 <!-- Description -->
                 <Border Classes="card" Margin="10">
+                 
                     <TextBlock Text="I created this tool to simplify plugin management for the games I enjoy. My goal was to build something both fun and practical for anyone who loves pleasure!"
                                TextWrapping="Wrap"
                                Foreground="#dddddd"
@@ -54,10 +55,11 @@
                                TextAlignment="DetectFromContent"
                                MaxWidth="360"
                                FontWeight="Medium"/>
+                   
                 </Border>
 
                 <!-- Optional Footer / Callout -->
-                <TextBlock Text="Thanks for checking out Butthurt!" 
+                <TextBlock Text="Thanks for checking out Butthurt 𑣲" 
                            Foreground="#888888" 
                            FontStyle="Italic"
                            HorizontalAlignment="Center"/>

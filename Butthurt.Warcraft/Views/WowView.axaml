@@ -1,7 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
-             x:Class="Butthurt.Contracts.Views.WowView">
+             x:Class="Butthurt.Warcraft.Views.WowView">
 
     <ScrollViewer Classes="page">
         <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
@@ -87,7 +87,37 @@
                     <TextBlock x:Name="FlavorHint" Classes="muted"/>
                     <StackPanel x:Name="FlavorList" Spacing="8"/>
                     <TextBlock Classes="muted" FontSize="12"
-                               Text="Restart the game or type /reload after installing. In game, /butthurt shows the addon's commands."/>
+                               Text="Restart the game or type /reload after installing. In game, /butthurt opens the addon's settings window."/>
+                </StackPanel>
+            </Border>
+
+            <!-- Watcher settings -->
+            <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Watcher settings" Margin="0,0,0,6"/>
+
+                    <Border Classes="row">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="Start the watcher when Butthurt starts"/>
+                                <TextBlock Classes="muted" FontSize="12" Text="It sits idle until the game window is in focus."/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="AutoWatchToggle" Grid.Column="1" OnContent="" OffContent="" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Classes="row">
+                        <StackPanel Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2">
+                                    <TextBlock Classes="h3" Text="Check the game every"/>
+                                    <TextBlock Classes="muted" FontSize="12" Text="Lower is snappier, higher uses less CPU. 50 ms is plenty for most people."/>
+                                </StackPanel>
+                                <TextBlock x:Name="PollText" Grid.Column="1" Classes="stat" FontSize="18" VerticalAlignment="Center"/>
+                            </Grid>
+                            <Slider x:Name="PollSlider" Minimum="10" Maximum="250"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Border>
 

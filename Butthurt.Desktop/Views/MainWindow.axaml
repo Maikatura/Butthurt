@@ -43,18 +43,16 @@
             <Border DockPanel.Dock="Bottom" Classes="card" Padding="14" CornerRadius="12">
                 <StackPanel Spacing="10">
                     <TextBlock Classes="caption" Text="STATUS"/>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
+                    <StackPanel x:Name="IntifaceRow" Orientation="Horizontal" Spacing="10">
                         <Ellipse x:Name="IntifaceDot" Width="8" Height="8" VerticalAlignment="Center"/>
                         <TextBlock x:Name="IntifaceStatusText" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
+                    <StackPanel x:Name="ToysRow" Orientation="Horizontal" Spacing="10">
                         <Ellipse x:Name="ToysDot" Width="8" Height="8" VerticalAlignment="Center"/>
                         <TextBlock x:Name="ToysStatusText" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" Spacing="10">
-                        <Ellipse x:Name="WowDot" Width="8" Height="8" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="WowStatusText" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
-                    </StackPanel>
+                    <!-- One row per plugin, added in code -->
+                    <StackPanel x:Name="PluginStatusRows" Spacing="10"/>
                 </StackPanel>
             </Border>
 

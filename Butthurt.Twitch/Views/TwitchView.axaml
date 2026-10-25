@@ -1,0 +1,147 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             x:Class="Butthurt.Twitch.Views.TwitchView">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="TwitchBrush" Color="#9146FF"/>
+        <SolidColorBrush x:Key="TwitchSoftBrush" Color="#269146FF"/>
+    </UserControl.Resources>
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="Twitch"/>
+                <TextBlock x:Name="PageSubtitle" Classes="muted" Text="Turn bits, subs, redeems, raids and chat commands into vibrations. You decide exactly what counts."/>
+            </StackPanel>
+
+            <!-- Account -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Border Classes="iconbox" Background="{StaticResource TwitchSoftBrush}" Margin="0,0,14,0">
+                            <iconPacks:PackIconLucide Kind="Twitch" Width="20" Height="20" Foreground="#BF94FF"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Classes="h2" Text="Twitch account"/>
+                                <Border Classes="pill" VerticalAlignment="Center">
+                                    <TextBlock x:Name="StatePillText" FontSize="11" FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock x:Name="AccountText" Classes="muted"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                            <Button x:Name="ConnectButton" Classes="bt" Click="ConnectButton_Click"/>
+                            <Button x:Name="LoginButton" Classes="bt primary" Click="LoginButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Shown while waiting for the user to approve in the browser -->
+                    <Border x:Name="LoginCodePanel" Classes="row" IsVisible="False">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="4">
+                                <TextBlock Classes="h3" Text="Finish logging in in your browser"/>
+                                <TextBlock Classes="muted" FontSize="12"
+                                           Text="A Twitch page opened. Check that it shows this code and press Activate, then come back here."/>
+                                <TextBlock x:Name="LoginCodeText" FontFamily="{StaticResource MonoFont}" FontSize="26"
+                                           FontWeight="Bold" LetterSpacing="4" Foreground="#BF94FF" Margin="0,6,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Spacing="8" VerticalAlignment="Center">
+                                <Button Classes="bt small" Click="OpenLoginPage_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <iconPacks:PackIconLucide Kind="ExternalLink" Width="14" Height="14" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Open page again" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Classes="bt small ghost" Content="Cancel" Click="CancelLogin_Click"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <Border Classes="row">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="Connect to Twitch when Butthurt starts"/>
+                                <TextBlock Classes="muted" FontSize="12" Text="Only when you're logged in."/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="AutoConnectToggle" Grid.Column="1" OnContent="" OffContent="" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Client ID, front and center when missing, tucked away behind a button otherwise -->
+                    <Button x:Name="ClientIdToggle" Classes="bt ghost small" HorizontalAlignment="Left"
+                            Content="Use your own Twitch app…" Click="ClientIdToggle_Click"/>
+                    <Border x:Name="ClientIdPanel" Classes="row">
+                        <StackPanel Spacing="8">
+                            <TextBlock Classes="h3" Text="Twitch app (Client ID)"/>
+                            <TextBlock x:Name="ClientIdHint" Classes="muted" FontSize="12"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox x:Name="ClientIdBox" Classes="field" Watermark="Client ID"/>
+                                <Button Grid.Column="1" Classes="bt small" Margin="8,0,0,0" VerticalAlignment="Center"
+                                        Click="OpenConsole_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <iconPacks:PackIconLucide Kind="ExternalLink" Width="14" Height="14" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Open Twitch console" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Butthurt's own channel point rewards -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <StackPanel Spacing="2">
+                        <TextBlock Classes="h2" Text="Channel point rewards"/>
+                        <TextBlock Classes="muted"
+                                   Text="Rewards made here belong to Butthurt, so their redemptions are completed for you, or refunded when nothing could react (e.g. VRChat wasn't running). Use their name in any redeem rule, here or on the VRChat page."/>
+                    </StackPanel>
+
+                    <Border x:Name="ReauthBanner" Classes="row" BorderBrush="#5B4A1F" IsVisible="False">
+                        <TextBlock Classes="muted" Foreground="#FCD34D"
+                                   Text="Your Twitch login is from an older version and can't manage rewards yet. Log out and log in again to allow it."/>
+                    </Border>
+
+                    <StackPanel x:Name="RewardList" Spacing="8"/>
+
+                    <Grid ColumnDefinitions="*,12,Auto,12,Auto">
+                        <TextBox x:Name="NewRewardTitle" Classes="field" Watermark="Reward name, e.g. Make me tiny"/>
+                        <NumericUpDown x:Name="NewRewardCost" Grid.Column="2" Value="500" Minimum="1" Maximum="10000000"
+                                       Increment="50" FormatString="0" MinWidth="150" ToolTip.Tip="Cost in channel points"/>
+                        <Button x:Name="CreateRewardButton" Grid.Column="4" Classes="bt primary" VerticalAlignment="Center"
+                                Content="Create on Twitch" Click="CreateReward_Click"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Vibration rules (toys only) -->
+            <Border x:Name="VibrationRulesCard" Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="h2" Text="Vibration rules"/>
+                            <TextBlock Classes="muted"
+                                       Text="When something happens on your channel every matching rule fires. Overlapping buzzes merge: strongest intensity, longest time."/>
+                        </StackPanel>
+                        <Button x:Name="AddRuleButton" Grid.Column="1" Classes="bt primary" VerticalAlignment="Center" Margin="14,0,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <iconPacks:PackIconLucide Kind="Plus" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Add rule" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <TextBlock x:Name="NoRulesText" Classes="muted" IsVisible="False"
+                               Text="No rules yet. Add one to decide what makes your toy buzz."/>
+                    <StackPanel x:Name="RuleList" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -4,9 +4,10 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Butthurt.Contracts.Models;
+using Butthurt.Contracts.Services;
+using Butthurt.Warcraft.Models;
 
-namespace Butthurt.Contracts.Services;
+namespace Butthurt.Warcraft.Services;
 
 /// <summary>
 /// Watches the top-left corner of the World of Warcraft window. The addon flashes a small square there
@@ -83,17 +84,18 @@ public static class WowWatcherService
                 var current = Sample(screenDc);
 
                 // React to the moment the color appears. The addon keeps the pixel lit while hits keep
-                // coming, so if it stays lit longer than the vibration we buzz again instead of going quiet.
+                // coming, so while it stays lit we buzz again a little before the vibration runs out
+                // (the toy service merges them) instead of leaving a gap.
                 if (current != null &&
                     (current != previous ||
-                     DateTime.Now - lastRaised >= TimeSpan.FromMilliseconds(SettingsService.GetEvent(current.Type).DurationMs)))
+                     DateTime.Now - lastRaised >= TimeSpan.FromMilliseconds(WarcraftPlugin.Settings.GetEvent(current.Type).DurationMs * 0.75)))
                 {
                     Raise(current, force: false);
                     lastRaised = DateTime.Now;
                 }
 
                 previous = current;
-                await Task.Delay(Math.Clamp(SettingsService.Current.PollIntervalMs, 10, 1000), token);
+                await Task.Delay(Math.Clamp(WarcraftPlugin.Settings.PollIntervalMs, 10, 1000), token);
             }
         }
         catch (TaskCanceledException)
@@ -140,7 +142,7 @@ public static class WowWatcherService
 
     private static void Raise(WowEventDefinition definition, bool force)
     {
-        var settings = SettingsService.GetEvent(definition.Type);
+        var settings = WarcraftPlugin.Settings.GetEvent(definition.Type);
         if (!settings.Enabled && !force) return;
 
         LastEvent = definition;

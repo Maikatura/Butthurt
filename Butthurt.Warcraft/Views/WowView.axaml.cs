@@ -12,7 +12,12 @@ using Butthurt.Contracts.Models;
 using Butthurt.Contracts.Services;
 using IconPacks.Avalonia.Lucide;
 
-namespace Butthurt.Contracts.Views;
+using Butthurt.Contracts;
+using Butthurt.Contracts.Views;
+using Butthurt.Warcraft.Models;
+using Butthurt.Warcraft.Services;
+
+namespace Butthurt.Warcraft.Views;
 
 public partial class WowView : UserControl, IPageView
 {
@@ -30,23 +35,48 @@ public partial class WowView : UserControl, IPageView
 
         AttachedToVisualTree += (_, _) =>
         {
-            if (string.IsNullOrEmpty(SettingsService.Current.WowPath))
+            if (string.IsNullOrEmpty(WarcraftPlugin.Settings.WowPath))
             {
                 // First visit, try to save the user a trip through the folder picker.
                 var detected = AddonInstaller.DetectWowPath();
                 if (detected != null)
                 {
-                    SettingsService.Current.WowPath = detected;
+                    WarcraftPlugin.Settings.WowPath = detected;
                     SettingsService.Save();
                 }
             }
 
-            WowPathBox.Text = SettingsService.Current.WowPath;
+            WowPathBox.Text = WarcraftPlugin.Settings.WowPath;
             BuildEventList();
             RefreshFlavors();
             UpdateWatcher();
+
+            _loading = true;
+            AutoWatchToggle.IsChecked = WarcraftPlugin.Settings.AutoStartWatcher;
+            PollSlider.Value = WarcraftPlugin.Settings.PollIntervalMs;
+            PollText.Text = $"{WarcraftPlugin.Settings.PollIntervalMs} ms";
+            _loading = false;
+        };
+
+        AutoWatchToggle.IsCheckedChanged += (_, _) =>
+        {
+            if (_loading) return;
+            WarcraftPlugin.Settings.AutoStartWatcher = AutoWatchToggle.IsChecked == true;
+            SettingsService.Save();
+        };
+
+        PollSlider.PropertyChanged += (_, e) =>
+        {
+            if (e.Property != Slider.ValueProperty) return;
+            var value = (int)(Math.Round(PollSlider.Value / 5) * 5);
+            PollText.Text = $"{value} ms";
+            if (_loading) return;
+            WarcraftPlugin.Settings.PollIntervalMs = value;
+            SettingsService.SaveSoon();
         };
     }
+
+    private bool _loading;
 
     private void WatcherButton_Click(object? sender, RoutedEventArgs e)
     {
@@ -82,7 +112,7 @@ public partial class WowView : UserControl, IPageView
 
     private Control CreateEventRow(WowEventDefinition definition)
     {
-        var settings = SettingsService.GetEvent(definition.Type);
+        var settings = WarcraftPlugin.Settings.GetEvent(definition.Type);
         var color = Color.FromRgb(definition.R, definition.G, definition.B);
 
         var intensityLabel = Ui.Text($"{settings.Intensity * 100:0}%", "muted", 12);
@@ -219,15 +249,15 @@ public partial class WowView : UserControl, IPageView
     private void SetWowPath(string? path)
     {
         var normalized = AddonInstaller.NormalizeWowPath(path);
-        if (normalized == SettingsService.Current.WowPath)
+        if (normalized == WarcraftPlugin.Settings.WowPath)
         {
             RefreshFlavors();
             return;
         }
 
-        SettingsService.Current.WowPath = normalized ?? path?.Trim();
+        WarcraftPlugin.Settings.WowPath = normalized ?? path?.Trim();
         SettingsService.Save();
-        WowPathBox.Text = SettingsService.Current.WowPath;
+        WowPathBox.Text = WarcraftPlugin.Settings.WowPath;
         RefreshFlavors();
     }
 
@@ -262,10 +292,10 @@ public partial class WowView : UserControl, IPageView
     private async void AutoInstallButton_Click(object? sender, RoutedEventArgs e)
     {
         AutoInstallButton.IsEnabled = false;
-        await Ui.AutoInstallAddon();
+        await AddonInstaller.AutoInstallAndNotify();
         AutoInstallButton.IsEnabled = true;
 
-        WowPathBox.Text = SettingsService.Current.WowPath;
+        WowPathBox.Text = WarcraftPlugin.Settings.WowPath;
         RefreshFlavors();
     }
 
@@ -273,7 +303,7 @@ public partial class WowView : UserControl, IPageView
     {
         FlavorList.Children.Clear();
 
-        var wowPath = SettingsService.Current.WowPath;
+        var wowPath = WarcraftPlugin.Settings.WowPath;
         if (string.IsNullOrWhiteSpace(wowPath) || !Directory.Exists(wowPath))
         {
             FlavorHint.Text = "Pick the folder that contains _retail_ (or _classic_), usually C:\\Program Files (x86)\\World of Warcraft.";

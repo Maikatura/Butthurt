@@ -17,31 +17,21 @@
                 </StackPanel>
             </Border>
 
-            <Border Classes="card">
-                <StackPanel Spacing="14">
-                    <StackPanel Spacing="4">
-                        <TextBlock Classes="h2" Text="How it works"/>
-                        <TextBlock Classes="muted"
-                                   Text="WoW addons can't talk to other programs, so the addon flashes a small square in the top-left corner of the game in a color that stands for the event. Butthurt reads that pixel while the game is the active window and tells Intiface Central to vibrate."/>
-                    </StackPanel>
-                    <WrapPanel x:Name="ColorLegend" ItemSpacing="8" LineSpacing="8"/>
-                </StackPanel>
-            </Border>
-
-            <Border Classes="card">
-                <StackPanel Spacing="14">
-                    <StackPanel Spacing="4">
-                        <TextBlock Classes="h2" Text="Adding a new event"/>
-                        <TextBlock Classes="muted" Text="For tinkerers. You need to change the addon and the app, then rebuild."/>
-                    </StackPanel>
-                    <StackPanel x:Name="DevSteps" Spacing="12"/>
-                </StackPanel>
-            </Border>
+            <!-- Each plugin adds its own sections here -->
+            <StackPanel x:Name="PluginSections" Spacing="20"/>
 
             <Border Classes="card">
                 <StackPanel Spacing="8">
                     <TextBlock Classes="h2" Text="Troubleshooting"/>
                     <StackPanel x:Name="Troubleshooting" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Making a plugin"/>
+                    <TextBlock Classes="muted"
+                               Text="Every game or site is its own project (Butthurt.Warcraft, Butthurt.Twitch). Copy one, implement IPlugin from Butthurt.Contracts (pages, status, start and stop), then register it in MainWindow or drop the built DLL into the Plugins folder next to Butthurt.exe."/>
                 </StackPanel>
             </Border>
 

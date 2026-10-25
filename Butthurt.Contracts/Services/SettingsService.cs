@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using Butthurt.Contracts.Models;
 
@@ -8,14 +10,25 @@ namespace Butthurt.Contracts.Services;
 
 public static class SettingsService
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
+    public static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        WriteIndented = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
 
+    // Live plugin settings objects. They are written back into AppSettings.Plugins on save.
+    private static readonly Dictionary<string, object> _pluginSettings = new();
+    private static readonly object _lock = new();
+
+    /// <summary>%AppData%\Butthurt, or BUTTHURT_SETTINGS_DIR when set (portable installs, tests).</summary>
     public static string SettingsFolder { get; } =
-        Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Butthurt");
+        Environment.GetEnvironmentVariable("BUTTHURT_SETTINGS_DIR") is { Length: > 0 } custom
+            ? custom
+            : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Butthurt");
 
     public static string SettingsFile => Path.Combine(SettingsFolder, "settings.json");
 
-    public static AppSettings Current { get; private set; } = CreateDefaults();
+    public static AppSettings Current { get; private set; } = new();
 
     public static event EventHandler? Changed;
 
@@ -25,24 +38,69 @@ public static class SettingsService
         {
             if (File.Exists(SettingsFile))
             {
-                Current = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(SettingsFile), JsonOptions) ?? CreateDefaults();
+                Current = JsonSerializer.Deserialize<AppSettings>(File.ReadAllText(SettingsFile), JsonOptions) ?? new AppSettings();
             }
         }
         catch (Exception e)
         {
             ActivityLog.Add($"Could not read settings, using defaults ({e.Message})", LogLevel.Warning);
-            Current = CreateDefaults();
+            Current = new AppSettings();
         }
 
-        FillMissingEvents(Current);
+        lock (_lock) _pluginSettings.Clear();
+    }
+
+    /// <summary>
+    /// The settings section of a plugin. Always returns the same object until settings are reset,
+    /// so plugins can change it directly and call <see cref="Save"/>. Don't hold on to it across a reset.
+    /// </summary>
+    public static T GetPluginSettings<T>(string pluginId) where T : class, new()
+    {
+        lock (_lock)
+        {
+            if (_pluginSettings.TryGetValue(pluginId, out var cached)) return (T)cached;
+
+            T? settings = null;
+            try
+            {
+                if (Current.Plugins.TryGetValue(pluginId, out var section))
+                {
+                    settings = section.Deserialize<T>(JsonOptions);
+                }
+                else if (Current.Legacy is { Count: > 0 })
+                {
+                    // Settings saved before this plugin had its own section used the same property names.
+                    settings = JsonSerializer.SerializeToElement(Current.Legacy, JsonOptions).Deserialize<T>(JsonOptions);
+                }
+            }
+            catch (Exception e)
+            {
+                ActivityLog.Add($"Could not read the {pluginId} settings, using defaults ({e.Message})", LogLevel.Warning);
+            }
+
+            settings ??= new T();
+            _pluginSettings[pluginId] = settings;
+            return settings;
+        }
     }
 
     public static void Save()
     {
         try
         {
-            Directory.CreateDirectory(SettingsFolder);
-            File.WriteAllText(SettingsFile, JsonSerializer.Serialize(Current, JsonOptions));
+            lock (_lock)
+            {
+                foreach (var (id, settings) in _pluginSettings)
+                {
+                    Current.Plugins[id] = JsonSerializer.SerializeToElement(settings, settings.GetType(), JsonOptions);
+                }
+
+                // Every plugin has read its old values by the time anything is saved.
+                Current.Legacy = null;
+
+                Directory.CreateDirectory(SettingsFolder);
+                File.WriteAllText(SettingsFile, JsonSerializer.Serialize(Current, JsonOptions));
+            }
         }
         catch (Exception e)
         {
@@ -63,36 +121,12 @@ public static class SettingsService
 
     public static void Reset()
     {
-        Current = CreateDefaults();
-        Save();
-    }
-
-    public static EventSettings GetEvent(WowEventType type)
-    {
-        FillMissingEvents(Current);
-        return Current.WowEvents[type];
-    }
-
-    private static AppSettings CreateDefaults()
-    {
-        var settings = new AppSettings();
-        FillMissingEvents(settings);
-        return settings;
-    }
-
-    private static void FillMissingEvents(AppSettings settings)
-    {
-        foreach (var definition in WowEvents.All)
+        lock (_lock)
         {
-            if (!settings.WowEvents.ContainsKey(definition.Type))
-            {
-                settings.WowEvents[definition.Type] = new EventSettings
-                {
-                    Enabled = definition.Defaults.Enabled,
-                    Intensity = definition.Defaults.Intensity,
-                    DurationMs = definition.Defaults.DurationMs
-                };
-            }
+            Current = new AppSettings();
+            _pluginSettings.Clear();
         }
+
+        Save();
     }
 }

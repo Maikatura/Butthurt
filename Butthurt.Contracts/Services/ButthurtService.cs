@@ -13,9 +13,18 @@ namespace Butthurt.Contracts.Services;
 public static class ButthurtService
 {
     private static ButtplugClient? _client;
-    private static CancellationTokenSource? _vibrationCts;
-    private static readonly object _vibrationLock = new();
     private static bool _exitHooked;
+
+    // Every command to the toys goes through this lock, so a "stop" can never overtake a newer "start".
+    private static readonly SemaphoreSlim _toyLock = new(1, 1);
+    private static DateTime _vibrateUntil;
+    private static double _currentIntensity;
+    private static ButtplugClientDevice[] _activeDevices = Array.Empty<ButtplugClientDevice>();
+    private static Task? _stopper;
+
+    // Set when the user disconnects on purpose, so we don't try to reconnect.
+    private static bool _stopRequested;
+    private static DateTime _lastSkipLog;
 
     public static EventHandler<DeviceAddedEventArgs>? DeviceAdded;
     public static EventHandler<DeviceRemovedEventArgs>? DeviceRemoved;
@@ -35,6 +44,7 @@ public static class ButthurtService
 
     public static async Task<bool> Start(string url)
     {
+        if (!SettingsService.Current.ToysEnabled) return false;
         if (IsConnected || IsConnecting) return IsConnected;
 
         if (!_exitHooked)
@@ -44,6 +54,7 @@ public static class ButthurtService
         }
 
         IsConnecting = true;
+        _stopRequested = false;
         LastError = null;
         StateChanged?.Invoke(null, EventArgs.Empty);
 
@@ -62,8 +73,12 @@ public static class ButthurtService
         };
         client.ServerDisconnect += (_, _) =>
         {
-            ActivityLog.Add("Lost connection to Intiface Central", LogLevel.Warning);
             StateChanged?.Invoke(null, EventArgs.Empty);
+            if (_stopRequested || _client != client) return;
+
+            ActivityLog.Add("Lost connection to Intiface Central, trying to reconnect…", LogLevel.Warning);
+            _client = null;
+            _ = Reconnect(url);
         };
 
         try
@@ -124,21 +139,25 @@ public static class ButthurtService
 
     public static async Task Stop()
     {
+        _stopRequested = true;
         var client = _client;
         if (client == null) return;
 
-        _client = null;
         try
         {
             if (client.Connected)
             {
-                await StopAllDevices(client);
+                await StopAllDevices();
                 await client.DisconnectAsync();
             }
         }
         catch (Exception e)
         {
             Console.WriteLine($"Error while disconnecting: {e.Message}");
+        }
+        finally
+        {
+            _client = null;
         }
 
         ActivityLog.Add("Disconnected from Intiface Central");
@@ -159,7 +178,8 @@ public static class ButthurtService
     public static bool CanVibrate(ButtplugClientDevice device) => device.VibrateAttributes.Count > 0;
 
     /// <summary>
-    /// Vibrates every enabled toy. A newer call replaces a running one instead of stacking.
+    /// Vibrates every enabled toy. Overlapping calls are merged: the vibration lasts until the latest one ends
+    /// and runs at the strongest intensity that is still active, so a death buzz isn't cut short by a small hit.
     /// </summary>
     /// <param name="intensity">0.0 - 1.0, scaled by the master intensity.</param>
     public static Task Vibrate(double intensity, int durationMs) =>
@@ -170,42 +190,130 @@ public static class ButthurtService
 
     private static async Task Vibrate(double intensity, int durationMs, IEnumerable<ButtplugClientDevice> targets)
     {
-        if (!IsConnected) return;
+        // Toy features off: stay quiet, no "didn't vibrate" warnings either.
+        if (!SettingsService.Current.ToysEnabled) return;
+
+        if (!IsConnected)
+        {
+            LogSkipped("not connected to Intiface Central");
+            return;
+        }
 
         var devices = targets.Where(CanVibrate).ToArray();
-        if (devices.Length == 0) return;
+        if (devices.Length == 0)
+        {
+            LogSkipped("no enabled toys that can vibrate");
+            return;
+        }
 
         intensity = Math.Clamp(intensity * SettingsService.Current.MasterIntensity, 0, 1);
+        if (intensity <= 0) return;
 
-        CancellationTokenSource cts;
-        lock (_vibrationLock)
-        {
-            _vibrationCts?.Cancel();
-            cts = _vibrationCts = new CancellationTokenSource();
-        }
-
+        await _toyLock.WaitAsync();
         try
         {
-            await Task.WhenAll(devices.Select(d => d.VibrateAsync(intensity)));
-            await Task.Delay(durationMs, cts.Token);
-            await Task.WhenAll(devices.Select(d => d.VibrateAsync(0)));
+            var now = DateTime.UtcNow;
+            var active = now < _vibrateUntil;
+            var until = now.AddMilliseconds(durationMs);
+
+            _vibrateUntil = active && _vibrateUntil > until ? _vibrateUntil : until;
+            _currentIntensity = active ? Math.Max(_currentIntensity, intensity) : intensity;
+            _activeDevices = active ? _activeDevices.Union(devices).ToArray() : devices;
+
+            await Send(_activeDevices, _currentIntensity);
+
+            if (_stopper == null || _stopper.IsCompleted)
+            {
+                _stopper = Task.Run(StopWhenDone);
+            }
         }
-        catch (TaskCanceledException)
+        finally
         {
-            // A newer vibration took over, it is responsible for stopping the toys.
-        }
-        catch (Exception e)
-        {
-            ActivityLog.Add($"Vibration failed: {e.Message}", LogLevel.Error);
+            _toyLock.Release();
         }
     }
 
-    private static async Task StopAllDevices(ButtplugClient client)
+    /// <summary>Waits until the current vibration runs out (it can be extended meanwhile), then stops the toys.</summary>
+    private static async Task StopWhenDone()
     {
-        foreach (var device in client.Devices.Where(CanVibrate))
+        while (true)
         {
-            await device.VibrateAsync(0);
+            TimeSpan wait;
+            await _toyLock.WaitAsync();
+            try
+            {
+                wait = _vibrateUntil - DateTime.UtcNow;
+                if (wait <= TimeSpan.Zero)
+                {
+                    await Send(_activeDevices, 0);
+                    _activeDevices = Array.Empty<ButtplugClientDevice>();
+                    _currentIntensity = 0;
+                    return;
+                }
+            }
+            finally
+            {
+                _toyLock.Release();
+            }
+
+            await Task.Delay(wait);
         }
+    }
+
+    private static async Task Send(IEnumerable<ButtplugClientDevice> devices, double intensity)
+    {
+        await Task.WhenAll(devices.Select(async device =>
+        {
+            try
+            {
+                await device.VibrateAsync(intensity <= 0 ? 0 : Math.Max(intensity, LowestStep(device)));
+            }
+            catch (Exception e)
+            {
+                ActivityLog.Add($"Vibration failed on {device.Name}: {e.Message}", LogLevel.Error);
+            }
+        }));
+    }
+
+    // Toys only have a few speed steps (Lovense has 20), anything below the first step would round down to off.
+    private static double LowestStep(ButtplugClientDevice device)
+    {
+        var steps = device.VibrateAttributes.Select(a => (int)a.StepCount).DefaultIfEmpty(0).Max();
+        return steps > 0 ? 1.0 / steps : 0;
+    }
+
+    private static async Task StopAllDevices()
+    {
+        await _toyLock.WaitAsync();
+        try
+        {
+            _vibrateUntil = DateTime.MinValue;
+            await Send(Devices.Where(CanVibrate), 0);
+            _activeDevices = Array.Empty<ButtplugClientDevice>();
+            _currentIntensity = 0;
+        }
+        finally
+        {
+            _toyLock.Release();
+        }
+    }
+
+    private static async Task Reconnect(string url)
+    {
+        for (var attempt = 1; !_stopRequested && !IsConnected; attempt++)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(Math.Min(5 * attempt, 30)));
+            if (_stopRequested || IsConnected || IsConnecting) return;
+            await Start(url);
+        }
+    }
+
+    // Explains silent "nothing happened" moments without flooding the log during combat.
+    private static void LogSkipped(string reason)
+    {
+        if (DateTime.UtcNow - _lastSkipLog < TimeSpan.FromSeconds(10)) return;
+        _lastSkipLog = DateTime.UtcNow;
+        ActivityLog.Add($"Didn't vibrate: {reason}", LogLevel.Warning);
     }
 
     private static void OnProcessExit(object? sender, EventArgs e)

@@ -5,6 +5,7 @@ public enum SideBarType
 {
     Header,
     Plugins,
+    Streaming,
     Footer
 }
 
@@ -14,6 +15,7 @@ public static class SideBarTypeExtensions
     {
         SideBarType.Header => "MAIN",
         SideBarType.Plugins => "GAMES",
+        SideBarType.Streaming => "STREAMING",
         SideBarType.Footer => "MORE",
         _ => type.ToString().ToUpperInvariant()
     };

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Twitch plugin: bits, subs, gifts, redeems, follows, raids and chat commands through EventSub. -->
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Referenced directly (not only through Contracts) so the XAML compiler runs for this project -->
+        <PackageReference Include="Avalonia" Version="11.3.6"/>
+        <PackageReference Include="IconPacks.Avalonia" Version="1.2.0" />
+        <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Butthurt.Contracts\Butthurt.Contracts.csproj" />
+    </ItemGroup>
+</Project>

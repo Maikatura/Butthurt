@@ -24,11 +24,24 @@ Butthurt.Colors = {
     ACHIEVEMENT = { 1, 1, 0, 1 },
 };
 
+-- Shown in the settings window, in this order.
+Butthurt.EventInfo = {
+    { key = "DAMAGE",      label = "Taking damage" },
+    { key = "HEAL",        label = "Getting healed" },
+    { key = "DEATH",       label = "Dying" },
+    { key = "LEVEL_UP",    label = "Level up" },
+    { key = "ACHIEVEMENT", label = "Achievement earned" },
+};
+
 local defaults = {
     enabled = true,
     debug = false,
     flashDuration = 0.2,
+    events = {},
 };
+
+-- The color the corner pixel shows right now, read by the settings window.
+Butthurt.currentColor = "IDLE"
 
 -- Parented to nothing so the pixel survives Alt+Z (hidden UI) and ignores the UI scale.
 Butthurt.pixelFlashFrame = CreateFrame("Frame", "ButthurtPixelFlashFrame", nil)
@@ -47,13 +60,24 @@ function Butthurt:GetPixelFlashFrame()
     return Butthurt.pixelFlashFrame
 end
 
+function Butthurt:IsEventEnabled(colorName)
+    return ButthurtDB.events[colorName] ~= false
+end
+
+function Butthurt:SetEventEnabled(colorName, enabled)
+    ButthurtDB.events[colorName] = enabled
+end
+
 --- Flash the corner pixel with the color of the given event (defaults to DAMAGE).
-function Butthurt:Triggered(colorName)
-    if not ButthurtDB.enabled then return; end
+--- force skips the on/off checks, used by the test buttons.
+function Butthurt:Triggered(colorName, force)
+    colorName = colorName or "DAMAGE"
+    if not force and (not ButthurtDB.enabled or not self:IsEventEnabled(colorName)) then return; end
 
     local frame = Butthurt.pixelFlashFrame
-    local color = Butthurt.Colors[colorName or "DAMAGE"] or Butthurt.Colors.DAMAGE
+    local color = Butthurt.Colors[colorName] or Butthurt.Colors.DAMAGE
     frame.texture:SetColorTexture(unpack(color))
+    Butthurt.currentColor = colorName
 
     -- Only the most recent flash is allowed to reset the pixel, so rapid hits keep it lit.
     frame.flashId = (frame.flashId or 0) + 1
@@ -61,6 +85,7 @@ function Butthurt:Triggered(colorName)
     C_Timer.After(ButthurtDB.flashDuration or defaults.flashDuration, function()
         if frame.flashId == flashId then
             frame.texture:SetColorTexture(unpack(Butthurt.Colors.IDLE))
+            Butthurt.currentColor = "IDLE"
         end
     end)
 end
@@ -95,9 +120,12 @@ function Butthurt:SlashCommand(input)
     local command, arg = self:GetArgs(input, 2)
     command = command and command:lower() or ""
 
-    if command == "toggle" then
+    if command == "" or command == "show" or command == "config" then
+        self:ToggleWindow()
+    elseif command == "toggle" then
         ButthurtDB.enabled = not ButthurtDB.enabled
         self:Print("Haptics " .. (ButthurtDB.enabled and "|cFF22C55Eenabled|r" or "|cFFEF4444disabled|r"))
+        self:RefreshWindow()
     elseif command == "test" then
         local colorName = (arg or "DAMAGE"):upper()
         if not Butthurt.Colors[colorName] or colorName == "IDLE" then
@@ -105,12 +133,13 @@ function Butthurt:SlashCommand(input)
             return
         end
         self:Print("Testing " .. colorName)
-        self:Triggered(colorName)
+        self:Triggered(colorName, true)
     elseif command == "debug" then
         ButthurtDB.debug = not ButthurtDB.debug
         self:Print("Debug " .. (ButthurtDB.debug and "on" or "off"))
     else
         self:Print("Commands:")
+        self:Print("  /butthurt - open the settings window")
         self:Print("  /butthurt toggle - turn haptics on or off")
         self:Print("  /butthurt test [damage|heal|death|level_up|achievement]")
         self:Print("  /butthurt debug - print events to chat")
@@ -129,6 +158,7 @@ function Butthurt:OnInitialize()
     self:LoadAddEvents()
     self:RegisterChatCommand("butthurt", "SlashCommand")
     self:RegisterChatCommand("bh", "SlashCommand")
+    self:RegisterSettingsPanel()
 
     self:Debug("Loading complete")
 end

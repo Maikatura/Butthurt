@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using IconPacks.Avalonia.Lucide;
 
-namespace Butthurt.Contracts.Models;
+namespace Butthurt.Warcraft.Models;
 
 public enum WowEventType
 {

@@ -30,14 +30,13 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Butthurt.Contracts\Butthurt.Contracts.csproj" />
+      <!-- Built-in plugins, registered in MainWindow -->
+      <ProjectReference Include="..\Butthurt.Warcraft\Butthurt.Warcraft.csproj" />
+      <ProjectReference Include="..\Butthurt.Twitch\Butthurt.Twitch.csproj" />
+      <ProjectReference Include="..\Butthurt.VRChat\Butthurt.VRChat.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <Folder Include="Models\" />
-    </ItemGroup>
-
-    <!-- Ship the WoW addons next to the exe so the app can install them without downloading anything -->
-    <ItemGroup>
-      <Content Include="..\Addon\**\*" LinkBase="Addon" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 </Project>

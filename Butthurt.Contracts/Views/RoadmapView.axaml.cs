@@ -25,6 +25,9 @@ public partial class RoadmapView : UserControl, IPageView
         AddRoadmapItem("Addon settings in the app", "Pick events, intensity and duration without touching Lua.", PackIconLucideKind.Settings, done: true);
         AddRoadmapItem("Addon install button", "Copies the bundled addon into your WoW folder.", PackIconLucideKind.Download, done: true);
         AddRoadmapItem("User guide", "Setup steps and how to add new events.", PackIconLucideKind.BookOpen, done: true);
+        AddRoadmapItem("Twitch", "Bits, subs per tier, gifts, redeems, raids and chat commands.", PackIconLucideKind.Twitch, done: true);
+        AddRoadmapItem("Plugins", "Every game or site is its own plugin you can turn on and off.", PackIconLucideKind.Plug, done: true);
+        AddRoadmapItem("VRChat", "Twitch can change your avatar and make you grow or shrink.", PackIconLucideKind.Glasses, done: true);
         AddRoadmapItem("Vibration patterns", "Pulses and waves instead of a single buzz.", PackIconLucideKind.Waves);
         AddRoadmapItem("Low health warning", "Keep buzzing while you are about to die.", PackIconLucideKind.HeartPulse);
         AddRoadmapItem("More games", "Plugins for other games that support addons.", PackIconLucideKind.Gamepad2);

@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Win32;
 
-namespace Butthurt.Contracts.Services;
+using Butthurt.Contracts.Services;
+using Butthurt.Warcraft.Models;
+
+namespace Butthurt.Warcraft.Services;
 
 /// <param name="Folder">Folder inside the WoW install, e.g. "_retail_".</param>
 /// <param name="AddonSource">Which bundled addon fits this game version (folder under Addon/).</param>
@@ -151,6 +155,27 @@ public static class AddonInstaller
         ActivityLog.Add($"Installed the addon for {flavor.DisplayName} ({GetBundledVersion(flavor) ?? "unknown version"})", LogLevel.Success);
     }
 
+    /// <summary>Runs <see cref="AutoInstall"/> and tells the user how it went.</summary>
+    public static async Task AutoInstallAndNotify()
+    {
+        try
+        {
+            var installed = AutoInstall();
+            await NotificationService.ShowAsync(installed.Count == 0
+                ? "Found World of Warcraft but no game versions to install into."
+                : $"Addon installed for {string.Join(", ", installed.Select(f => f.DisplayName))}. Type /reload in game.", 5000);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            await NotificationService.ShowAsync("Windows blocked the install. Try running Butthurt as administrator.", 5000);
+        }
+        catch (Exception e)
+        {
+            ActivityLog.Add($"Addon install failed: {e.Message}", LogLevel.Error);
+            await NotificationService.ShowAsync(e.Message, 5000);
+        }
+    }
+
     /// <summary>
     /// One click install: finds the game (unless a folder is already set) and installs or updates
     /// the addon for every game version in it. Returns the versions that were installed.
@@ -158,12 +183,12 @@ public static class AddonInstaller
     /// <exception cref="DirectoryNotFoundException">World of Warcraft could not be found.</exception>
     public static List<WowFlavor> AutoInstall()
     {
-        var wowPath = NormalizeWowPath(SettingsService.Current.WowPath);
+        var wowPath = NormalizeWowPath(WarcraftPlugin.Settings.WowPath);
         if (wowPath == null || !GetFlavors(wowPath).Any())
         {
             wowPath = DetectWowPath() ?? throw new DirectoryNotFoundException(
                 "Couldn't find World of Warcraft. Pick the folder on the World of Warcraft page.");
-            SettingsService.Current.WowPath = wowPath;
+            WarcraftPlugin.Settings.WowPath = wowPath;
             SettingsService.Save();
         }
 
