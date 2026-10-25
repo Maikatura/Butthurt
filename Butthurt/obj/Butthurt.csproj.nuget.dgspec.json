@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\Butthurt.csproj": {}
+    "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\Butthurt.csproj": {
+    "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
+        "projectUniqueName": "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
         "projectName": "Butthurt",
-        "projectPath": "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
+        "projectPath": "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
         "packagesPath": "C:\\Users\\maika\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\maika\\Documents\\Github\\Butthurt\\Butthurt\\obj\\",
+        "outputPath": "E:\\Github\\Butthurt\\Butthurt\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\maika\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -24,6 +24,7 @@
         },
         "frameworks": {
           "net9.0": {
+            "framework": "net9.0",
             "targetAlias": "net9.0",
             "projectReferences": {}
           }
@@ -36,12 +37,13 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "10.0.400"
       },
       "frameworks": {
         "net9.0": {
+          "framework": "net9.0",
           "targetAlias": "net9.0",
           "dependencies": {
             "Buttplug": {
@@ -64,12 +66,30 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.19, 9.0.19]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[9.0.19, 9.0.19]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[9.0.19, 9.0.19]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[9.0.19, 9.0.19]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\maika\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

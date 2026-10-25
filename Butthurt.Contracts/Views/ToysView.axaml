@@ -1,0 +1,84 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             x:Class="Butthurt.Contracts.Views.ToysView">
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="Toys"/>
+                <TextBlock Classes="muted" Text="Butthurt talks to your toys through Intiface Central, so anything Intiface supports works here."/>
+            </StackPanel>
+
+            <!-- Connection -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Border Classes="iconbox" Margin="0,0,14,0">
+                            <iconPacks:PackIconLucide Kind="PlugZap" Width="20" Height="20" Foreground="#D8B4FE"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Classes="h2" Text="Intiface Central"/>
+                            <TextBlock x:Name="ConnectionText" Classes="muted" Text="Not connected"/>
+                        </StackPanel>
+                        <Button x:Name="ConnectButton" Grid.Column="2" Classes="bt primary" VerticalAlignment="Center"
+                                Content="Connect" Click="ConnectButton_Click"/>
+                    </Grid>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="caption" Text="SERVER ADDRESS"/>
+                        <TextBox x:Name="UrlBox" Classes="field" Watermark="ws://localhost:12345"/>
+                        <TextBlock Classes="muted" FontSize="12"
+                                   Text="Open Intiface Central and press the big Start Server button. The address is shown on its Server page."/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Devices -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="h2" Text="Connected toys"/>
+                            <TextBlock Classes="muted" Text="Turn a toy off here to keep it quiet without unpairing it."/>
+                        </StackPanel>
+                        <Button x:Name="ScanButton" Grid.Column="1" Classes="bt" VerticalAlignment="Center" Click="ScanButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <iconPacks:PackIconLucide Kind="Radar" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="ScanText" Text="Scan for toys" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Border x:Name="EmptyState" Classes="row" Padding="28">
+                        <StackPanel Spacing="8" HorizontalAlignment="Center">
+                            <iconPacks:PackIconLucide Kind="Bluetooth" Width="28" Height="28" HorizontalAlignment="Center"
+                                                      Foreground="{StaticResource DimBrush}"/>
+                            <TextBlock x:Name="EmptyStateText" Classes="muted" TextAlignment="Center"
+                                       Text="No toys yet. Connect to Intiface, turn your toy on and press Scan."/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel x:Name="DeviceList" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Master intensity -->
+            <Border Classes="card">
+                <StackPanel Spacing="10">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="h2" Text="Master intensity"/>
+                            <TextBlock Classes="muted" Text="Every vibration is multiplied by this. Handy for turning everything down at once."/>
+                        </StackPanel>
+                        <TextBlock x:Name="MasterText" Grid.Column="1" Classes="stat" VerticalAlignment="Center" Text="100%"/>
+                    </Grid>
+                    <Slider x:Name="MasterSlider" Minimum="0" Maximum="100"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

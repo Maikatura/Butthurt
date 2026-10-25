@@ -1,0 +1,249 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Styles.Resources>
+        <!-- Palette -->
+        <Color x:Key="BgColor">#09090C</Color>
+        <Color x:Key="SurfaceColor">#101015</Color>
+        <Color x:Key="CardColor">#16161D</Color>
+        <Color x:Key="CardHoverColor">#1C1C25</Color>
+        <Color x:Key="BorderColor">#24242F</Color>
+        <Color x:Key="AccentColor">#A855F7</Color>
+        <Color x:Key="Accent2Color">#EC4899</Color>
+        <Color x:Key="TextColor">#F4F4F5</Color>
+        <Color x:Key="MutedColor">#A1A1AA</Color>
+        <Color x:Key="DimColor">#71717A</Color>
+        <Color x:Key="SuccessColor">#22C55E</Color>
+        <Color x:Key="WarningColor">#F59E0B</Color>
+        <Color x:Key="DangerColor">#EF4444</Color>
+
+        <SolidColorBrush x:Key="BgBrush" Color="{StaticResource BgColor}"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+        <SolidColorBrush x:Key="CardBrush" Color="{StaticResource CardColor}"/>
+        <SolidColorBrush x:Key="CardHoverBrush" Color="{StaticResource CardHoverColor}"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+        <SolidColorBrush x:Key="Accent2Brush" Color="{StaticResource Accent2Color}"/>
+        <SolidColorBrush x:Key="TextBrush" Color="{StaticResource TextColor}"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="{StaticResource MutedColor}"/>
+        <SolidColorBrush x:Key="DimBrush" Color="{StaticResource DimColor}"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}"/>
+        <SolidColorBrush x:Key="AccentSoftBrush" Color="#26A855F7"/>
+
+        <LinearGradientBrush x:Key="AccentGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Offset="0" Color="{StaticResource AccentColor}"/>
+            <GradientStop Offset="1" Color="{StaticResource Accent2Color}"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="AccentGradientHover" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Offset="0" Color="#B977FA"/>
+            <GradientStop Offset="1" Color="#F06BAE"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="HeroGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Offset="0" Color="#3B1A5C"/>
+            <GradientStop Offset="0.55" Color="#2A1238"/>
+            <GradientStop Offset="1" Color="#16161D"/>
+        </LinearGradientBrush>
+
+        <!-- Used by NotificationControl -->
+        <SolidColorBrush x:Key="NotificationBackground" Color="#1F1F29"/>
+        <SolidColorBrush x:Key="NotificationForeground" Color="{StaticResource TextColor}"/>
+
+        <FontFamily x:Key="MonoFont">Cascadia Code, Consolas, Courier New</FontFamily>
+    </Styles.Resources>
+
+    <!-- ===== Typography ===== -->
+    <Style Selector="TextBlock.h1">
+        <Setter Property="FontSize" Value="30"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.h2">
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.h3">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.body">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style Selector="TextBlock.muted">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style Selector="TextBlock.caption">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="LetterSpacing" Value="1"/>
+        <Setter Property="Foreground" Value="{StaticResource DimBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.stat">
+        <Setter Property="FontSize" Value="22"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.code">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#E9D5FF"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+    </Style>
+
+    <!-- ===== Surfaces ===== -->
+    <Style Selector="Border.card">
+        <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="14"/>
+        <Setter Property="Padding" Value="20"/>
+    </Style>
+    <Style Selector="Border.row">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="14"/>
+    </Style>
+    <Style Selector="Border.codeblock">
+        <Setter Property="Background" Value="#0B0B10"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="14"/>
+    </Style>
+    <Style Selector="Border.iconbox">
+        <Setter Property="Width" Value="40"/>
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+    </Style>
+    <Style Selector="Border.pill">
+        <Setter Property="CornerRadius" Value="999"/>
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="Background" Value="#1F1F29"/>
+    </Style>
+
+    <!-- ===== Buttons (own template so the Material theme doesn't fight us) ===== -->
+    <Style Selector="Button.bt">
+        <Setter Property="Background" Value="{StaticResource CardHoverBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="10"/>
+        <Setter Property="Padding" Value="16,9"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.bt:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="#262631"/>
+    </Style>
+    <Style Selector="Button.bt:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.98)"/>
+    </Style>
+    <Style Selector="Button.bt:disabled">
+        <Setter Property="Opacity" Value="0.45"/>
+    </Style>
+
+    <Style Selector="Button.bt.primary">
+        <Setter Property="Background" Value="{StaticResource AccentGradient}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="White"/>
+    </Style>
+    <Style Selector="Button.bt.primary:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="{StaticResource AccentGradientHover}"/>
+    </Style>
+
+    <Style Selector="Button.bt.danger">
+        <Setter Property="Background" Value="#2A1215"/>
+        <Setter Property="BorderBrush" Value="#5B1F25"/>
+        <Setter Property="Foreground" Value="#FCA5A5"/>
+    </Style>
+    <Style Selector="Button.bt.danger:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="#3A161B"/>
+    </Style>
+
+    <Style Selector="Button.bt.ghost">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.ghost:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="#1C1C25"/>
+    </Style>
+
+    <Style Selector="Button.bt.small">
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="CornerRadius" Value="8"/>
+    </Style>
+
+    <!-- Sidebar navigation -->
+    <Style Selector="Button.bt.nav">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="12,10"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontSize" Value="14"/>
+    </Style>
+    <Style Selector="Button.bt.nav:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="#16161D"/>
+    </Style>
+    <Style Selector="Button.bt.nav:pointerover">
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.nav.active">
+        <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.nav.active:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="#33A855F7"/>
+    </Style>
+
+    <!-- ===== Inputs ===== -->
+    <Style Selector="TextBox.field">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <Style Selector="ScrollViewer.page">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+</Styles>

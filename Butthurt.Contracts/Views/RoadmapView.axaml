@@ -1,22 +1,17 @@
-﻿<UserControl xmlns="https://github.com/avaloniaui"
+<UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Butthurt.Contracts.Views.RoadmapView"
-             Background="#121212">
+             x:Class="Butthurt.Contracts.Views.RoadmapView">
 
-    <ScrollViewer HorizontalScrollBarVisibility="Hidden"
-                  VerticalScrollBarVisibility="Auto"
-                  Padding="20"
-                  >
-        <Grid>
-            <WrapPanel x:Name="RoadmapContainer"
-                       Orientation="Horizontal"
-                       ItemSpacing="15"
-                       LineSpacing="15"
-                       HorizontalAlignment="Center"/>
-        </Grid>
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="Roadmap"/>
+                <TextBlock Classes="muted" Text="What's done and what's coming. No promises on dates."/>
+            </StackPanel>
+
+            <UniformGrid x:Name="RoadmapContainer" Columns="3"/>
+
+        </StackPanel>
     </ScrollViewer>
-
-
-
-
 </UserControl>

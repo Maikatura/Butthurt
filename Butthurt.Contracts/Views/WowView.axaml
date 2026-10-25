@@ -1,0 +1,96 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             x:Class="Butthurt.Contracts.Views.WowView">
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="World of Warcraft"/>
+                <TextBlock Classes="muted" Text="Choose which in-game events you want to feel and how strong they are."/>
+            </StackPanel>
+
+            <!-- Watcher -->
+            <Border Classes="card">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border Classes="iconbox" Margin="0,0,14,0">
+                        <iconPacks:PackIconLucide Kind="Radar" Width="20" Height="20" Foreground="#D8B4FE"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock Classes="h2" Text="Game watcher"/>
+                            <Border x:Name="WatcherPill" Classes="pill" VerticalAlignment="Center">
+                                <TextBlock x:Name="WatcherPillText" FontSize="11" FontWeight="SemiBold"/>
+                            </Border>
+                        </StackPanel>
+                        <TextBlock Classes="muted"
+                                   Text="The addon flashes a tiny square in the top-left corner of the game. Butthurt reads its color while WoW is the active window."/>
+                    </StackPanel>
+                    <Button x:Name="WatcherButton" Grid.Column="2" Classes="bt primary" VerticalAlignment="Center"
+                            Margin="14,0,0,0" Click="WatcherButton_Click"/>
+                </Grid>
+            </Border>
+
+            <!-- Events -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <StackPanel Spacing="2">
+                        <TextBlock Classes="h2" Text="Events"/>
+                        <TextBlock Classes="muted" Text="Changes save right away. Test plays the vibration even if the event is turned off."/>
+                    </StackPanel>
+                    <StackPanel x:Name="EventList" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Addon installer -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Border Classes="iconbox" Margin="0,0,14,0">
+                            <iconPacks:PackIconLucide Kind="Download" Width="20" Height="20" Foreground="#D8B4FE"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Classes="h2" Text="Addon"/>
+                            <TextBlock Classes="muted" Text="Installs the addon that comes with Butthurt. Nothing is downloaded."/>
+                        </StackPanel>
+                        <Button x:Name="AutoInstallButton" Grid.Column="2" Classes="bt primary" VerticalAlignment="Center"
+                                Margin="14,0,0,0" Click="AutoInstallButton_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <iconPacks:PackIconLucide Kind="Sparkles" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Auto install" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="caption" Text="WORLD OF WARCRAFT FOLDER"/>
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <TextBox x:Name="WowPathBox" Classes="field" Watermark="C:\Program Files (x86)\World of Warcraft"/>
+                            <Button Grid.Column="1" Classes="bt" Margin="8,0,0,0" Click="BrowseButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <iconPacks:PackIconLucide Kind="FolderOpen" Width="16" Height="16" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Browse" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="2" Classes="bt" Margin="8,0,0,0" Click="DetectButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <iconPacks:PackIconLucide Kind="Search" Width="16" Height="16" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Find it" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+
+                    <TextBlock x:Name="FlavorHint" Classes="muted"/>
+                    <StackPanel x:Name="FlavorList" Spacing="8"/>
+                    <TextBlock Classes="muted" FontSize="12"
+                               Text="Restart the game or type /reload after installing. In game, /butthurt shows the addon's commands."/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

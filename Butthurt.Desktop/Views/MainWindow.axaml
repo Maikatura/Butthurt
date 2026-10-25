@@ -1,62 +1,89 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
         x:Class="Butthurt.Desktop.Views.MainWindow"
         Icon="avares://Butthurt.Desktop/Assets/appicon.ico"
         Title="Butthurt - Game Plugin Manager"
-        Background="#000000"
+        Background="{StaticResource BgBrush}"
         Width="1200"
         Height="800"
-        MinWidth="800"
-        MinHeight="800"
+        MinWidth="900"
+        MinHeight="640"
         WindowStartupLocation="CenterScreen">
 
     <Window.Styles>
-        
-        <!-- Rounded borders -->
-        <Style Selector="Border.rounded">
-            <Setter Property="CornerRadius" Value="12"/>
-        </Style>
-
         <!-- Main content area -->
         <Style Selector="Border.main-content">
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Background" Value="#0d0d0d"/>
-            <Setter Property="Padding" Value="15"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="#000000" BlurRadius="8" Opacity="0.4"/>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ClipToBounds" Value="True"/>
         </Style>
     </Window.Styles>
 
-    <Grid ColumnDefinitions="200,*" Background="#000000">
+    <Grid ColumnDefinitions="240,*">
 
         <!-- === SIDEBAR === -->
-        <Border >
-            <StackPanel x:Name="SidebarSections" Spacing="10"/>
-        </Border>
+        <DockPanel Margin="16,20,12,16">
+
+            <!-- Logo -->
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="6,0,0,28">
+                <Border Width="42" Height="42" CornerRadius="12" Background="{StaticResource AccentGradient}">
+                    <iconPacks:PackIconLucide Kind="Vibrate" Width="22" Height="22" Foreground="White"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Butthurt" FontSize="19" FontWeight="Bold" Foreground="{StaticResource TextBrush}"/>
+                    <TextBlock Text="Game plugin manager" FontSize="11" Foreground="{StaticResource DimBrush}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Live status -->
+            <Border DockPanel.Dock="Bottom" Classes="card" Padding="14" CornerRadius="12">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="caption" Text="STATUS"/>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Ellipse x:Name="IntifaceDot" Width="8" Height="8" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="IntifaceStatusText" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Ellipse x:Name="ToysDot" Width="8" Height="8" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="ToysStatusText" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Ellipse x:Name="WowDot" Width="8" Height="8" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="WowStatusText" FontSize="12" Foreground="{StaticResource MutedBrush}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="SidebarSections" Spacing="4"/>
+            </ScrollViewer>
+        </DockPanel>
 
 
         <!-- === MAIN CONTENT AREA === -->
-        <Border Grid.Column="1" Classes="main-content" Margin="10">
+        <Border Grid.Column="1" Classes="main-content" Margin="0,12,12,12">
             <Grid>
                 <!-- Main content -->
-                <ContentControl x:Name="MainContent"/>
+                <TransitioningContentControl x:Name="MainContent">
+                    <TransitioningContentControl.PageTransition>
+                        <CrossFade Duration="0:0:0.15"/>
+                    </TransitioningContentControl.PageTransition>
+                </TransitioningContentControl>
 
                 <!-- Notification overlay -->
                 <StackPanel x:Name="NotificationPanel"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Bottom"
-                            Margin="10"
-                            Spacing="5"
+                            Margin="20"
+                            Spacing="8"
                             ZIndex="100"/>
             </Grid>
         </Border>
 
-       
     </Grid>
-    
-    
-    
+
 </Window>

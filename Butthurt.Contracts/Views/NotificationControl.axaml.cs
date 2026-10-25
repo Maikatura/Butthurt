@@ -13,7 +13,7 @@ using Butthurt.Contracts.ViewModels;
 
 namespace Butthurt.Contracts.Views;
 
-public partial class NotificationControl : Border
+public partial class NotificationControl : UserControl
 {
     // Bindable Message property
         public static readonly StyledProperty<string> MessageProperty =
@@ -22,7 +22,11 @@ public partial class NotificationControl : Border
         public string Message
         {
             get => GetValue(MessageProperty);
-            set => SetValue(MessageProperty, value);
+            set
+            {
+                SetValue(MessageProperty, value);
+                MessageTextBlock.Text = value;
+            }
         }
 
         public NotificationControl()

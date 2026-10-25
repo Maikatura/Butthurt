@@ -16,9 +16,11 @@
             <StackPanel HorizontalAlignment="Center" Spacing="15">
 
                 <!-- Profile Picture -->
-                <Border Width="120" Height="120" CornerRadius="60" Background="#1a1a1a" ClipToBounds="True">
+                <Border Width="128" Height="128" CornerRadius="64" Padding="4" Background="{StaticResource AccentGradient}">
+                <Border CornerRadius="60" ClipToBounds="True" Background="{StaticResource CardBrush}">
                     <Image Source="avares://Butthurt.Contracts/Assets/profile.png"
                            Stretch="UniformToFill"/>
+                </Border>
                 </Border>
 
                 <!-- Name -->
@@ -26,24 +28,24 @@
 
                 <!-- Social Media Links -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="10,5,10,0">
-                    <!-- Twitter -->
-                    <Button Background="#1a1a1a" BorderBrush="#FFFFFF" Cursor="Hand" Click="WebsiteButton_Click">
-                        <iconPacks:PackIconBootstrapIcons Kind="Globe2" Width="28" Height="28" Foreground="#FFFFFF" />
+                                        <Button Classes="bt" Padding="12" Cursor="Hand" Click="WebsiteButton_Click">
+                        <iconPacks:PackIconBootstrapIcons Kind="Globe2" Width="28" Height="28" Foreground="{StaticResource TextBrush}" />
                     </Button>
                     
-                    <Button Background="#1a1a1a" BorderBrush="#FFFFFF" Cursor="Hand" Click="TwitterButton_Click">
-                        <iconPacks:PackIconSimpleIcons Kind="X" Width="28" Height="28" Foreground="#FFFFFF"/>
+                    <!-- Twitter -->
+                    <Button Classes="bt" Padding="12" Cursor="Hand" Click="TwitterButton_Click">
+                        <iconPacks:PackIconSimpleIcons Kind="X" Width="28" Height="28" Foreground="{StaticResource TextBrush}"/>
                     </Button>
 
                     <!-- GitHub -->
-                    <Button Background="#1a1a1a" BorderBrush="#FFFFFF" Cursor="Hand" Click="GitHubButton_Click">
-                        <iconPacks:PackIconSimpleIcons Kind="Github" Width="28" Height="28" Foreground="#FFFFFF"/>
+                    <Button Classes="bt" Padding="12" Cursor="Hand" Click="GitHubButton_Click">
+                        <iconPacks:PackIconSimpleIcons Kind="Github" Width="28" Height="28" Foreground="{StaticResource TextBrush}"/>
                     </Button>
                     
                 </StackPanel>
                 
                 <!-- Description -->
-                <Border Background="#1a1a1a" CornerRadius="10" Padding="15" Margin="10">
+                <Border Classes="card" Margin="10">
                     <TextBlock Text="I created this tool to simplify plugin management for the games I enjoy. My goal was to build something both fun and practical for anyone who loves pleasure!"
                                TextWrapping="Wrap"
                                Foreground="#dddddd"

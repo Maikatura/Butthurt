@@ -1,19 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.Reactive;
 using Butthurt.Contracts.Models;
-using Butthurt.Contracts.ViewModels;
+using IconPacks.Avalonia.Lucide;
 
 namespace Butthurt.Contracts.Views;
 
 public partial class RoadmapView : UserControl, IPageView
 {
     public string Title => "Roadmap";
+    public PackIconLucideKind Icon => PackIconLucideKind.Map;
     public SideBarType SidebarType => SideBarType.Footer;
     public event EventHandler? BackRequested;
 
@@ -21,94 +19,76 @@ public partial class RoadmapView : UserControl, IPageView
     {
         InitializeComponent();
 
+        AddRoadmapItem("Midnight support", "The addon works with World of Warcraft 12.0.", PackIconLucideKind.Swords, done: true);
+        AddRoadmapItem("New interface", "A proper app instead of a console window.", PackIconLucideKind.Sparkles, done: true);
+        AddRoadmapItem("Toy controls", "Connect, scan, test and mute toys from the app.", PackIconLucideKind.Vibrate, done: true);
+        AddRoadmapItem("Addon settings in the app", "Pick events, intensity and duration without touching Lua.", PackIconLucideKind.Settings, done: true);
+        AddRoadmapItem("Addon install button", "Copies the bundled addon into your WoW folder.", PackIconLucideKind.Download, done: true);
+        AddRoadmapItem("User guide", "Setup steps and how to add new events.", PackIconLucideKind.BookOpen, done: true);
+        AddRoadmapItem("Vibration patterns", "Pulses and waves instead of a single buzz.", PackIconLucideKind.Waves);
+        AddRoadmapItem("Low health warning", "Keep buzzing while you are about to die.", PackIconLucideKind.HeartPulse);
+        AddRoadmapItem("More games", "Plugins for other games that support addons.", PackIconLucideKind.Gamepad2);
 
-        // Add sample roadmap items
-        AddRoadmapItem("Design Sidebar", "Plan sidebar layout and categories", "\u270F"); // ✏
-        AddRoadmapItem("Implement Dynamic Sections", "Sections are created automatically", "\u2699"); // ⚙
-        AddRoadmapItem("Add Roadmap Page", "Flexible roadmap page layout", "\u1F4C5"); // 📅
-        AddRoadmapItem("Add New Features", "Easily extend roadmap dynamically", "\u2B50"); // ⭐
-
-        // Inside constructor after InitializeComponent()
-
-
-        var observer = new AnonymousObserver<Rect>(bounds =>
+        // Fewer columns when the window gets narrow.
+        this.GetObservable(BoundsProperty).Subscribe(new Avalonia.Reactive.AnonymousObserver<Rect>(bounds =>
         {
-            if (bounds.Width <= 0) return;
-
-            double cardWidth = 250; // preferred width
-            double spacing = RoadmapContainer.ItemSpacing;
-            double availableWidth = bounds.Width;
-
-            // Maximum 3 cards per row
-            int maxColumns = Math.Min(3, Math.Max(1, (int)((availableWidth + spacing) / (cardWidth + spacing))));
-
-            // Calculate actual width per card to fill row if less than maxColumns
-            double actualCardWidth = cardWidth;
-
-            if (maxColumns < 3)
-            {
-                // Expand cards to fill available width evenly
-                actualCardWidth = (availableWidth - (maxColumns - 1) * spacing) / maxColumns;
-                actualCardWidth = Math.Min(cardWidth, actualCardWidth); // don’t exceed preferred width
-            }
-
-            foreach (var child in RoadmapContainer.Children)
-            {
-                if (child is Border card)
-                    card.Width = actualCardWidth;
-            }
-
-            // Optional: constrain WrapPanel width so it wraps correctly
-            RoadmapContainer.Width = maxColumns * actualCardWidth + (maxColumns - 1) * spacing;
-        });
-
-
-        this.GetObservable(BoundsProperty).Subscribe(observer);
+            if (bounds.Width > 0) RoadmapContainer.Columns = bounds.Width < 820 ? 2 : 3;
+        }));
     }
 
     /// <summary>
     /// Dynamically adds a roadmap card.
     /// </summary>
-    public void AddRoadmapItem(string title, string subtitle = "", string iconText = "")
+    public void AddRoadmapItem(string title, string subtitle, PackIconLucideKind icon, bool done = false)
     {
-        var icon = new TextBlock
-        {
-            Text = iconText,
-            FontSize = 24,
-            Foreground = Brushes.LightBlue,
-            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top,
-            Margin = new Thickness(0, 0, 10, 0)
-        };
-
-        var textStack = new StackPanel
-        {
-            Orientation = Orientation.Vertical,
-            Children =
-            {
-                new TextBlock { Text = title, FontWeight = FontWeight.SemiBold, Foreground = Brushes.White },
-                new TextBlock
-                    { Text = subtitle, FontSize = 12, Foreground = Brushes.Gray, TextWrapping = TextWrapping.Wrap }
-            }
-        };
-
         var card = new Border
         {
-            Width = 250, // preferred width
-            Background = new SolidColorBrush(Color.Parse("#1E1E1E")),
-            CornerRadius = new CornerRadius(12),
-            Padding = new Thickness(15),
-            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+            Classes = { "card" },
+            Margin = new Thickness(0, 0, 12, 12),
+            Padding = new Thickness(18),
             Child = new StackPanel
             {
-                Orientation = Orientation.Horizontal,
-                Children = { icon, textStack }
+                Spacing = 12,
+                Children =
+                {
+                    new Grid
+                    {
+                        ColumnDefinitions = new ColumnDefinitions("Auto,*"),
+                        Children =
+                        {
+                            new Border
+                            {
+                                Classes = { "iconbox" },
+                                Child = new PackIconLucide
+                                {
+                                    Kind = icon, Width = 18, Height = 18,
+                                    Foreground = new SolidColorBrush(Color.Parse("#D8B4FE")),
+                                    HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center
+                                }
+                            },
+                            Ui.WithColumn(new Border
+                            {
+                                Classes = { "pill" },
+                                HorizontalAlignment = HorizontalAlignment.Right,
+                                VerticalAlignment = VerticalAlignment.Top,
+                                Child = new TextBlock
+                                {
+                                    Text = done ? "DONE" : "PLANNED",
+                                    FontSize = 10,
+                                    FontWeight = FontWeight.Bold,
+                                    Foreground = done ? Ui.Brush("SuccessBrush") : Ui.Brush("MutedBrush")
+                                }
+                            }, 1)
+                        }
+                    },
+                    new StackPanel
+                    {
+                        Spacing = 4,
+                        Children = { Ui.Text(title, "h3"), Ui.Text(subtitle, "muted", 12) }
+                    }
+                }
             }
         };
-
-
-        // Hover effect
-        card.PointerEntered += (_, _) => card.Background = new SolidColorBrush(Color.Parse("#2A2A2A"));
-        card.PointerExited += (_, _) => card.Background = new SolidColorBrush(Color.Parse("#1E1E1E"));
 
         RoadmapContainer.Children.Add(card);
     }

@@ -8,12 +8,14 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Butthurt.Contracts.Models;
+using IconPacks.Avalonia.Lucide;
 
 namespace Butthurt.Contracts.Views;
 
 public partial class AboutView : UserControl, IPageView
 {
     public string Title => "About";
+    public PackIconLucideKind Icon => PackIconLucideKind.Info;
     
     public SideBarType SidebarType => SideBarType.Footer;
     

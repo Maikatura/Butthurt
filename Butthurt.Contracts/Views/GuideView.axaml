@@ -1,0 +1,50 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Butthurt.Contracts.Views.GuideView">
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="Guide"/>
+                <TextBlock Classes="muted" Text="From zero to buzzing in a few minutes."/>
+            </StackPanel>
+
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <TextBlock Classes="h2" Text="Setup"/>
+                    <StackPanel x:Name="SetupSteps" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="h2" Text="How it works"/>
+                        <TextBlock Classes="muted"
+                                   Text="WoW addons can't talk to other programs, so the addon flashes a small square in the top-left corner of the game in a color that stands for the event. Butthurt reads that pixel while the game is the active window and tells Intiface Central to vibrate."/>
+                    </StackPanel>
+                    <WrapPanel x:Name="ColorLegend" ItemSpacing="8" LineSpacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <StackPanel Spacing="4">
+                        <TextBlock Classes="h2" Text="Adding a new event"/>
+                        <TextBlock Classes="muted" Text="For tinkerers. You need to change the addon and the app, then rebuild."/>
+                    </StackPanel>
+                    <StackPanel x:Name="DevSteps" Spacing="12"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Troubleshooting"/>
+                    <StackPanel x:Name="Troubleshooting" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -35,4 +35,9 @@
     <ItemGroup>
       <Folder Include="Models\" />
     </ItemGroup>
+
+    <!-- Ship the WoW addons next to the exe so the app can install them without downloading anything -->
+    <ItemGroup>
+      <Content Include="..\Addon\**\*" LinkBase="Addon" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
 </Project>

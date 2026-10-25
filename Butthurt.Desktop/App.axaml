@@ -1,5 +1,5 @@
 <Application xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="Butthurt.Desktop.App" xmlns:local="using:Butthurt.Desktop" RequestedThemeVariant="Default"
+             x:Class="Butthurt.Desktop.App" xmlns:local="using:Butthurt.Desktop" RequestedThemeVariant="Dark"
              xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles">
     <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
@@ -8,7 +8,8 @@
     </Application.DataTemplates>
 
     <Application.Styles>
-        <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Lime" />
+        <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Pink" />
         <StyleInclude Source="avares://IconPacks.Avalonia/Icons.axaml" />
+        <StyleInclude Source="avares://Butthurt.Contracts/Styles/Theme.axaml" />
     </Application.Styles>
 </Application>
