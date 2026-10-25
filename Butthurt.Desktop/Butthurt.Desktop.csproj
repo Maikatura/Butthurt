@@ -38,6 +38,6 @@
 
     <!-- Ship the WoW addons next to the exe so the app can install them without downloading anything -->
     <ItemGroup>
-      <Content Include="..\Addon\**\*" LinkBase="Addon" CopyToOutputDirectory="PreserveNewest" />
+      <Content Include="..\Addon\**\*" LinkBase="Addon" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     </ItemGroup>
 </Project>

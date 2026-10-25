@@ -39,6 +39,19 @@ In game: `/butthurt toggle`, `/butthurt test [damage|heal|death|level_up|achieve
 - [x] Functional UI for Toys.
 - [x] User guide how to setup and add new events (Guide page in the app).
 
+### Making a release
+
+Pushing a version tag builds Butthurt on GitHub and puts it on the Releases page. Normal commits don't trigger it.
+
+```bash
+git tag v0.2.0
+git push origin v0.2.0
+```
+
+The release gets `Butthurt-v0.2.0-win-x64.zip` (no .NET install needed, the addon is included for the
+install button) plus addon-only zips. The tag is also written into the addons' version, so the app knows
+when an installed addon is out of date. Tags with a dash, like `v0.2.0-beta`, become pre-releases.
+
 #### Note!
 
 I will not be able to finish the new UI for midnight release because this is not the most priority program I make. If you wanna use it on release with Midnight refer to the old console version that can be found [here](https://github.com/Maikatura/Butthurt).
