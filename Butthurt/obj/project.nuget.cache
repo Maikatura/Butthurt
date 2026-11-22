@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "OAx6mOiPX4U=",
+  "dgSpecHash": "uNOemsoQWyw=",
   "success": true,
   "projectFilePath": "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
   "expectedPackageFiles": [
@@ -14,30 +14,5 @@
     "C:\\Users\\maika\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\9.0.23\\microsoft.aspnetcore.app.ref.9.0.23.nupkg.sha512",
     "C:\\Users\\maika\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\9.0.23\\microsoft.netcore.app.host.win-x64.9.0.23.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "message": "Package 'System.Net.Http' 4.3.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-7jgj-8wvc-jh57",
-      "projectPath": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj",
-      "libraryId": "System.Net.Http",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    },
-    {
-      "code": "NU1903",
-      "level": "Warning",
-      "message": "Package 'System.Text.RegularExpressions' 4.3.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-cmhx-cq75-c4mj",
-      "projectPath": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj",
-      "libraryId": "System.Text.RegularExpressions",
-      "targetGraphs": [
-        "net8.0"
-      ]
-    }
-  ]
+  "logs": []
 }

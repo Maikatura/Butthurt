@@ -46,25 +46,30 @@ public static class OverlayService
     /// <summary>Raised when the server starts/stops or a browser source connects. May fire on any thread.</summary>
     public static event EventHandler? StatusChanged;
 
-    /// <summary>Starts, stops or restarts the server to match the settings, and tells open pages about changes.</summary>
+    /// <summary>Starts the server (if it isn't running yet). The Stream overlay plugin calls this when it's on.</summary>
+    public static void Start()
+    {
+        if (!IsRunning) Start(SettingsService.Current.Overlay.Port);
+        Broadcast(SettingsMessage());
+        Broadcast(QueueMessage());
+    }
+
+    /// <summary>After a settings change: restarts on a new port if needed and tells open pages. Doesn't start a stopped server.</summary>
     public static void ApplySettings()
     {
-        var settings = SettingsService.Current.Overlay;
+        if (!IsRunning) return;
 
-        if (!settings.Enabled)
+        if (_runningPort != SettingsService.Current.Overlay.Port)
         {
             Stop();
-            return;
+            Start(SettingsService.Current.Overlay.Port);
         }
-
-        if (IsRunning && _runningPort != settings.Port) Stop();
-        if (!IsRunning) Start(settings.Port);
 
         Broadcast(SettingsMessage());
         Broadcast(QueueMessage());
     }
 
-    /// <summary>Shows an announcement on the overlay (if it's on and announcements are shown).</summary>
+    /// <summary>Shows an announcement on the overlay (if it's running and announcements are shown).</summary>
     public static void Alert(string text)
     {
         var settings = SettingsService.Current.Overlay;

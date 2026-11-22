@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -47,6 +46,7 @@ public partial class VRChatView : UserControl, IPageView
         PluginManager.PluginsChanged += (_, _) => Dispatcher.UIThread.Post(() =>
         {
             UpdateRuleLinks();
+            UpdateAnnouncements();
             BuildTriggerSections();
         });
         _countdown.Tick += (_, _) => UpdateStatus();
@@ -98,46 +98,12 @@ public partial class VRChatView : UserControl, IPageView
             SettingsService.Save();
         };
 
-        // Stream overlay (a core feature, the VRChat page is where it's set up)
-        void OverlayChanged()
-        {
-            if (_loading) return;
-            var overlay = SettingsService.Current.Overlay;
-            overlay.Enabled = OverlayToggle.IsChecked == true;
-            overlay.ShowQueue = OverlayQueueCheck.IsChecked == true;
-            overlay.ShowAlerts = OverlayAlertsCheck.IsChecked == true;
-            overlay.AlertSeconds = (int)(AlertSecondsBox.Value ?? 6);
-            overlay.Port = (int)(OverlayPortBox.Value ?? 7878);
-            SettingsService.Save();
-            OverlayService.ApplySettings();
-            Announcer.PushQueue();
-            UpdateOverlay();
-        }
-
-        OverlayToggle.IsCheckedChanged += (_, _) => OverlayChanged();
-        OverlayQueueCheck.IsCheckedChanged += (_, _) => OverlayChanged();
-        OverlayAlertsCheck.IsCheckedChanged += (_, _) => OverlayChanged();
-        AlertSecondsBox.ValueChanged += (_, _) => OverlayChanged();
-        OverlayPortBox.LostFocus += (_, _) => OverlayChanged();
-        OverlayService.StatusChanged += (_, _) => Dispatcher.UIThread.Post(UpdateOverlay);
-
-        OverlayScaleSlider.PropertyChanged += (_, e) =>
-        {
-            if (e.Property != Slider.ValueProperty) return;
-            var scale = Math.Round(OverlayScaleSlider.Value * 10) / 10;
-            OverlayScaleText.Text = $"{scale * 100:0}%";
-            if (_loading) return;
-            SettingsService.Current.Overlay.Scale = scale;
-            SettingsService.SaveSoon();
-            OverlayService.ApplySettings();
-        };
-
         ChatAnnounceToggle.IsCheckedChanged += (_, _) =>
         {
             if (_loading) return;
             Settings.PostAnnouncementsInChat = ChatAnnounceToggle.IsChecked == true;
             SettingsService.Save();
-            UpdateOverlay();
+            UpdateAnnouncements();
         };
 
         AttachedToVisualTree += (_, _) =>
@@ -152,19 +118,10 @@ public partial class VRChatView : UserControl, IPageView
             DefaultAvatarBox.Text = Settings.DefaultAvatarId;
             AutoStartToggle.IsChecked = Settings.AutoStart;
             OscText.Text = $"Sends to {Settings.OscHost}:{Settings.SendPort}, listens on port {Settings.ListenPort} (VRChat's defaults).";
-            var overlay = SettingsService.Current.Overlay;
-            OverlayToggle.IsChecked = overlay.Enabled;
-            OverlayQueueCheck.IsChecked = overlay.ShowQueue;
-            OverlayAlertsCheck.IsChecked = overlay.ShowAlerts;
-            AlertSecondsBox.Value = overlay.AlertSeconds;
-            OverlayPortBox.Value = overlay.Port;
             ChatAnnounceToggle.IsChecked = Settings.PostAnnouncementsInChat;
-            OverlayScaleSlider.Value = overlay.Scale;
-            OverlayScaleText.Text = $"{overlay.Scale * 100:0}%";
-            BuildPositionPickers();
             _loading = false;
 
-            UpdateOverlay();
+            UpdateAnnouncements();
             UpdateStatus();
             UpdateRuleLinks();
             BuildTriggerSections();
@@ -302,143 +259,22 @@ public partial class VRChatView : UserControl, IPageView
         return pill;
     }
 
-    #region Overlay
+    #region Announcements
 
-    private void UpdateOverlay()
+    private void UpdateAnnouncements()
     {
-        var overlay = SettingsService.Current.Overlay;
-        OverlayOptions.IsVisible = overlay.Enabled;
-        OverlayUrlBox.Text = OverlayService.Url;
-
-        var clients = OverlayService.ConnectedClients;
-        var (pill, brushKey) = !overlay.Enabled ? ("OFF", "DimBrush")
-            : !OverlayService.IsRunning ? ("PROBLEM", "DangerBrush")
-            : clients > 0 ? (clients == 1 ? "1 SOURCE CONNECTED" : $"{clients} SOURCES CONNECTED", "SuccessBrush")
-            : ("WAITING FOR OBS", "WarningBrush");
-        OverlayPillText.Text = pill;
-        OverlayPillText.Foreground = Ui.Brush(brushKey);
-        if (overlay.Enabled && !OverlayService.IsRunning && OverlayService.LastError != null)
-        {
-            ToolTip.SetTip(OverlayPillText, OverlayService.LastError);
-        }
+        var overlayOn = PluginManager.IsOn(PluginManager.OverlayPluginId);
+        OpenOverlayButton.IsVisible = overlayOn;
+        OverlayLinkText.Text = overlayOn
+            ? "Placement, size and the OBS address are on the Stream overlay page."
+            : "Turn on Stream overlay in Settings to show announcements and the queue in OBS.";
 
         ChatAnnounceText.Text = !TwitchService.IsLoggedIn ? "Log in to Twitch first. Posted as you, in your own chat."
             : !TwitchService.CanSendChat ? "Log out of Twitch and in again so Butthurt may post in chat."
             : "Posted as you, in your own chat. Tests are never posted.";
     }
 
-    private void BuildPositionPickers()
-    {
-        var overlay = SettingsService.Current.Overlay;
-
-        AlertPositionHost.Content = PositionPicker(overlay.AlertPosition, Enum.GetValues<OverlayPosition>(), position =>
-        {
-            overlay.AlertPosition = position;
-            SettingsService.Save();
-            OverlayService.ApplySettings();
-            BuildPositionPickers();
-        });
-
-        // The queue is a tall list, it only makes sense in a corner.
-        QueuePositionHost.Content = PositionPicker(overlay.QueuePosition,
-            new[] { OverlayPosition.TopLeft, OverlayPosition.TopRight, OverlayPosition.BottomLeft, OverlayPosition.BottomRight }, position =>
-            {
-                overlay.QueuePosition = position;
-                SettingsService.Save();
-                OverlayService.ApplySettings();
-                BuildPositionPickers();
-            });
-    }
-
-    /// <summary>A little 16:9 "screen" with a button for each spot. The chosen one is filled in.</summary>
-    private static Control PositionPicker(OverlayPosition current, IReadOnlyCollection<OverlayPosition> allowed, Action<OverlayPosition> picked)
-    {
-        var grid = new Grid
-        {
-            RowDefinitions = new RowDefinitions("*,*,*"),
-            ColumnDefinitions = new ColumnDefinitions("*,*,*"),
-            Width = 144, Height = 81
-        };
-
-        foreach (var position in Enum.GetValues<OverlayPosition>())
-        {
-            var index = (int)position;
-            var isAllowed = allowed.Contains(position);
-            var selected = position == current;
-
-            var spot = new Button
-            {
-                Classes = { "bt" },
-                Padding = new Thickness(0),
-                Margin = new Thickness(3),
-                CornerRadius = new CornerRadius(5),
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                VerticalAlignment = VerticalAlignment.Stretch,
-                IsVisible = isAllowed,
-                Background = selected ? Ui.Brush("AccentGradient") : new SolidColorBrush(Color.Parse("#18181B")),
-                BorderBrush = selected ? Brushes.Transparent : Ui.Brush("BorderBrush")
-            };
-            ToolTip.SetTip(spot, Regex.Replace(position.ToString(), "(?<!^)([A-Z])", " $1"));
-            Avalonia.Automation.AutomationProperties.SetName(spot, position.ToString());
-            spot.Click += (_, _) => picked(position);
-
-            Grid.SetRow(spot, index / 3);
-            Grid.SetColumn(spot, index % 3);
-            grid.Children.Add(spot);
-        }
-
-        return new Border
-        {
-            Background = new SolidColorBrush(Color.Parse("#0B0B10")),
-            BorderBrush = Ui.Brush("BorderBrush"),
-            BorderThickness = new Thickness(1),
-            CornerRadius = new CornerRadius(8),
-            Padding = new Thickness(3),
-            HorizontalAlignment = HorizontalAlignment.Left,
-            Child = grid
-        };
-    }
-
-    private async void CopyOverlayUrl_Click(object? sender, RoutedEventArgs e)
-    {
-        if (TopLevel.GetTopLevel(this)?.Clipboard is { } clipboard)
-        {
-            await clipboard.SetTextAsync(OverlayService.Url);
-            await NotificationService.ShowAsync("Overlay address copied. Paste it into an OBS Browser source.");
-        }
-    }
-
-    private void OpenOverlay_Click(object? sender, RoutedEventArgs e) =>
-        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(OverlayService.Url) { UseShellExecute = true });
-
-    private async void OpenOverlayFolder_Click(object? sender, RoutedEventArgs e)
-    {
-        if (!System.IO.Directory.Exists(OverlayService.Folder))
-        {
-            await NotificationService.ShowAsync("Turn on the OBS overlay once to create its folder.");
-            return;
-        }
-
-        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(OverlayService.Folder) { UseShellExecute = true });
-        await NotificationService.ShowAsync("Careful: changing the overlay files can break the overlay. Read README.txt first.");
-    }
-
-    private async void TestAnnouncement_Click(object? sender, RoutedEventArgs e)
-    {
-        if (!OverlayService.IsRunning)
-        {
-            await NotificationService.ShowAsync("Turn on the OBS overlay first.");
-            return;
-        }
-
-        var rule = Rules.FirstOrDefault(r => r.Enabled && r.Announce) ?? Rules.FirstOrDefault();
-        var text = rule != null
-            ? rule.Source == VRChatSource.Fansly
-                ? Announcer.Text(rule, Fansly.Services.FanslyRules.SampleFor(rule.Fansly), VRChatService.CurrentMultiplier, VRChatService.CurrentAvatarId)
-                : Announcer.Text(rule, TwitchRules.SampleFor(rule.When), VRChatService.CurrentMultiplier, VRChatService.CurrentAvatarId)
-            : "TestUser cheered 50 bits: ×1.1 for 30s!";
-        OverlayService.Alert(text);
-    }
+    private void OpenOverlay_Click(object? sender, RoutedEventArgs e) => NavigationService.NavigateToPlugin(PluginManager.OverlayPluginId);
 
     #endregion
 

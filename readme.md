@@ -17,7 +17,7 @@ Take damage in World of Warcraft? It buzzes. Someone cheers bits on Twitch? It b
 - **VRChat** – let Twitch and Fansly swap your avatar or make you grow and shrink, and let your avatar's
   contacts (headpats, boops, toggles) buzz your toys or the PiShock.
 - **PiShock** – vibrate, beep or shock from Twitch, Fansly, WoW and VRChat (with safety limits you set).
-- **OBS overlay** – show what's happening on stream with announcements.
+- **Stream overlay** – show announcements and the queue of running effects in OBS (turn it on under **Settings → Plugins**).
 
 You decide what triggers what and how strong it feels, all inside the app. No coding needed.
 

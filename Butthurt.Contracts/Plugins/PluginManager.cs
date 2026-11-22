@@ -32,6 +32,9 @@ public static class PluginManager
     /// </summary>
     public static bool ToysEnabled => IsOn(ToysPluginId);
 
+    /// <summary>The Stream overlay plugin's id (Butthurt.Overlay).</summary>
+    public const string OverlayPluginId = "Overlay";
+
     /// <summary>Raised when any plugin's status changes. May fire on any thread.</summary>
     public static event EventHandler? StatusChanged;
 
@@ -82,6 +85,7 @@ public static class PluginManager
     public static void InitializeAll()
     {
         MoveOldToySwitch();
+        MoveOldOverlaySwitch();
         foreach (var plugin in Plugins) Initialize(plugin);
     }
 
@@ -96,6 +100,24 @@ public static class PluginManager
 
         if (!settings.DisabledPlugins.Contains(ToysPluginId)) settings.DisabledPlugins.Add(ToysPluginId);
         settings.ToysEnabled = true;
+        SettingsService.Save();
+    }
+
+    /// <summary>
+    /// Before the overlay was a plugin, the VRChat page had its own on/off switch, off by default. Carry it over
+    /// once: if it was off (or this is a new install), the Stream overlay plugin starts out turned off.
+    /// </summary>
+    private static void MoveOldOverlaySwitch()
+    {
+        var settings = SettingsService.Current;
+        if (settings.Overlay.MovedToPlugin) return;
+
+        if (!settings.Overlay.Enabled && !settings.DisabledPlugins.Contains(OverlayPluginId))
+        {
+            settings.DisabledPlugins.Add(OverlayPluginId);
+        }
+
+        settings.Overlay.MovedToPlugin = true;
         SettingsService.Save();
     }
 

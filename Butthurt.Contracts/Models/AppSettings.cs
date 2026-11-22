@@ -37,7 +37,15 @@ public class AppSettings
 /// <summary>The stream overlay: a local web page for an OBS Browser source.</summary>
 public class OverlaySettings
 {
+    /// <summary>
+    /// The old on/off switch from before the overlay was a plugin. Only read once at startup (see
+    /// <see cref="MovedToPlugin"/>): if it was off, the Stream overlay plugin gets turned off instead.
+    /// </summary>
     public bool Enabled { get; set; }
+
+    /// <summary>Whether <see cref="Enabled"/> was already turned into the plugin's on/off state.</summary>
+    public bool MovedToPlugin { get; set; }
+
     public int Port { get; set; } = 7878;
     public bool ShowQueue { get; set; } = true;
     public bool ShowAlerts { get; set; } = true;

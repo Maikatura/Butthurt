@@ -91,93 +91,24 @@
                 </Grid>
             </Border>
 
-            <!-- Stream overlay and announcements -->
+            <!-- Announcements: the overlay is its own plugin, posting in Twitch chat is VRChat's -->
             <Border Classes="card">
                 <StackPanel Spacing="8">
                     <StackPanel Spacing="2" Margin="0,0,0,6">
-                        <TextBlock Classes="h2" Text="Stream overlay and announcements"/>
-                        <TextBlock Classes="muted"
-                                   Text="Show the queue and an announcement for every rule on stream. Each rule's message is yours to write, in the rule's editor."/>
+                        <TextBlock Classes="h2" Text="Announcements"/>
+                        <TextBlock Classes="muted" TextWrapping="Wrap"
+                                   Text="Every rule can announce itself on stream. Each rule's message is yours to write, in the rule's editor."/>
                     </StackPanel>
 
                     <Border Classes="row">
-                        <StackPanel Spacing="10">
-                            <Grid ColumnDefinitions="*,Auto">
-                                <StackPanel Spacing="2">
-                                    <StackPanel Orientation="Horizontal" Spacing="10">
-                                        <TextBlock Classes="h3" Text="OBS overlay"/>
-                                        <Border Classes="pill" VerticalAlignment="Center">
-                                            <TextBlock x:Name="OverlayPillText" FontSize="11" FontWeight="SemiBold"/>
-                                        </Border>
-                                    </StackPanel>
-                                    <TextBlock Classes="muted" FontSize="12"
-                                               Text="In OBS add a Browser source with this address, 1920 × 1080. It has a transparent background."/>
-                                </StackPanel>
-                                <ToggleSwitch x:Name="OverlayToggle" Grid.Column="1"/>
-                            </Grid>
-
-                            <StackPanel x:Name="OverlayOptions" Spacing="10">
-                                <Grid ColumnDefinitions="*,Auto,Auto,Auto">
-                                    <TextBox x:Name="OverlayUrlBox" Classes="field" IsReadOnly="True"/>
-                                    <Button Grid.Column="1" Classes="bt small" Margin="8,0,0,0" VerticalAlignment="Center" Click="CopyOverlayUrl_Click">
-                                        <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <iconPacks:PackIconLucide Kind="Copy" Width="14" Height="14" VerticalAlignment="Center"/>
-                                            <TextBlock Text="Copy" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-                                    <Button Grid.Column="2" Classes="bt small" Margin="8,0,0,0" VerticalAlignment="Center" Click="OpenOverlay_Click">
-                                        <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <iconPacks:PackIconLucide Kind="ExternalLink" Width="14" Height="14" VerticalAlignment="Center"/>
-                                            <TextBlock Text="Preview" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-                                    <Button Grid.Column="3" Classes="bt small" Margin="8,0,0,0" VerticalAlignment="Center" Click="OpenOverlayFolder_Click"
-                                            ToolTip.Tip="The overlay's html, css and js. Changing them can break the overlay: read README.txt first.">
-                                        <StackPanel Orientation="Horizontal" Spacing="6">
-                                            <iconPacks:PackIconLucide Kind="FolderOpen" Width="14" Height="14" VerticalAlignment="Center"/>
-                                            <TextBlock Text="Customize" VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Button>
-                                </Grid>
-
-                                <WrapPanel ItemSpacing="24" LineSpacing="8">
-                                    <CheckBox x:Name="OverlayQueueCheck" Content="Show the queue"/>
-                                    <CheckBox x:Name="OverlayAlertsCheck" Content="Show announcements"/>
-                                    <StackPanel Orientation="Horizontal" Spacing="10">
-                                        <TextBlock Classes="muted" FontSize="12" Text="Each announcement for (seconds)" VerticalAlignment="Center"/>
-                                        <NumericUpDown x:Name="AlertSecondsBox" Minimum="1" Maximum="60" Increment="1" FormatString="0" MinWidth="120"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" Spacing="10">
-                                        <TextBlock Classes="muted" FontSize="12" Text="Port" VerticalAlignment="Center"/>
-                                        <NumericUpDown x:Name="OverlayPortBox" Minimum="1024" Maximum="65535" Increment="1" FormatString="0" MinWidth="130"/>
-                                    </StackPanel>
-                                </WrapPanel>
-
-                                <!-- Where things go on screen, changes show in OBS right away -->
-                                <Grid ColumnDefinitions="Auto,32,Auto,32,*">
-                                    <StackPanel Spacing="6">
-                                        <TextBlock Classes="muted" FontSize="12" Text="Announcements"/>
-                                        <ContentControl x:Name="AlertPositionHost"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="2" Spacing="6">
-                                        <TextBlock Classes="muted" FontSize="12" Text="Queue"/>
-                                        <ContentControl x:Name="QueuePositionHost"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="4" Spacing="6" VerticalAlignment="Top">
-                                        <Grid ColumnDefinitions="*,Auto">
-                                            <TextBlock Classes="muted" FontSize="12" Text="Size"/>
-                                            <TextBlock x:Name="OverlayScaleText" Grid.Column="1" Classes="muted" FontSize="12"/>
-                                        </Grid>
-                                        <Slider x:Name="OverlayScaleSlider" Minimum="0.5" Maximum="2.5"/>
-                                        <TextBlock Classes="muted" FontSize="11" TextWrapping="Wrap"
-                                                   Text="Changes show in OBS right away. Press the test button below to see where announcements land."/>
-                                    </StackPanel>
-                                </Grid>
-
-                                <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap"
-                                           Text="Two Browser sources with different spots? Add options to the address, they win over the settings above: ?alerts=0 or ?queue=0 to show one part, ?alerts_at=bottom-left or ?queue_at=top-right to place it (any of top/middle/bottom with left/center/right), ?scale=1.5 for size. Combine them with &amp;."/>
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="On the OBS overlay"/>
+                                <TextBlock x:Name="OverlayLinkText" Classes="muted" FontSize="12" TextWrapping="Wrap"/>
                             </StackPanel>
-                        </StackPanel>
+                            <Button x:Name="OpenOverlayButton" Grid.Column="1" Classes="bt small" VerticalAlignment="Center"
+                                    Margin="14,0,0,0" Content="Overlay settings" Click="OpenOverlay_Click"/>
+                        </Grid>
                     </Border>
 
                     <Border Classes="row">
@@ -190,13 +121,6 @@
                             <ToggleSwitch x:Name="ChatAnnounceToggle" Grid.Column="1"/>
                         </Grid>
                     </Border>
-
-                    <Button Classes="bt small" HorizontalAlignment="Left" Click="TestAnnouncement_Click">
-                        <StackPanel Orientation="Horizontal" Spacing="6">
-                            <iconPacks:PackIconLucide Kind="Sparkles" Width="14" Height="14" VerticalAlignment="Center"/>
-                            <TextBlock Text="Show a test announcement on the overlay" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Button>
                 </StackPanel>
             </Border>
 

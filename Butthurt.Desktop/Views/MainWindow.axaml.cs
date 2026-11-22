@@ -13,6 +13,7 @@ using Butthurt.Contracts.Plugins;
 using Butthurt.Contracts.Services;
 using Butthurt.Contracts.Views;
 using Butthurt.Fansly;
+using Butthurt.Overlay;
 using Butthurt.PiShock;
 using Butthurt.Toys;
 using Butthurt.Twitch;
@@ -46,6 +47,7 @@ public partial class MainWindow : Window
         PluginManager.Register(new FanslyPlugin());
         PluginManager.Register(new WarcraftPlugin());
         PluginManager.Register(new VRChatPlugin());
+        PluginManager.Register(new OverlayPlugin());
         PluginManager.LoadFromFolder(System.IO.Path.Combine(AppContext.BaseDirectory, "Plugins"));
 
         _corePages.AddRange(new IPageView[]
@@ -165,7 +167,6 @@ public partial class MainWindow : Window
         PluginManager.StatusChanged += (_, _) => Dispatcher.UIThread.Post(UpdateStatus);
 
         PluginManager.InitializeAll();
-        OverlayService.ApplySettings();
     }
 
     private void UpdateStatus()
