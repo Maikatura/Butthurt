@@ -1,0 +1,155 @@
+/* ============================================================================
+   BUTTHURT STREAM OVERLAY - styles
+   WARNING: changing anything in this folder can break the overlay.
+   Keep a copy before you edit. The safest things to change are the values in
+   the ":root" block right below (colors, fonts, sizes, timings).
+   If it breaks: delete the "overlay" folder and restart Butthurt.
+   ============================================================================ */
+
+:root {
+  /* Colors */
+  --accent: #a855f7;            /* main color: borders, glows, rings */
+  --accent-2: #ec4899;          /* second color of the gradients */
+  --grow: #34d399;              /* "grow" items in the queue */
+  --shrink: #fb7185;            /* "shrink" items in the queue */
+  --parameter: #60a5fa;         /* "parameter" items in the queue */
+  --avatar: #fbbf24;            /* "avatar" items in the queue */
+  --text: #ffffff;
+  --muted: rgba(255, 255, 255, .62);
+  --card: rgba(13, 11, 20, .86);
+  --card-edge: rgba(255, 255, 255, .09);
+
+  /* Fonts and shapes */
+  --font: "Segoe UI Variable Display", "Segoe UI", "Inter", system-ui, sans-serif;
+  --radius: 18px;
+  --alert-size: 30px;           /* announcement text */
+  --alert-max-width: 980px;
+  --queue-width: 440px;
+  --edge: 32px;                 /* distance from the edges of the screen */
+
+  /* Motion */
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --ease-in: cubic-bezier(.7, 0, .84, 0);
+
+  /* Set by the app / overlay.js, don't change these here. */
+  --scale: 1;
+}
+
+html, body { margin: 0; background: transparent; overflow: hidden; }
+body { font-family: var(--font); color: var(--text); -webkit-font-smoothing: antialiased; }
+#wrap { transform: scale(var(--scale)); transform-origin: top left; position: relative;
+        width: calc(100vw / var(--scale)); height: calc(100vh / var(--scale)); }
+
+.area { position: absolute; display: flex; flex-direction: column; gap: 12px; }
+
+
+/* ---------------------------------------------------------------------------
+   Announcements
+   --------------------------------------------------------------------------- */
+
+#alerts { width: min(var(--alert-max-width), 60%); }
+
+.alert {
+  position: relative; overflow: hidden; box-sizing: border-box; max-width: 100%;
+  display: flex; align-items: center; gap: 18px; padding: 16px 28px 18px 16px;
+  border-radius: var(--radius); text-align: left;
+  /* A gradient border: the card is painted inside, the gradient shows on the edge. */
+  border: 2px solid transparent;
+  background: linear-gradient(var(--card), var(--card)) padding-box,
+              linear-gradient(120deg, var(--accent), var(--accent-2)) border-box;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .5), 0 0 40px -6px color-mix(in srgb, var(--accent) 55%, transparent);
+  will-change: transform, opacity, filter;
+  animation: alertIn .75s var(--ease-out) both;
+}
+.alert.out { animation: alertOut .5s var(--ease-in) both; }
+#alerts.from-bottom .alert { --from-y: 28px; }
+
+/* A soft light sweeping across once when it arrives. */
+.alert::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgba(255, 255, 255, .16) 50%, transparent 65%);
+  transform: translateX(-100%); animation: sweep 1.2s .25s var(--ease-out) both;
+}
+
+.alert-icon {
+  flex: none; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center;
+  font-size: 26px; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 50%, transparent);
+  animation: pop .6s .1s var(--ease-out) both;
+}
+.alert-text { font-size: var(--alert-size); font-weight: 700; line-height: 1.2; letter-spacing: -.01em;
+              text-shadow: 0 2px 8px rgba(0, 0, 0, .55); overflow-wrap: anywhere; }
+
+/* Drains over the time the announcement stays up. */
+.alert-timer {
+  position: absolute; left: 0; bottom: 0; height: 4px; width: 100%; transform-origin: left;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  animation: drain linear both; animation-duration: var(--alert-seconds, 5s);
+}
+
+@keyframes alertIn  { from { opacity: 0; transform: translateY(var(--from-y, -28px)) scale(.94); filter: blur(8px); }
+                      to   { opacity: 1; transform: none; filter: none; } }
+@keyframes alertOut { from { opacity: 1; transform: none; filter: none; }
+                      to   { opacity: 0; transform: translateY(calc(var(--from-y, -28px) * -.5)) scale(.97); filter: blur(5px); } }
+@keyframes sweep    { to { transform: translateX(100%); } }
+@keyframes pop      { from { transform: scale(.4) rotate(-20deg); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes drain    { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+
+
+/* ---------------------------------------------------------------------------
+   Queue
+   --------------------------------------------------------------------------- */
+
+#queue { width: var(--queue-width); }
+
+.item {
+  --kind: var(--accent);
+  position: relative; overflow: hidden; box-sizing: border-box; width: 100%;
+  display: flex; align-items: center; gap: 14px; padding: 10px 12px 10px 10px;
+  border-radius: var(--radius); text-align: left;
+  background: var(--card); border: 1px solid var(--card-edge);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .38), inset 3px 0 0 var(--kind);
+  will-change: transform, opacity; animation: itemIn .6s var(--ease-out) both;
+}
+#queue.from-right .item { --from-x: 36px; box-shadow: 0 8px 24px rgba(0, 0, 0, .38), inset -3px 0 0 var(--kind); }
+
+.item[data-kind="grow"]                                   { --kind: var(--grow); }
+.item[data-kind="shrink"]                                 { --kind: var(--shrink); }
+.item[data-kind="parameter"]                              { --kind: var(--parameter); }
+.item[data-kind="avatar"], .item[data-kind="avatar-next"] { --kind: var(--avatar); }
+
+/* The icon sits inside a ring that empties as the time runs out (--progress goes 1 → 0). */
+.icon {
+  flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; position: relative;
+  background: conic-gradient(var(--kind) calc(var(--progress, 1) * 1turn), rgba(255, 255, 255, .1) 0);
+}
+.icon::before { content: ""; position: absolute; inset: 4px; border-radius: 50%; background: #141220; }
+.glyph { position: relative; font-size: 17px; color: var(--kind); }
+
+.text   { flex: 1; min-width: 0; }
+.label  { font-size: 18px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.detail { font-size: 14px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 1px; }
+
+.time {
+  flex: none; min-width: 44px; padding: 5px 10px; border-radius: 999px; text-align: center;
+  font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums;
+  background: color-mix(in srgb, var(--kind) 18%, transparent); color: var(--kind);
+}
+
+/* Thin line along the bottom, same timer as the ring. */
+.bar { position: absolute; left: 0; bottom: 0; height: 2px; width: calc(var(--progress, 1) * 100%);
+       background: var(--kind); opacity: .7; }
+
+/* Waiting their turn: quieter, dashed ring, no countdown yet. */
+.item.waiting { opacity: .7; box-shadow: 0 8px 24px rgba(0, 0, 0, .3); }
+.item.waiting .icon { background: none; border: 2px dashed color-mix(in srgb, var(--kind) 70%, transparent); box-sizing: border-box; }
+.item.waiting .icon::before { display: none; }
+.item.waiting .bar { display: none; }
+.item.waiting .time { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; background: rgba(255, 255, 255, .08); color: var(--muted); }
+
+@keyframes itemIn { from { opacity: 0; transform: translateX(var(--from-x, -36px)) scale(.97); } to { opacity: 1; transform: none; } }
+
+/* Finished items are pinned where they were and fade out there, while the others glide into place. */
+.item.leaving { animation: none; position: absolute; margin: 0; pointer-events: none;
+                transition: opacity .4s ease, transform .5s var(--ease-out);
+                opacity: 0; transform: translateX(var(--from-x, -36px)) scale(.96); }

@@ -29,7 +29,7 @@ public partial class VRChatView : UserControl, IPageView
     public SideBarType SidebarType => SideBarType.Plugins;
     public event EventHandler? BackRequested;
 
-    private static readonly IBrush Lilac = new SolidColorBrush(Color.Parse("#D8B4FE"));
+    private static readonly IBrush Lilac = new SolidColorBrush(Color.Parse("#FAFAFA"));
 
     private readonly HashSet<string> _expandedRules = new();
     private readonly DispatcherTimer _countdown = new() { Interval = TimeSpan.FromSeconds(1) };
@@ -305,7 +305,7 @@ public partial class VRChatView : UserControl, IPageView
     private static Control AnnouncementEditor(VRChatRule rule, Action changed)
     {
         var preview = Ui.Text("", "body", 13);
-        preview.Foreground = new SolidColorBrush(Color.Parse("#E9D5FF"));
+        preview.Foreground = new SolidColorBrush(Color.Parse("#E4E4E7"));
 
         var template = new TextBox
         {
@@ -443,7 +443,7 @@ public partial class VRChatView : UserControl, IPageView
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 IsVisible = isAllowed,
-                Background = selected ? Ui.Brush("AccentGradient") : new SolidColorBrush(Color.Parse("#22222C")),
+                Background = selected ? Ui.Brush("AccentGradient") : new SolidColorBrush(Color.Parse("#18181B")),
                 BorderBrush = selected ? Brushes.Transparent : Ui.Brush("BorderBrush")
             };
             ToolTip.SetTip(spot, Regex.Replace(position.ToString(), "(?<!^)([A-Z])", " $1"));
@@ -478,6 +478,18 @@ public partial class VRChatView : UserControl, IPageView
 
     private void OpenOverlay_Click(object? sender, RoutedEventArgs e) =>
         System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(OverlayService.Url) { UseShellExecute = true });
+
+    private async void OpenOverlayFolder_Click(object? sender, RoutedEventArgs e)
+    {
+        if (!System.IO.Directory.Exists(OverlayService.Folder))
+        {
+            await NotificationService.ShowAsync("Turn on the OBS overlay once to create its folder.");
+            return;
+        }
+
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(OverlayService.Folder) { UseShellExecute = true });
+        await NotificationService.ShowAsync("Careful: changing the overlay files can break the overlay. Read README.txt first.");
+    }
 
     private async void TestAnnouncement_Click(object? sender, RoutedEventArgs e)
     {

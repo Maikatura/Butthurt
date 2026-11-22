@@ -14,7 +14,7 @@
     <Window.Styles>
         <!-- Main content area -->
         <Style Selector="Border.main-content">
-            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="CornerRadius" Value="12"/>
             <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
@@ -29,12 +29,12 @@
 
             <!-- Logo -->
             <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="6,0,0,28">
-                <Border Width="42" Height="42" CornerRadius="12" Background="{StaticResource AccentGradient}">
-                    <iconPacks:PackIconLucide Kind="Vibrate" Width="22" Height="22" Foreground="White"
+                <Border Width="36" Height="36" CornerRadius="8" Background="{StaticResource AccentBrush}">
+                    <iconPacks:PackIconLucide Kind="Vibrate" Width="20" Height="20" Foreground="{StaticResource AccentForegroundBrush}"
                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </Border>
                 <StackPanel VerticalAlignment="Center">
-                    <TextBlock Text="Butthurt" FontSize="19" FontWeight="Bold" Foreground="{StaticResource TextBrush}"/>
+                    <TextBlock Text="Butthurt" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}"/>
                     <TextBlock Text="Game plugin manager" FontSize="11" Foreground="{StaticResource DimBrush}"/>
                 </StackPanel>
             </StackPanel>

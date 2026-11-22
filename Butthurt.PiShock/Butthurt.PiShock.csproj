@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- PiShock plugin: shocks, vibrates or beeps PiShock shockers when Twitch or Fansly rules match. -->
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Referenced directly (not only through Contracts) so the XAML compiler runs for this project -->
+        <PackageReference Include="Avalonia" Version="11.3.6"/>
+        <PackageReference Include="IconPacks.Avalonia" Version="1.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Butthurt.Contracts\Butthurt.Contracts.csproj" />
+        <!-- PiShock rules react to Twitch and Fansly events and reuse their conditions and editors -->
+        <ProjectReference Include="..\Butthurt.Twitch\Butthurt.Twitch.csproj" />
+        <ProjectReference Include="..\Butthurt.Fansly\Butthurt.Fansly.csproj" />
+    </ItemGroup>
+</Project>

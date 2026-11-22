@@ -93,7 +93,7 @@ public partial class SettingsView : UserControl, IPageView
                     new PackIconLucide
                     {
                         Kind = plugin.Icon, Width = 18, Height = 18,
-                        Foreground = new SolidColorBrush(Color.Parse("#D8B4FE")),
+                        Foreground = new SolidColorBrush(Color.Parse("#FAFAFA")),
                         VerticalAlignment = VerticalAlignment.Center,
                         Margin = new Thickness(0, 0, 14, 0)
                     },

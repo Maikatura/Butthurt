@@ -318,7 +318,7 @@
         "auditLevel": "low",
         "auditMode": "direct"
       },
-      "SdkAnalysisLevel": "10.0.400"
+      "SdkAnalysisLevel": "11.0.100"
     },
     "frameworks": {
       "net9.0": {
@@ -348,19 +348,19 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[9.0.19, 9.0.19]"
+            "version": "[9.0.23, 9.0.23]"
           },
           {
             "name": "Microsoft.NETCore.App.Host.win-x64",
-            "version": "[9.0.19, 9.0.19]"
+            "version": "[9.0.23, 9.0.23]"
           },
           {
             "name": "Microsoft.NETCore.App.Ref",
-            "version": "[9.0.19, 9.0.19]"
+            "version": "[9.0.23, 9.0.23]"
           },
           {
             "name": "Microsoft.WindowsDesktop.App.Ref",
-            "version": "[9.0.19, 9.0.19]"
+            "version": "[9.0.23, 9.0.23]"
           }
         ],
         "frameworkReferences": {
@@ -368,7 +368,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.400/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\11.0.100/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

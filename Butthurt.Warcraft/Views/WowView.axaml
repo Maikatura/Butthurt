@@ -15,7 +15,7 @@
             <Border Classes="card">
                 <Grid ColumnDefinitions="Auto,*,Auto">
                     <Border Classes="iconbox" Margin="0,0,14,0">
-                        <iconPacks:PackIconLucide Kind="Radar" Width="20" Height="20" Foreground="#D8B4FE"
+                        <iconPacks:PackIconLucide Kind="Radar" Width="20" Height="20" Foreground="#FAFAFA"
                                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
@@ -49,7 +49,7 @@
                 <StackPanel Spacing="14">
                     <Grid ColumnDefinitions="Auto,*,Auto">
                         <Border Classes="iconbox" Margin="0,0,14,0">
-                            <iconPacks:PackIconLucide Kind="Download" Width="20" Height="20" Foreground="#D8B4FE"
+                            <iconPacks:PackIconLucide Kind="Download" Width="20" Height="20" Foreground="#FAFAFA"
                                                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">

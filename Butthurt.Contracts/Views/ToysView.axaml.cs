@@ -153,7 +153,7 @@ public partial class ToysView : UserControl, IPageView
                         Child = new PackIconLucide
                         {
                             Kind = PackIconLucideKind.Vibrate, Width = 18, Height = 18,
-                            Foreground = new SolidColorBrush(Color.Parse("#D8B4FE")),
+                            Foreground = new SolidColorBrush(Color.Parse("#FAFAFA")),
                             HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center
                         }
                     },

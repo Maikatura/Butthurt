@@ -12,6 +12,12 @@
         <Folder Include="Pages\" />
     </ItemGroup>
 
+    <!-- The stream overlay page: copied next to the exe as an editable "overlay" folder, and built in as a fallback. -->
+    <ItemGroup>
+        <EmbeddedResource Include="overlay\*" LogicalName="overlay.%(Filename)%(Extension)" />
+        <None Include="overlay\*" Link="overlay\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+    </ItemGroup>
+
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="11.3.6"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.3.6"/>
@@ -25,7 +31,8 @@
         <PackageReference Include="Buttplug" Version="4.0.0" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="IconPacks.Avalonia" Version="1.2.0" />
-        <PackageReference Include="Material.Avalonia" Version="3.13.2" />
+        <!-- Secrets: logins and API keys are stored encrypted for the Windows user -->
+        <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup>

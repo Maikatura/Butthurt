@@ -11,7 +11,7 @@
                     BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                 <Grid ColumnDefinitions="*,Auto">
                     <StackPanel Spacing="6" VerticalAlignment="Center">
-                        <TextBlock Classes="caption" Text="BUTTHURT" Foreground="#D8B4FE"/>
+                        <TextBlock Classes="caption" Text="BUTTHURT" Foreground="#FAFAFA"/>
                         <TextBlock x:Name="HeroTitle" Classes="h1" Text="Get physically notified."/>
                         <TextBlock x:Name="HeroText" Classes="muted" MaxWidth="520" HorizontalAlignment="Left"
                                    Text="Connect your toy through Intiface Central and feel every hit you take in game, and every cheer, sub and redeem on stream."/>
@@ -32,7 +32,7 @@
                     <StackPanel Spacing="14">
                         <Grid ColumnDefinitions="Auto,*">
                             <Border Classes="iconbox">
-                                <iconPacks:PackIconLucide Kind="PlugZap" Width="20" Height="20" Foreground="#D8B4FE"
+                                <iconPacks:PackIconLucide Kind="PlugZap" Width="20" Height="20" Foreground="#FAFAFA"
                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </Grid>
@@ -48,7 +48,7 @@
                     <StackPanel Spacing="14">
                         <Grid ColumnDefinitions="Auto,*">
                             <Border Classes="iconbox">
-                                <iconPacks:PackIconLucide Kind="Vibrate" Width="20" Height="20" Foreground="#D8B4FE"
+                                <iconPacks:PackIconLucide Kind="Vibrate" Width="20" Height="20" Foreground="#FAFAFA"
                                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                             <Button Grid.Column="1" Classes="bt ghost small" HorizontalAlignment="Right"

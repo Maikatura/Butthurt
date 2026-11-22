@@ -136,7 +136,7 @@ public partial class HomeView : UserControl, IPageView
                                 Child = new PackIconLucide
                                 {
                                     Kind = plugin.Icon, Width = 20, Height = 20,
-                                    Foreground = new SolidColorBrush(Color.Parse("#D8B4FE")),
+                                    Foreground = new SolidColorBrush(Color.Parse("#FAFAFA")),
                                     HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center
                                 }
                             },

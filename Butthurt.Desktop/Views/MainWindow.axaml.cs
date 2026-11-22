@@ -12,6 +12,8 @@ using Butthurt.Contracts.Models;
 using Butthurt.Contracts.Plugins;
 using Butthurt.Contracts.Services;
 using Butthurt.Contracts.Views;
+using Butthurt.Fansly;
+using Butthurt.PiShock;
 using Butthurt.Twitch;
 using Butthurt.VRChat;
 using Butthurt.Warcraft;
@@ -39,6 +41,8 @@ public partial class MainWindow : Window
         PluginManager.Register(new WarcraftPlugin());
         PluginManager.Register(new TwitchPlugin());
         PluginManager.Register(new VRChatPlugin());
+        PluginManager.Register(new FanslyPlugin());
+        PluginManager.Register(new PiShockPlugin());
         PluginManager.LoadFromFolder(System.IO.Path.Combine(AppContext.BaseDirectory, "Plugins"));
 
         _corePages.AddRange(new IPageView[]

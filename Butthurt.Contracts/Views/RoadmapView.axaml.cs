@@ -65,7 +65,7 @@ public partial class RoadmapView : UserControl, IPageView
                                 Child = new PackIconLucide
                                 {
                                     Kind = icon, Width = 18, Height = 18,
-                                    Foreground = new SolidColorBrush(Color.Parse("#D8B4FE")),
+                                    Foreground = new SolidColorBrush(Color.Parse("#FAFAFA")),
                                     HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center
                                 }
                             },

@@ -32,6 +32,9 @@ public static class OverlayService
     public static string? LastError { get; private set; }
     public static string Url => $"http://localhost:{SettingsService.Current.Overlay.Port}/";
 
+    /// <summary>The folder with the overlay's html, css and js, for people who want to restyle it.</summary>
+    public static string Folder => OverlayPage.Folder;
+
     public static int ConnectedClients
     {
         get
@@ -113,6 +116,8 @@ public static class OverlayService
 
     private static void Start(int port)
     {
+        OverlayPage.EnsureFolder();
+
         try
         {
             var listener = new TcpListener(IPAddress.Loopback, port);
@@ -195,11 +200,6 @@ public static class OverlayService
 
             switch (path)
             {
-                case "/":
-                case "/index.html":
-                    await WriteResponse(stream, "200 OK", "text/html; charset=utf-8", OverlayPage.Html, token);
-                    break;
-
                 case "/events":
                     await WriteHead(stream, "200 OK", "text/event-stream", null, token);
 
@@ -212,7 +212,11 @@ public static class OverlayService
                     break;
 
                 default:
-                    await WriteResponse(stream, "404 Not Found", "text/plain", "Not found", token);
+                    // Everything else is a file from the overlay folder (index.html, overlay.css, images...).
+                    if (OverlayPage.Load(path) is { } file)
+                        await WriteResponse(stream, "200 OK", file.ContentType, file.Body, token);
+                    else
+                        await WriteResponse(stream, "404 Not Found", "text/plain", "Not found", token);
                     break;
             }
         }
@@ -226,9 +230,11 @@ public static class OverlayService
         }
     }
 
-    private static async Task WriteResponse(Stream stream, string status, string contentType, string body, CancellationToken token)
+    private static Task WriteResponse(Stream stream, string status, string contentType, string body, CancellationToken token) =>
+        WriteResponse(stream, status, contentType, Encoding.UTF8.GetBytes(body), token);
+
+    private static async Task WriteResponse(Stream stream, string status, string contentType, byte[] bytes, CancellationToken token)
     {
-        var bytes = Encoding.UTF8.GetBytes(body);
         await WriteHead(stream, status, contentType, bytes.Length, token);
         await stream.WriteAsync(bytes, token);
         await stream.FlushAsync(token);

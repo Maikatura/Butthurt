@@ -1,15 +1,17 @@
 <Application xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              x:Class="Butthurt.Desktop.App" xmlns:local="using:Butthurt.Desktop" RequestedThemeVariant="Dark"
-             xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles">
-    <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+             xmlns:ui="using:Butthurt.UI">
 
     <Application.DataTemplates>
         <local:ViewLocator />
     </Application.DataTemplates>
 
     <Application.Styles>
-        <themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Pink" />
+        <!-- Design system (Butthurt.UI, the same shadcn/ui look as GoonRobot.Desktop): Fluent fallback,
+             colour tokens and the control themes for the built-in controls. -->
+        <ui:ButthurtTheme />
         <StyleInclude Source="avares://IconPacks.Avalonia/Icons.axaml" />
+        <!-- Butthurt's own page vocabulary (card, row, bt, field, pill, h1…), on top of the tokens -->
         <StyleInclude Source="avares://Butthurt.Contracts/Styles/Theme.axaml" />
     </Application.Styles>
 </Application>

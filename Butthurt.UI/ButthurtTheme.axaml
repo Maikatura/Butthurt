@@ -1,0 +1,19 @@
+<!-- The whole design system in one line: put <ui:ButthurtTheme /> in Application.Styles.
+     Order: FluentTheme (fallback for controls without our theme), then tokens and our
+     component themes (Badge, Alert...), then the built-in control themes. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Butthurt.UI.ButthurtTheme">
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Tokens.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Badge.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Alert.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+    <FluentTheme />
+    <StyleInclude Source="avares://Butthurt.UI/Themes/ControlThemes.axaml" />
+</Styles>

@@ -92,6 +92,39 @@ page to jump instantly). A new grow or shrink halfway through a slide keeps the 
 size instead of stopping and starting again. Avatar changes use `/avatar/change` with the avatar's `avtr_…` ID.
 Some worlds block scaling; avatar changes still work there.
 
+### Fansly
+
+The Fansly page reads your Fansly livestream chat. Type your Fansly username and press **Save**: Butthurt finds
+your chatroom by itself, no password needed. Rules work like Twitch's:
+
+- **Tips**: a dollar range, e.g. $1–$9.99 soft and $10+ strong, optionally longer for bigger tips.
+- **Subscriptions**: pick your tiers by name (or none for every tier), renewals included or not.
+- **Chat commands** (e.g. `!buzz`), for everyone, followers, subscribers or only you, with a cooldown.
+
+Fansly has no public API for this, so Butthurt reads the chat the way the website does. If Fansly changes something
+it can stop working until Butthurt is updated. Normally the chat is read anonymously; if the activity log says Fansly
+wants a login, paste your session token on the Fansly page (it's stored encrypted, treat it like a password).
+
+### PiShock
+
+The PiShock page lets Twitch and Fansly **shock, vibrate or beep** a PiShock. Log in with your pishock.com username and
+an API key (pishock.com → Account → Generate API key), then add a share code per shocker (Share → Create code).
+Every rule picks Twitch or Fansly, the same conditions as above (bits, subs, redeems, tips, chat commands…) and what the
+shocker does:
+
+| When | Then |
+| --- | --- |
+| 100+ bits | Vibrate 40% for 2 seconds, longer for bigger cheers |
+| "Zap me" redeem | Beep, then shock 15% for 1 second |
+| $5+ Fansly tip | Vibrate a random shocker |
+| `!zap` from a Fansly subscriber | Shock 10%, 60 second cooldown |
+
+Safety: every shocker has a maximum intensity and duration no rule can go past, shocks can be turned off with one switch
+(vibrations and beeps keep working) and everything can be paused. Shock rules can beep first as a warning. Commands for
+one shocker take turns, and only a few wait in line so a flood of events can't pile up. Set limits on the share code on
+pishock.com too. Twitch redeem rules can let Butthurt create their reward; it's refunded when nothing could be sent.
+PiShock counts as a toy, so it's hidden in streaming mode.
+
 ### Stream overlay and announcements
 
 Turn on **OBS overlay** on the VRChat page and add a Browser source in OBS with the address it shows
@@ -100,6 +133,11 @@ countdowns and an announcement every time a rule fires. Pick where each goes (an
 grid, the queue in any corner) and how big it is right on the VRChat page; OBS updates live. Everything slides
 and fades smoothly. For two sources placed differently, URL options win over the settings: `?queue=0` / `?alerts=0`,
 `?alerts_at=bottom-left`, `?queue_at=top-right`, `?scale=1.5`.
+
+Want your own look? The page is plain HTML, CSS and JS in the `overlay` folder next to `Butthurt.exe` (**Customize**
+on the VRChat page opens it). The colors, fonts and sizes are at the top of `overlay.css`; refresh the Browser source
+in OBS to see changes. **Changing anything in there can break the overlay**, so keep a copy. Delete the folder and
+restart Butthurt to get the original back.
 
 Every VRChat rule has its own announcement you write yourself, with placeholders: `{user}` `{event}` `{bits}`
 `{amount}` `{bits_min}` `{bits_max}` `{tier}` `{reward}` `{cost}` `{message}` `{multiplier}` `{size}` `{duration}`
@@ -120,9 +158,12 @@ Settings page (a turned off plugin isn't loaded at all):
 | Project | What it is |
 | --- | --- |
 | `Butthurt.Contracts` | The core: toys (Intiface), settings, theme, shared pages and the `IPlugin` interface |
+| `Butthurt.UI` | The design system: shadcn/ui control themes and colour tokens (same look as GoonRobot.Desktop, derived from Huskui.Avalonia, MIT) |
 | `Butthurt.Warcraft` | World of Warcraft: the corner pixel watcher, event settings and addon installer |
 | `Butthurt.Twitch` | Twitch: login, EventSub, rules and channel point rewards |
 | `Butthurt.VRChat` | VRChat: avatar changes, growing and avatar parameters over OSC, driven by Twitch rules |
+| `Butthurt.Fansly` | Fansly: livestream chat listener (tips, subscriptions, chat commands) and its rules |
+| `Butthurt.PiShock` | PiShock: shock, vibrate or beep shockers from Twitch and Fansly rules |
 | `Butthurt.Desktop` | The app window, registers the built-in plugins |
 
 To add a game, copy one of the plugin projects, implement `IPlugin` and register it in `MainWindow`, or drop the
@@ -143,6 +184,8 @@ built DLL into the `Plugins` folder next to Butthurt.exe.
 - [x] Smooth growing and shrinking.
 - [x] Streaming mode: turn off every toy feature.
 - [x] OBS overlay with the queue and custom announcements (also in Twitch chat).
+- [x] Fansly support (tips, subscriptions, chat commands).
+- [x] PiShock: shock, vibrate or beep from Twitch and Fansly rules.
 
 ### Making a release
 

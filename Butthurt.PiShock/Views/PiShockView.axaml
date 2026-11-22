@@ -1,0 +1,146 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             x:Class="Butthurt.PiShock.Views.PiShockView">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="PiShockSoftBrush" Color="#26F59E0B"/>
+    </UserControl.Resources>
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="PiShock"/>
+                <TextBlock Classes="muted" TextWrapping="Wrap"
+                           Text="Let Twitch and Fansly shock, vibrate or beep your PiShock. Start gentle, test everything, and keep the limits low."/>
+            </StackPanel>
+
+            <!-- Account -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Border Classes="iconbox" Background="{StaticResource PiShockSoftBrush}" Margin="0,0,14,0">
+                            <iconPacks:PackIconLucide Kind="Zap" Width="20" Height="20" Foreground="#FBBF24"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Classes="h2" Text="PiShock account"/>
+                                <Border Classes="pill" VerticalAlignment="Center">
+                                    <TextBlock x:Name="StatePillText" FontSize="11" FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock x:Name="AccountText" Classes="muted" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <Button Grid.Column="2" Classes="bt small" VerticalAlignment="Center" Click="OpenAccount_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <iconPacks:PackIconLucide Kind="ExternalLink" Width="14" Height="14" VerticalAlignment="Center"/>
+                                <TextBlock Text="pishock.com" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,16,*">
+                        <StackPanel Spacing="6">
+                            <TextBlock Classes="muted" FontSize="12" Text="PiShock username"/>
+                            <TextBox x:Name="UsernameBox" Classes="field" Watermark="username"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Spacing="6">
+                            <TextBlock Classes="muted" FontSize="12" Text="API key (pishock.com → Account → Generate API key)"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox x:Name="ApiKeyBox" Classes="field" PasswordChar="•"/>
+                                <Button Grid.Column="1" Classes="bt small" Margin="8,0,0,0" VerticalAlignment="Center"
+                                        Content="Save" Click="SaveApiKey_Click"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="muted" FontSize="12" Text="Name in the PiShock logs (the viewer's name is added after it)"/>
+                        <TextBox x:Name="SenderNameBox" Classes="field" Watermark="Butthurt"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Safety -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <StackPanel Spacing="2">
+                        <TextBlock Classes="h2" Text="Safety"/>
+                        <TextBlock Classes="muted" TextWrapping="Wrap"
+                                   Text="These win over every rule. The share code's own limits on pishock.com apply too, set them there as a second safety net."/>
+                    </StackPanel>
+
+                    <Border Classes="row">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="Allow shocks"/>
+                                <TextBlock Classes="muted" FontSize="12" Text="Off: shock rules and shock tests do nothing. Vibrations and beeps keep working."/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="ShocksAllowedToggle" Grid.Column="1" OnContent="" OffContent="" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Classes="row">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="Pause everything"/>
+                                <TextBlock Classes="muted" FontSize="12" Text="Nothing is sent and everything waiting in line is dropped. A command that's already running finishes."/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="PausedToggle" Grid.Column="1" OnContent="" OffContent="" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Shockers -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <StackPanel Spacing="2">
+                        <TextBlock Classes="h2" Text="Shockers"/>
+                        <TextBlock Classes="muted" TextWrapping="Wrap"
+                                   Text="Make a share code for each shocker on pishock.com (Share → Create code) and add it here. Tests are gentle: 10% (or less) for one second."/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="NoShockersText" Classes="muted" IsVisible="False" Text="No shockers yet."/>
+                    <StackPanel x:Name="ShockerList" Spacing="8"/>
+
+                    <Grid ColumnDefinitions="*,12,*,12,Auto">
+                        <TextBox x:Name="NewShockerName" Classes="field" Watermark="Name, e.g. Collar"/>
+                        <TextBox x:Name="NewShockerCode" Grid.Column="2" Classes="field" Watermark="Share code"/>
+                        <Button Grid.Column="4" Classes="bt primary" VerticalAlignment="Center" Click="AddShocker_Click">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <iconPacks:PackIconLucide Kind="Plus" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Add shocker" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Rules -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="h2" Text="Rules"/>
+                            <TextBlock x:Name="RulesHint" Classes="muted" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <Button x:Name="AddRuleButton" Grid.Column="1" Classes="bt primary" VerticalAlignment="Center" Margin="14,0,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <iconPacks:PackIconLucide Kind="Plus" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Add rule" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <TextBlock x:Name="NoRulesText" Classes="muted" IsVisible="False"
+                               Text="No rules yet. Add one to decide what Twitch or Fansly can do to your shocker."/>
+                    <StackPanel x:Name="RuleList" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

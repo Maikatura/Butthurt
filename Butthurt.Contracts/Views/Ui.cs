@@ -86,7 +86,7 @@ public static class Ui
                 Margin = new Thickness(0, 0, 14, 0),
                 Child = new TextBlock
                 {
-                    Text = number.ToString(), FontWeight = FontWeight.Bold, FontSize = 13, Foreground = Brushes.White,
+                    Text = number.ToString(), FontWeight = FontWeight.SemiBold, FontSize = 13, Foreground = Brush("AccentForegroundBrush"),
                     HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center
                 }
             },
