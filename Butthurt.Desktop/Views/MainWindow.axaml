@@ -1,0 +1,79 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+        x:Class="Butthurt.Desktop.Views.MainWindow"
+        Icon="avares://Butthurt.Desktop/Assets/appicon.ico"
+        Title="Butthurt - Game Plugin Manager"
+        Background="{StaticResource BgBrush}"
+        Width="1200"
+        Height="800"
+        MinWidth="900"
+        MinHeight="640"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Styles>
+        <!-- Main content area -->
+        <Style Selector="Border.main-content">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ClipToBounds" Value="True"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid ColumnDefinitions="240,*">
+
+        <!-- === SIDEBAR === -->
+        <DockPanel Margin="16,20,12,16">
+
+            <!-- Logo -->
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="12" Margin="6,0,0,28">
+                <Border Width="36" Height="36" CornerRadius="8" Background="{StaticResource AccentBrush}">
+                    <iconPacks:PackIconLucide Kind="Vibrate" Width="20" Height="20" Foreground="{StaticResource AccentForegroundBrush}"
+                                              HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Butthurt" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextBrush}"/>
+                    <TextBlock Text="Game plugin manager" FontSize="11" Foreground="{StaticResource DimBrush}"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Live status -->
+            <Border DockPanel.Dock="Bottom" Classes="card" Padding="14" CornerRadius="12">
+                <StackPanel Spacing="10">
+                    <TextBlock Classes="caption" Text="STATUS"/>
+                    <!-- One row per plugin, added in code -->
+                    <StackPanel x:Name="PluginStatusRows" Spacing="10"/>
+                </StackPanel>
+            </Border>
+
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="SidebarSections" Spacing="4"/>
+            </ScrollViewer>
+        </DockPanel>
+
+
+        <!-- === MAIN CONTENT AREA === -->
+        <Border Grid.Column="1" Classes="main-content" Margin="0,12,12,12">
+            <Grid>
+                <!-- Main content -->
+                <TransitioningContentControl x:Name="MainContent">
+                    <TransitioningContentControl.PageTransition>
+                        <CrossFade Duration="0:0:0.15"/>
+                    </TransitioningContentControl.PageTransition>
+                </TransitioningContentControl>
+
+                <!-- Notification overlay -->
+                <StackPanel x:Name="NotificationPanel"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Margin="20"
+                            Spacing="8"
+                            ZIndex="100"/>
+            </Grid>
+        </Border>
+
+    </Grid>
+
+</Window>

@@ -1,0 +1,69 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             xmlns:views="clr-namespace:Butthurt.Contracts.Views"
+             x:Class="Butthurt.Contracts.Views.AboutView"
+             Background="Transparent">
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        
+        <!-- <views:RainLayer HorizontalAlignment="Stretch" -->
+        <!--                  VerticalAlignment="Stretch" -->
+        <!--                  IsHitTestVisible="False"/> -->
+
+        
+        <Border Background="Transparent" CornerRadius="12" Padding="20" MaxWidth="450" MinHeight="400">
+            <StackPanel HorizontalAlignment="Center" Spacing="15">
+
+                <!-- Profile Picture -->
+                <Border Width="128" Height="128" CornerRadius="64" Padding="4" Background="{StaticResource AccentGradient}">
+                <Border CornerRadius="60" ClipToBounds="True" Background="{StaticResource CardBrush}">
+                    <Image Source="avares://Butthurt.Contracts/Assets/profile.png"
+                           Stretch="UniformToFill"/>
+                </Border>
+                </Border>
+
+                <!-- Name -->
+                <TextBlock Text="Maikatura" FontSize="24" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+
+                <!-- Social Media Links -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="15" Margin="10,5,10,0">
+                                        <Button Classes="bt" Padding="12" Cursor="Hand" Click="WebsiteButton_Click">
+                        <iconPacks:PackIconBootstrapIcons Kind="Globe2" Width="28" Height="28" Foreground="{StaticResource TextBrush}" />
+                    </Button>
+                    
+                    <!-- Twitter -->
+                    <Button Classes="bt" Padding="12" Cursor="Hand" Click="TwitterButton_Click">
+                        <iconPacks:PackIconSimpleIcons Kind="X" Width="28" Height="28" Foreground="{StaticResource TextBrush}"/>
+                    </Button>
+
+                    <!-- GitHub -->
+                    <Button Classes="bt" Padding="12" Cursor="Hand" Click="GitHubButton_Click">
+                        <iconPacks:PackIconSimpleIcons Kind="Github" Width="28" Height="28" Foreground="{StaticResource TextBrush}"/>
+                    </Button>
+                    
+                </StackPanel>
+                
+                <!-- Description -->
+                <Border Classes="card" Margin="10">
+                 
+                    <TextBlock Text="I created this tool to simplify plugin management for the games I enjoy. My goal was to build something both fun and practical for anyone who loves pleasure!"
+                               TextWrapping="Wrap"
+                               Foreground="#dddddd"
+                               FontSize="15"
+                               LineHeight="22"
+                               TextAlignment="DetectFromContent"
+                               MaxWidth="360"
+                               FontWeight="Medium"/>
+                   
+                </Border>
+
+                <!-- Optional Footer / Callout -->
+                <TextBlock Text="Thanks for checking out Butthurt 𑣲" 
+                           Foreground="#888888" 
+                           FontStyle="Italic"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

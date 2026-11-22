@@ -1,0 +1,68 @@
+<!-- shadcn/ui Alert. Usage:
+       <ui:Alert Classes="Warning" Content="The bot worker isn't answering." />
+       <ui:Alert Classes="Success" Classes.Danger="{Binding Failed}" ShowDot="True"
+                 Content="{Binding Message}" DismissCommand="{Binding DismissCommand}" />
+     A string Content wraps. The close button only shows when DismissCommand is set. -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="using:Butthurt.UI">
+    <ControlTheme x:Key="{x:Type ui:Alert}" TargetType="ui:Alert">
+        <Setter Property="Background" Value="{DynamicResource PageCardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource PageCardBorderBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="14,10" />
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <DockPanel>
+                        <Button Name="PART_Dismiss" DockPanel.Dock="Right"
+                                Theme="{DynamicResource GhostButtonTheme}"
+                                Padding="6" CornerRadius="6" Margin="10,-4,-6,-4"
+                                VerticalAlignment="Center" ToolTip.Tip="Dismiss"
+                                Command="{TemplateBinding DismissCommand}"
+                                IsVisible="{Binding DismissCommand, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <PathIcon Data="{DynamicResource UiDismissGlyph}" Width="12" Height="12" />
+                        </Button>
+                        <Ellipse Name="PART_Dot" DockPanel.Dock="Left" Width="8" Height="8"
+                                 Margin="0,0,10,0" VerticalAlignment="Center"
+                                 Fill="{TemplateBinding Foreground}"
+                                 IsVisible="{TemplateBinding ShowDot}" />
+                        <ContentPresenter Name="PART_ContentPresenter" VerticalAlignment="Center"
+                                          TextWrapping="Wrap"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </DockPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^.Success">
+            <Setter Property="Background" Value="{DynamicResource SuccessSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SuccessBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource SuccessTextBrush}" />
+        </Style>
+        <Style Selector="^.Warning">
+            <Setter Property="Background" Value="{DynamicResource WarningSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource WarningBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource WarningTextBrush}" />
+        </Style>
+        <Style Selector="^.Danger">
+            <Setter Property="Background" Value="{DynamicResource DangerSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DangerBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DangerTextBrush}" />
+        </Style>
+        <Style Selector="^.Info">
+            <Setter Property="Background" Value="{DynamicResource InfoSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource InfoBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource InfoTextBrush}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

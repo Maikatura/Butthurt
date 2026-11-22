@@ -1,0 +1,133 @@
+<!-- ================= Design tokens: shadcn/ui, zinc, dark =================
+     Every colour the app and the components use comes from here (plus the Colors.*, CornerRadii.* and FontSize.* scales).
+     Pages should only ever reference these keys, never a raw #hex.
+
+     Layout follows shadcn's "inset" dashboard: the window is the sidebar colour, pages sit
+     on a darker rounded panel, cards are a step lighter with a 1px border. -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <SolidColorBrush x:Key="AppBackground" Color="#111113" />
+
+    <!-- Shell (sidebar + content panel) -->
+    <SolidColorBrush x:Key="ShellSidebarBrush" Color="#111113" />
+    <SolidColorBrush x:Key="ShellContentBrush" Color="#09090B" />
+    <SolidColorBrush x:Key="ShellDividerBrush" Color="#27272A" />
+    <SolidColorBrush x:Key="ShellHoverBrush" Color="#1F1F23" />
+    <!-- Use instead of Transparent on anything with a BrushTransition:
+         Transparent is #00FFFFFF, so fading from it to a dark colour
+         passes through half-opaque white and flashes. Transparent
+         black fades cleanly. -->
+    <SolidColorBrush x:Key="ShellClearBrush" Color="#00000000" />
+    <SolidColorBrush x:Key="ShellPressedBrush" Color="#27272A" />
+    <!-- foreground / muted-foreground / dimmer captions -->
+    <SolidColorBrush x:Key="ShellTextPrimaryBrush" Color="#FAFAFA" />
+    <SolidColorBrush x:Key="ShellTextSecondaryBrush" Color="#A1A1AA" />
+    <SolidColorBrush x:Key="ShellTextMutedBrush" Color="#71717A" />
+    <!-- primary (near-white) and primary-foreground; "soft" is shadcn's accent surface -->
+    <SolidColorBrush x:Key="ShellAccentBrush" Color="#FAFAFA" />
+    <SolidColorBrush x:Key="ShellAccentForegroundBrush" Color="#18181B" />
+    <SolidColorBrush x:Key="ShellAccentSoftBrush" Color="#27272A" />
+    <SolidColorBrush x:Key="ShellAccentTextBrush" Color="#FAFAFA" />
+
+    <!-- Page surfaces -->
+    <SolidColorBrush x:Key="PageCardBrush" Color="#111113" />
+    <SolidColorBrush x:Key="PageCardHoverBrush" Color="#18181B" />
+    <SolidColorBrush x:Key="PageCardBorderBrush" Color="#27272A" />
+    <SolidColorBrush x:Key="PageInsetBrush" Color="#18181B" />
+    <SolidColorBrush x:Key="PageRowBrush" Color="#111113" />
+    <SolidColorBrush x:Key="PageRowBorderBrush" Color="#27272A" />
+
+    <!-- Status. Each has four steps:
+         solid (dots, icons, numbers), Soft (tinted fill), Border (1px edge), Text (on Soft). -->
+    <SolidColorBrush x:Key="SuccessBrush" Color="#34D399" />
+    <SolidColorBrush x:Key="SuccessSoftBrush" Color="#0C1F17" />
+    <SolidColorBrush x:Key="SuccessBorderBrush" Color="#14532D" />
+    <SolidColorBrush x:Key="SuccessTextBrush" Color="#86EFAC" />
+
+    <SolidColorBrush x:Key="WarningBrush" Color="#FBBF24" />
+    <SolidColorBrush x:Key="WarningSoftBrush" Color="#1F1808" />
+    <SolidColorBrush x:Key="WarningBorderBrush" Color="#713F12" />
+    <SolidColorBrush x:Key="WarningTextBrush" Color="#FCD34D" />
+
+    <SolidColorBrush x:Key="DangerBrush" Color="#F87171" />
+    <SolidColorBrush x:Key="DangerSoftBrush" Color="#1F0F10" />
+    <SolidColorBrush x:Key="DangerBorderBrush" Color="#7F1D1D" />
+    <SolidColorBrush x:Key="DangerTextBrush" Color="#FCA5A5" />
+
+    <SolidColorBrush x:Key="InfoBrush" Color="#60A5FA" />
+    <SolidColorBrush x:Key="InfoSoftBrush" Color="#0C1529" />
+    <SolidColorBrush x:Key="InfoBorderBrush" Color="#1E3A8A" />
+    <SolidColorBrush x:Key="InfoTextBrush" Color="#93C5FD" />
+
+    <!-- Solid fills for destructive / positive buttons and method chips -->
+    <SolidColorBrush x:Key="DangerSolidBrush" Color="#B91C1C" />
+    <SolidColorBrush x:Key="DangerSolidHoverBrush" Color="#DC2626" />
+    <SolidColorBrush x:Key="SuccessSolidBrush" Color="#059669" />
+
+    <!-- Neutral steps above the border colour (zinc-700 / zinc-600):
+         input and hover borders, scrollbar thumbs, disabled text. -->
+    <SolidColorBrush x:Key="ShellStrongBrush" Color="#3F3F46" />
+    <SolidColorBrush x:Key="ShellFaintBrush" Color="#52525B" />
+    <!-- Text selection, modal scrim -->
+    <SolidColorBrush x:Key="SelectionBrush" Color="#2563EB" />
+    <SolidColorBrush x:Key="OverlayScrimBrush" Color="#99000000" />
+    <!-- Subtle row hover on dense lists (chat lines) -->
+    <SolidColorBrush x:Key="RowHoverBrush" Color="#0FFFFFFF" />
+
+    <!-- Chart palette. 1-5 are shadcn's; 6-10 extend it for pages with more series.
+         Meaning stays the same everywhere: 6 bits/cheers, 9 subs, 5 VIPs. -->
+    <SolidColorBrush x:Key="Chart1Brush" Color="#2662D9" />
+    <SolidColorBrush x:Key="Chart2Brush" Color="#2EB88A" />
+    <SolidColorBrush x:Key="Chart3Brush" Color="#E88C30" />
+    <SolidColorBrush x:Key="Chart4Brush" Color="#AF57DB" />
+    <SolidColorBrush x:Key="Chart5Brush" Color="#E23670" />
+    <SolidColorBrush x:Key="Chart6Brush" Color="#22D3EE" />
+    <SolidColorBrush x:Key="Chart7Brush" Color="#F472B6" />
+    <SolidColorBrush x:Key="Chart8Brush" Color="#A78BFA" />
+    <SolidColorBrush x:Key="Chart9Brush" Color="#C084FC" />
+    <SolidColorBrush x:Key="Chart10Brush" Color="#F97316" />
+    <!-- 15% tints of the chart colours, for icon wells behind a chart-coloured glyph -->
+    <SolidColorBrush x:Key="Chart1SoftBrush" Color="#222662D9" />
+    <SolidColorBrush x:Key="Chart4SoftBrush" Color="#26AF57DB" />
+    <SolidColorBrush x:Key="Chart6SoftBrush" Color="#2622D3EE" />
+    <SolidColorBrush x:Key="Chart9SoftBrush" Color="#26C084FC" />
+
+    <!-- Platform brand colours -->
+    <SolidColorBrush x:Key="TwitchBrush" Color="#9146FF" />
+    <SolidColorBrush x:Key="TwitchSoftBrush" Color="#2A1F45" />
+    <SolidColorBrush x:Key="TwitchTextBrush" Color="#B794F6" />
+    <SolidColorBrush x:Key="KickBrush" Color="#53FC18" />
+    <SolidColorBrush x:Key="FanslyBrush" Color="#2699F7" />
+    <SolidColorBrush x:Key="FanslySoftBrush" Color="#1A2B40" />
+    <SolidColorBrush x:Key="FanslyTextBrush" Color="#5CB3FA" />
+
+    <!-- Twitch-style chat (Settings › Twitch-style chat): Twitch's own chat colours -->
+    <SolidColorBrush x:Key="TwitchChatBorderBrush" Color="#2F2F35" />
+    <SolidColorBrush x:Key="TwitchChatTextBrush" Color="#EFEFF1" />
+    <SolidColorBrush x:Key="TwitchChatMutedBrush" Color="#ADADB8" />
+    <SolidColorBrush x:Key="TwitchChatHoverBrush" Color="#7A53535F" />
+
+    <!-- Leaderboard medals -->
+    <SolidColorBrush x:Key="MedalGoldBrush" Color="#FBBF24" />
+    <SolidColorBrush x:Key="MedalSilverBrush" Color="#CBD5E1" />
+    <SolidColorBrush x:Key="MedalBronzeBrush" Color="#D97706" />
+
+    <!-- Hero banner (top of the analytics / reputation pages) and the chips that sit on it -->
+    <LinearGradientBrush x:Key="HeroGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Offset="0" Color="#1C1C20" />
+        <GradientStop Offset="0.5" Color="#141416" />
+        <GradientStop Offset="1" Color="#111113" />
+    </LinearGradientBrush>
+    <LinearGradientBrush x:Key="FanslyHeroGradientBrush" StartPoint="0%,0%" EndPoint="100%,100%">
+        <GradientStop Offset="0" Color="#16243A" />
+        <GradientStop Offset="0.55" Color="#141416" />
+        <GradientStop Offset="1" Color="#111113" />
+    </LinearGradientBrush>
+    <SolidColorBrush x:Key="HeroChipBrush" Color="#26000000" />
+    <SolidColorBrush x:Key="HeroChipBorderBrush" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="HeroChipStrongBrush" Color="#26FFFFFF" />
+    <SolidColorBrush x:Key="HeroTrackBrush" Color="#33000000" />
+
+    <!-- Small glyphs the components draw themselves (apps keep their own icon sets). -->
+    <StreamGeometry x:Key="UiDismissGlyph">M5.3,4.3 L12,11 L18.7,4.3 L19.7,5.3 L13,12 L19.7,18.7 L18.7,19.7 L12,13 L5.3,19.7 L4.3,18.7 L11,12 L4.3,5.3 Z</StreamGeometry>
+</ResourceDictionary>

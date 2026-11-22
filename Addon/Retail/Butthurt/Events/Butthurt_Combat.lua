@@ -8,16 +8,31 @@ local Butthurt = LibStub("AceAddon-3.0"):GetAddon(name);
 if not Butthurt then return; end
 
 
-local function CombatEvent(self, event)
-    local timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, spellId, spellName, spellSchool, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing, isOffHand, multistrike =CombatLogGetCurrentEventInfo()
+-- Since Midnight some combat values can be "secret" and comparing them throws an error,
+-- so every comparison is wrapped and falls back to treating the hit as damage.
+local function IsHeal(eventType)
+    local ok, result = pcall(function() return eventType == "HEAL" end)
+    return ok and result
+end
 
-    if subEvent == "SWING_DAMAGE" or subEvent == "RANGE_DAMAGE" or subEvent == "SPELL_DAMAGE" then
-        if destGUID == UnitGUID("player") then
-            Butthurt:Triggered()
-        end
+local function HasAmount(amount)
+    local ok, result = pcall(function() return amount ~= nil and amount > 0 end)
+    return not ok or result
+end
+
+local function PlayerHit(self, unitTarget, eventType, flagText, amount, schoolMask)
+    -- UNIT_COMBAT fires for every unit with a token (target, party, ...), we only care about ourselves.
+    if not Butthurt:IsPlayerUnit(unitTarget) then return; end
+
+    if IsHeal(eventType) then
+        Butthurt:Triggered("HEAL")
+    elseif HasAmount(amount) then
+        Butthurt:Debug("Got hit")
+        Butthurt:Triggered("DAMAGE")
     end
 end
 
-Butthurt:AddEvent("Combat", "COMBAT_LOG_EVENT_UNFILTERED", function(self, event)
-     CombatEvent(self, event)
+
+Butthurt:AddEvent("Combat", "UNIT_COMBAT", function(self, unitTarget, eventType, flagText, amount, schoolMask)
+     PlayerHit(self, unitTarget, eventType, flagText, amount, schoolMask)
 end)

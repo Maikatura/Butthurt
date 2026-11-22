@@ -1,0 +1,75 @@
+# Builds Butthurt and attaches it to a GitHub release.
+# Only runs when a version tag is pushed (e.g. v0.2.0), normal commits never trigger it.
+#
+#   git tag v0.2.0
+#   git push origin v0.2.0
+
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Read version from tag
+        id: version
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+          "number=$($tag.TrimStart('v'))" >> $env:GITHUB_OUTPUT
+
+      # The app compares these versions to decide if the installed addon needs an update.
+      - name: Stamp version into the addons
+        shell: pwsh
+        run: |
+          Get-ChildItem Addon -Recurse -Filter Butthurt.toc | ForEach-Object {
+            (Get-Content $_.FullName) -replace '^## Version:.*', "## Version: ${{ steps.version.outputs.tag }}" |
+              Set-Content $_.FullName
+          }
+
+      - name: Publish app
+        run: >
+          dotnet publish Butthurt.Desktop/Butthurt.Desktop.csproj
+          -c Release -r win-x64 --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -p:EnableCompressionInSingleFile=true
+          -p:DebugType=none
+          -p:Version=${{ steps.version.outputs.number }}
+          -o publish/Butthurt
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.version.outputs.tag }}"
+          Rename-Item publish/Butthurt/Butthurt.Desktop.exe Butthurt.exe
+          Compress-Archive -Path publish/Butthurt/* -DestinationPath "Butthurt-$tag-win-x64.zip"
+
+          # Addon only, for people who want to install it by hand.
+          Compress-Archive -Path Addon/Retail/Butthurt -DestinationPath "Butthurt-Addon-Retail-$tag.zip"
+          Compress-Archive -Path Addon/Classic/Butthurt -DestinationPath "Butthurt-Addon-Classic-$tag.zip"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Butthurt ${{ steps.version.outputs.tag }}
+          generate_release_notes: true
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            Butthurt-*-win-x64.zip
+            Butthurt-Addon-*.zip

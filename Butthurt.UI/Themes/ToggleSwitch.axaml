@@ -1,0 +1,154 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ControlTheme
+        x:Key="{x:Type ToggleSwitch}"
+        TargetType="ToggleSwitch">
+        <Setter Property="Foreground" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="{StaticResource FullCornerRadius}" />
+        <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
+        <Setter Property="KnobTransitions">
+            <Transitions>
+                <DoubleTransition
+                    Easing="CubicEaseOut"
+                    Property="Canvas.Left"
+                    Duration="{StaticResource ControlNormalAnimationDuration}" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid RowDefinitions="Auto,*">
+                    <ContentPresenter
+                        Name="PART_ContentPresenter"
+                        Grid.Row="0"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        RecognizesAccessKey="True" />
+                    <Grid
+                        Name="InteractivePart"
+                        Grid.Row="1"
+                        ColumnDefinitions="Auto,Auto">
+                        <Grid.Transitions>
+                            <Transitions>
+                                <DoubleTransition
+                                    Easing="SineEaseOut"
+                                    Property="Opacity"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                            </Transitions>
+                        </Grid.Transitions>
+                        <ContentPresenter
+                            Name="PART_OffContentPresenter"
+                            Grid.Column="1"
+                            Margin="6,0,0,0"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            IsVisible="{TemplateBinding OffContent,
+                                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+                            Content="{TemplateBinding OffContent}"
+                            ContentTemplate="{TemplateBinding OffContentTemplate}" />
+                        <ContentPresenter
+                            Name="PART_OnContentPresenter"
+                            Grid.Column="1"
+                            Margin="6,0,0,0"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            IsVisible="{TemplateBinding OnContent,
+                                                        Converter={x:Static ObjectConverters.IsNotNull}}"
+                            Content="{TemplateBinding OnContent}"
+                            ContentTemplate="{TemplateBinding OnContentTemplate}" />
+                        <Border
+                            Name="SwitchKnobBounds"
+                            Grid.Column="0"
+                            Width="40"
+                            Height="20"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Cursor="Hand">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <BrushTransition
+                                        Property="Background"
+                                        Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                </Transitions>
+                            </Border.Transitions>
+                            <Canvas
+                                x:Name="PART_SwitchKnob"
+                                Width="20"
+                                Height="20"
+                                HorizontalAlignment="Left">
+                                <Panel
+                                    x:Name="PART_MovingKnobs"
+                                    Width="20"
+                                    Height="20">
+                                    <Border
+                                        Name="SwitchKnob"
+                                        Width="16"
+                                        Height="16"
+                                        Background="{StaticResource OverlaySolidBackgroundBrush}"
+                                        BoxShadow="2 2 4 0 #25000000"
+                                        CornerRadius="{StaticResource FullCornerRadius}">
+                                        <Border.Transitions>
+                                            <Transitions>
+                                                <TransformOperationsTransition
+                                                    Property="RenderTransform"
+                                                    Duration="{StaticResource ControlFastestAnimationDuration}" />
+                                            </Transitions>
+                                        </Border.Transitions>
+                                    </Border>
+                                </Panel>
+                            </Canvas>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:pointerover /template/ Border#SwitchKnob">
+            <Setter Property="RenderTransform" Value="scale(0.9)" />
+        </Style>
+        <Style Selector="^:pressed /template/ Border#SwitchKnob">
+            <Setter Property="RenderTransform" Value="scale(0.8)" />
+        </Style>
+
+        <Style Selector="^:checked">
+            <Style Selector="^ /template/ Border#SwitchKnobBounds">
+                <Setter Property="Background" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_OnContentPresenter">
+                <Setter Property="Opacity" Value="1" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_OffContentPresenter">
+                <Setter Property="Opacity" Value="0" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:unchecked">
+            <Style Selector="^ /template/ ContentPresenter#PART_OnContentPresenter">
+                <Setter Property="Opacity" Value="0" />
+            </Style>
+            <Style Selector="^ /template/ ContentPresenter#PART_OffContentPresenter">
+                <Setter Property="Opacity" Value="1" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#SwitchKnobBounds">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledInteractiveBorderBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter, ^:disabled /template/ ContentPresenter#PART_OnContentPresenter, ^:disabled /template/ ContentPresenter#PART_OffContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

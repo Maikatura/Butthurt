@@ -1,0 +1,13 @@
+<!-- shadcn/ui radii (base radius 0.5rem): sm 4-6, md 8, lg 10, xl 12, full pill. -->
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <CornerRadius x:Key="StaticExtraSmallCornerRadius">4</CornerRadius>
+    <CornerRadius x:Key="StaticSmallCornerRadius">6</CornerRadius>
+    <CornerRadius x:Key="StaticMediumCornerRadius">8</CornerRadius>
+    <CornerRadius x:Key="StaticLargeCornerRadius">10</CornerRadius>
+    <CornerRadius x:Key="StaticExtraLargeCornerRadius">12</CornerRadius>
+    <CornerRadius x:Key="StaticExtraExtraLargeCornerRadius">14</CornerRadius>
+    <CornerRadius x:Key="StaticExtraExtraExtraLargeCornerRadius">16</CornerRadius>
+    <CornerRadius x:Key="StaticFullCornerRadius">999</CornerRadius>
+</ResourceDictionary>

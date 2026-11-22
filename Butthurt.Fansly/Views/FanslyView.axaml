@@ -1,0 +1,109 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             x:Class="Butthurt.Fansly.Views.FanslyView">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="FanslySoftBrush" Color="#1A2B40"/>
+    </UserControl.Resources>
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="Fansly"/>
+                <TextBlock x:Name="PageSubtitle" Classes="muted"/>
+            </StackPanel>
+
+            <!-- Channel -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Border Classes="iconbox" Background="{StaticResource FanslySoftBrush}" Margin="0,0,14,0">
+                            <iconPacks:PackIconLucide Kind="Radio" Width="20" Height="20" Foreground="#5CB3FA"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Classes="h2" Text="Fansly livestream chat"/>
+                                <Border Classes="pill" VerticalAlignment="Center">
+                                    <TextBlock x:Name="StatePillText" FontSize="11" FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock x:Name="AccountText" Classes="muted" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <Button x:Name="ConnectButton" Grid.Column="2" Classes="bt primary" VerticalAlignment="Center"
+                                Click="ConnectButton_Click"/>
+                    </Grid>
+
+                    <Border Classes="row">
+                        <StackPanel Spacing="8">
+                            <TextBlock Classes="h3" Text="Your Fansly username"/>
+                            <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap"
+                                       Text="The creator whose livestream chat Butthurt reads, normally you. No password needed: tips, subscriptions and chat are read like a viewer would see them."/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox x:Name="UsernameBox" Classes="field" Watermark="username"/>
+                                <Button x:Name="SaveUsernameButton" Grid.Column="1" Classes="bt small" Margin="8,0,0,0"
+                                        VerticalAlignment="Center" Content="Save" Click="SaveUsername_Click"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="row">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="Connect to Fansly when Butthurt starts"/>
+                                <TextBlock Classes="muted" FontSize="12" Text="Only when a username is set."/>
+                            </StackPanel>
+                            <ToggleSwitch x:Name="AutoConnectToggle" Grid.Column="1" OnContent="" OffContent="" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <Button x:Name="TokenToggle" Classes="bt ghost small" HorizontalAlignment="Left"
+                            Content="Fansly asks for a login?…" Click="TokenToggle_Click"/>
+                    <Border x:Name="TokenPanel" Classes="row" IsVisible="False">
+                        <StackPanel Spacing="8">
+                            <TextBlock Classes="h3" Text="Fansly session token (optional)"/>
+                            <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap"
+                                       Text="Only needed when the activity log says Fansly wants a login to read the chat. Log in on fansly.com, open the developer tools (F12) → Application → Local Storage → fansly.com, and copy the token value from 'session_active_session'. It's stored encrypted for your Windows user. Treat it like a password: anyone with it can use your Fansly account."/>
+                            <Grid ColumnDefinitions="*,Auto,Auto">
+                                <TextBox x:Name="TokenBox" Classes="field" PasswordChar="•" Watermark="Session token"/>
+                                <Button Grid.Column="1" Classes="bt small" Margin="8,0,0,0" VerticalAlignment="Center"
+                                        Content="Save" Click="SaveToken_Click"/>
+                                <Button x:Name="ClearTokenButton" Grid.Column="2" Classes="bt small ghost" Margin="8,0,0,0"
+                                        VerticalAlignment="Center" Content="Remove" Click="ClearToken_Click"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Vibration rules (toys only) -->
+            <Border x:Name="VibrationRulesCard" Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="h2" Text="Toy rules"/>
+                            <TextBlock Classes="muted" TextWrapping="Wrap"
+                                       Text="When something happens in your Fansly chat every matching rule fires. Overlapping buzzes merge: strongest intensity, longest time."/>
+                        </StackPanel>
+                        <Button x:Name="AddRuleButton" Grid.Column="1" Classes="bt primary" VerticalAlignment="Center" Margin="14,0,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <iconPacks:PackIconLucide Kind="Plus" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Add rule" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <TextBlock x:Name="NoRulesText" Classes="muted" IsVisible="False"
+                               Text="No rules yet. Add one to decide what makes your toy buzz."/>
+                    <StackPanel x:Name="RuleList" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Cards from other plugins, e.g. PiShock rules (see PageSections) -->
+            <StackPanel x:Name="ExtraSections" Spacing="20"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

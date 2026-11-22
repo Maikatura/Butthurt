@@ -1,0 +1,558 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="using:Butthurt.UI"
+    xmlns:local="using:Butthurt.UI">
+
+    <ControlTheme
+        x:Key="{x:Type TextBox}"
+        TargetType="TextBox">
+        <Setter Property="Cursor" Value="Ibeam" />
+        <Setter Property="Foreground" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ControlInteractiveBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{StaticResource OverlayInteractiveBackgroundBrush}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+        <Setter Property="SelectionForegroundBrush" Value="{StaticResource ControlReversedForegroundBrush}" />
+        <Setter Property="CornerRadius" Value="{StaticResource SmallCornerRadius}" />
+        <Setter Property="CaretBrush" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <Border
+                        x:Name="PART_Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="Background"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                            </Transitions>
+                        </Border.Transitions>
+                        <Grid ColumnDefinitions="Auto,0,*,0,Auto">
+                            <Grid.Styles>
+                                <Style Selector="ContentPresenter Button">
+                                    <Setter Property="Theme" Value="{StaticResource GhostButtonTheme}" />
+                                    <Setter Property="Padding" Value="8,4" />
+                                    <Setter Property="FontSize" Value="{StaticResource SmallFontSize}" />
+                                    <Setter Property="Margin" Value="2" />
+                                </Style>
+                            </Grid.Styles>
+                            <ContentPresenter
+                                Grid.Column="0"
+                                Content="{TemplateBinding InnerLeftContent}"
+                                Foreground="{StaticResource ControlSecondaryForegroundBrush}" />
+                            <ScrollViewer
+                                Grid.Column="2"
+                                AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                                <Panel Margin="{TemplateBinding Padding}">
+                                    <TextBlock
+                                        Name="PART_Watermark"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Foreground="{StaticResource ControlSecondaryForegroundBrush}"
+                                        Text="{TemplateBinding Watermark}"
+                                        TextAlignment="{TemplateBinding TextAlignment}"
+                                        TextWrapping="{TemplateBinding TextWrapping}">
+                                        <TextBlock.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding
+                                                    Converter="{x:Static StringConverters.IsNullOrEmpty}"
+                                                    ElementName="PART_TextPresenter"
+                                                    Path="PreeditText" />
+                                                <Binding
+                                                    Converter="{x:Static StringConverters.IsNullOrEmpty}"
+                                                    Path="Text"
+                                                    RelativeSource="{RelativeSource TemplatedParent}" />
+                                            </MultiBinding>
+                                        </TextBlock.IsVisible>
+                                    </TextBlock>
+                                    <TextPresenter
+                                        Name="PART_TextPresenter"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                        CaretBrush="{TemplateBinding CaretBrush}"
+                                        CaretIndex="{TemplateBinding CaretIndex}"
+                                        LineHeight="{TemplateBinding LineHeight}"
+                                        PasswordChar="{TemplateBinding PasswordChar}"
+                                        RevealPassword="{TemplateBinding RevealPassword}"
+                                        SelectionBrush="{TemplateBinding SelectionBrush}"
+                                        SelectionEnd="{TemplateBinding SelectionEnd}"
+                                        SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                        SelectionStart="{TemplateBinding SelectionStart}"
+                                        Text="{TemplateBinding Text,
+                                                               Mode=TwoWay}"
+                                        TextAlignment="{TemplateBinding TextAlignment}"
+                                        TextWrapping="{TemplateBinding TextWrapping}" />
+                                </Panel>
+                            </ScrollViewer>
+                            <Grid
+                                Grid.Column="4"
+                                ColumnDefinitions="Auto,Auto">
+                                <Button
+                                    Name="ClearButton"
+                                    Margin="4"
+                                    Padding="8,4"
+                                    IsVisible="False"
+                                    Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Clear}"
+                                    FontSize="{StaticResource SmallFontSize}"
+                                    Theme="{StaticResource GhostButtonTheme}">
+                                    <ui:GlyphIcon
+                                        FontSize="{StaticResource SmallFontSize}"
+                                        Symbol="Dismiss" />
+                                </Button>
+                                <ContentPresenter
+                                    Grid.Column="1"
+                                    Content="{TemplateBinding InnerRightContent}"
+                                    Foreground="{StaticResource ControlSecondaryForegroundBrush}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border
+                        x:Name="PART_GlowBorder"
+                        BorderBrush="{StaticResource TransparentBrush}"
+                        BorderThickness="2"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="BorderBrush"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:focus /template/ Border#PART_GlowBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource ControlAccentInteractiveBorderBrush}" />
+        </Style>
+
+        <Style Selector="^:focus /template/ Border#PART_Border">
+            <Setter Property="Background" Value="{StaticResource OverlaySolidBackgroundBrush}" />
+        </Style>
+
+        <Style Selector="^:pointerover:not(:focus) /template/ Border#PART_Border">
+            <Setter Property="Background" Value="{StaticResource OverlaySolidBackgroundBrush}" />
+        </Style>
+
+        <Style Selector="^[UseFloatingWatermark=true]:not(:empty) /template/ TextBlock#PART_FloatingWatermark">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^.Multiline">
+            <Setter Property="AcceptsReturn" Value="True" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style Selector="^[IsReadOnly=False]:not(:empty).Clearable /template/ Button#ClearButton">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledInteractiveBorderBrush}" />
+            <Setter Property="CaretBrush" Value="{StaticResource ControlDisabledForegroundBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+            <Setter Property="SelectionBrush" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#PART_GlowBorder">
+            <Setter Property="BorderBrush" Value="{StaticResource TransparentBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Button#ClearButton">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme
+        x:Key="UnderlineTextBoxTheme"
+        TargetType="TextBox">
+        <Setter Property="Cursor" Value="Ibeam" />
+        <Setter Property="Background" Value="{StaticResource OverlayInteractiveBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ControlInteractiveBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1,1,1,2" />
+        <Setter Property="Foreground" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+        <Setter Property="SelectionForegroundBrush" Value="{StaticResource ControlReversedForegroundBrush}" />
+        <Setter Property="CornerRadius" Value="{StaticResource SmallCornerRadius}" />
+        <Setter Property="CaretBrush" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="Background"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                            </Transitions>
+                        </Border.Transitions>
+                        <Grid ColumnDefinitions="Auto,0,*,0,Auto">
+                            <Grid.Styles>
+                                <Style Selector="ContentPresenter Button">
+                                    <Setter Property="Theme" Value="{StaticResource GhostButtonTheme}" />
+                                    <Setter Property="Padding" Value="8,4" />
+                                    <Setter Property="FontSize" Value="{StaticResource SmallFontSize}" />
+                                    <Setter Property="Margin" Value="2" />
+                                </Style>
+                            </Grid.Styles>
+                            <ContentPresenter
+                                Grid.Column="0"
+                                Content="{TemplateBinding InnerLeftContent}"
+                                Foreground="{StaticResource ControlSecondaryForegroundBrush}" />
+                            <ScrollViewer
+                                Grid.Column="2"
+                                AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                                <Panel Margin="{TemplateBinding Padding}">
+                                    <TextBlock
+                                        Name="PART_Watermark"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Foreground="{StaticResource ControlSecondaryForegroundBrush}"
+                                        Text="{TemplateBinding Watermark}"
+                                        TextAlignment="{TemplateBinding TextAlignment}"
+                                        TextWrapping="{TemplateBinding TextWrapping}">
+                                        <TextBlock.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding
+                                                    Converter="{x:Static StringConverters.IsNullOrEmpty}"
+                                                    ElementName="PART_TextPresenter"
+                                                    Path="PreeditText" />
+                                                <Binding
+                                                    Converter="{x:Static StringConverters.IsNullOrEmpty}"
+                                                    Path="Text"
+                                                    RelativeSource="{RelativeSource TemplatedParent}" />
+                                            </MultiBinding>
+                                        </TextBlock.IsVisible>
+                                    </TextBlock>
+                                    <TextPresenter
+                                        Name="PART_TextPresenter"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                        CaretBrush="{TemplateBinding CaretBrush}"
+                                        CaretIndex="{TemplateBinding CaretIndex}"
+                                        LineHeight="{TemplateBinding LineHeight}"
+                                        PasswordChar="{TemplateBinding PasswordChar}"
+                                        RevealPassword="{TemplateBinding RevealPassword}"
+                                        SelectionBrush="{TemplateBinding SelectionBrush}"
+                                        SelectionEnd="{TemplateBinding SelectionEnd}"
+                                        SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                        SelectionStart="{TemplateBinding SelectionStart}"
+                                        Text="{TemplateBinding Text,
+                                                               Mode=TwoWay}"
+                                        TextAlignment="{TemplateBinding TextAlignment}"
+                                        TextWrapping="{TemplateBinding TextWrapping}" />
+                                </Panel>
+                            </ScrollViewer>
+                            <Grid
+                                Grid.Column="4"
+                                ColumnDefinitions="Auto,Auto">
+                                <Button
+                                    Name="ClearButton"
+                                    Margin="4"
+                                    Padding="8,4"
+                                    IsVisible="False"
+                                    Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Clear}"
+                                    FontSize="{StaticResource SmallFontSize}"
+                                    Theme="{StaticResource GhostButtonTheme}">
+                                    <ui:GlyphIcon
+                                        FontSize="{StaticResource SmallFontSize}"
+                                        Symbol="Dismiss" />
+                                </Button>
+                                <ContentPresenter
+                                    Grid.Column="1"
+                                    Content="{TemplateBinding InnerRightContent}"
+                                    Foreground="{StaticResource ControlSecondaryForegroundBrush}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border
+                        x:Name="Indicator"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="0,0,0,2"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        RenderTransform="scaleX(0.0)">
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="BorderBrush"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                <TransformOperationsTransition
+                                    Easing="CubicEaseOut"
+                                    Property="RenderTransform"
+                                    Duration="{StaticResource ControlNormalAnimationDuration}" />
+                            </Transitions>
+                        </Border.Transitions>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:focus /template/ Border#Indicator">
+            <Setter Property="BorderBrush" Value="{StaticResource ControlAccentInteractiveBorderBrush}" />
+            <Setter Property="RenderTransform" Value="scaleX(1.0)" />
+        </Style>
+
+        <Style Selector="^:focus /template/ Border#Root">
+            <Setter Property="Background" Value="{StaticResource OverlaySolidBackgroundBrush}" />
+        </Style>
+
+        <Style Selector="^.Multiline">
+            <Setter Property="AcceptsReturn" Value="True" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style Selector="^[IsReadOnly=False]:not(:empty).Clearable /template/ Button#ClearButton">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledInteractiveBorderBrush}" />
+            <Setter Property="CaretBrush" Value="{StaticResource ControlDisabledForegroundBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+            <Setter Property="SelectionBrush" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Indicator">
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledInteractiveBorderBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Button#ClearButton">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme
+        x:Key="FieldTextBoxTheme"
+        TargetType="TextBox">
+        <Setter Property="Cursor" Value="Ibeam" />
+        <Setter Property="Background" Value="{StaticResource ControlTranslucentFullBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ControlTranslucentFullBackgroundBrush}" />
+        <Setter Property="BorderThickness" Value="1,1,1,1" />
+        <Setter Property="Foreground" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+        <Setter Property="SelectionForegroundBrush" Value="{StaticResource ControlReversedForegroundBrush}" />
+        <Setter Property="CornerRadius" Value="{StaticResource SmallCornerRadius}" />
+        <Setter Property="CaretBrush" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel Name="Root">
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="Background"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                            </Transitions>
+                        </Border.Transitions>
+                        <Grid ColumnDefinitions="Auto,0,*,0,Auto">
+                            <Grid.Styles>
+                                <Style Selector="ContentPresenter Button">
+                                    <Setter Property="Theme" Value="{StaticResource GhostButtonTheme}" />
+                                    <Setter Property="Padding" Value="8,4" />
+                                    <Setter Property="FontSize" Value="{StaticResource SmallFontSize}" />
+                                    <Setter Property="Margin" Value="2" />
+                                </Style>
+                            </Grid.Styles>
+                            <ContentPresenter
+                                Grid.Column="0"
+                                Content="{TemplateBinding InnerLeftContent}"
+                                Foreground="{StaticResource ControlSecondaryForegroundBrush}" />
+                            <ScrollViewer
+                                Grid.Column="2"
+                                AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                                BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                                HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                                IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                                VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                                <Panel Margin="{TemplateBinding Padding}">
+                                    <TextBlock
+                                        Name="PART_Placeholder"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        Foreground="{StaticResource ControlSecondaryForegroundBrush}"
+                                        Text="{TemplateBinding Watermark}"
+                                        TextAlignment="{TemplateBinding TextAlignment}"
+                                        TextWrapping="{TemplateBinding TextWrapping}">
+                                        <TextBlock.IsVisible>
+                                            <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                <Binding
+                                                    Converter="{x:Static StringConverters.IsNullOrEmpty}"
+                                                    ElementName="PART_TextPresenter"
+                                                    Path="PreeditText" />
+                                                <Binding
+                                                    Converter="{x:Static StringConverters.IsNullOrEmpty}"
+                                                    Path="Text"
+                                                    RelativeSource="{RelativeSource TemplatedParent}" />
+                                            </MultiBinding>
+                                        </TextBlock.IsVisible>
+                                    </TextBlock>
+                                    <TextPresenter
+                                        Name="PART_TextPresenter"
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                                        CaretBrush="{TemplateBinding CaretBrush}"
+                                        CaretIndex="{TemplateBinding CaretIndex}"
+                                        LineHeight="{TemplateBinding LineHeight}"
+                                        PasswordChar="{TemplateBinding PasswordChar}"
+                                        RevealPassword="{TemplateBinding RevealPassword}"
+                                        SelectionBrush="{TemplateBinding SelectionBrush}"
+                                        SelectionEnd="{TemplateBinding SelectionEnd}"
+                                        SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                                        SelectionStart="{TemplateBinding SelectionStart}"
+                                        Text="{TemplateBinding Text,
+                                                               Mode=TwoWay}"
+                                        TextAlignment="{TemplateBinding TextAlignment}"
+                                        TextWrapping="{TemplateBinding TextWrapping}" />
+                                </Panel>
+                            </ScrollViewer>
+                            <Grid
+                                Grid.Column="4"
+                                ColumnDefinitions="Auto,Auto">
+                                <Button
+                                    Name="ClearButton"
+                                    Margin="4"
+                                    Padding="8,4"
+                                    IsVisible="False"
+                                    Command="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Clear}"
+                                    FontSize="{StaticResource SmallFontSize}"
+                                    Theme="{StaticResource GhostButtonTheme}">
+                                    <ui:GlyphIcon
+                                        FontSize="{StaticResource SmallFontSize}"
+                                        Symbol="Dismiss" />
+                                </Button>
+                                <ContentPresenter
+                                    Grid.Column="1"
+                                    Content="{TemplateBinding InnerRightContent}"
+                                    Foreground="{StaticResource ControlSecondaryForegroundBrush}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^.Multiline">
+            <Setter Property="AcceptsReturn" Value="True" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <Style Selector="^[IsReadOnly=False]:not(:empty).Clearable /template/ Button#ClearButton">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledBorderBrush}" />
+            <Setter Property="CaretBrush" Value="{StaticResource ControlDisabledForegroundBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+            <Setter Property="SelectionBrush" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Button#ClearButton">
+            <Setter Property="IsVisible" Value="False" />
+        </Style>
+    </ControlTheme>
+
+    <ControlTheme
+        x:Key="EmbeddedTextBoxTheme"
+        TargetType="TextBox">
+        <Setter Property="Cursor" Value="Ibeam" />
+        <Setter Property="Foreground" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="SelectionBrush" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+        <Setter Property="SelectionForegroundBrush" Value="{StaticResource ControlReversedForegroundBrush}" />
+        <Setter Property="CaretBrush" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <ScrollViewer
+                    AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+                    BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+                    HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+                    IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+                    VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+                    <Panel Margin="{TemplateBinding Padding}">
+                        <TextBlock
+                            Name="PART_Placeholder"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            Foreground="{StaticResource ControlSecondaryForegroundBrush}"
+                            Text="{TemplateBinding Watermark}"
+                            TextAlignment="{TemplateBinding TextAlignment}"
+                            TextWrapping="{TemplateBinding TextWrapping}">
+                            <TextBlock.IsVisible>
+                                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                    <Binding
+                                        Converter="{x:Static StringConverters.IsNullOrEmpty}"
+                                        ElementName="PART_TextPresenter"
+                                        Path="PreeditText" />
+                                    <Binding
+                                        Converter="{x:Static StringConverters.IsNullOrEmpty}"
+                                        Path="Text"
+                                        RelativeSource="{RelativeSource TemplatedParent}" />
+                                </MultiBinding>
+                            </TextBlock.IsVisible>
+                        </TextBlock>
+                        <TextPresenter
+                            Name="PART_TextPresenter"
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                            CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+                            CaretBrush="{TemplateBinding CaretBrush}"
+                            CaretIndex="{TemplateBinding CaretIndex}"
+                            LineHeight="{TemplateBinding LineHeight}"
+                            PasswordChar="{TemplateBinding PasswordChar}"
+                            RevealPassword="{TemplateBinding RevealPassword}"
+                            SelectionBrush="{TemplateBinding SelectionBrush}"
+                            SelectionEnd="{TemplateBinding SelectionEnd}"
+                            SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+                            SelectionStart="{TemplateBinding SelectionStart}"
+                            Text="{TemplateBinding Text,
+                                                   Mode=TwoWay}"
+                            TextAlignment="{TemplateBinding TextAlignment}"
+                            TextWrapping="{TemplateBinding TextWrapping}" />
+                    </Panel>
+                </ScrollViewer>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:disabled">
+            <Setter Property="CaretBrush" Value="{StaticResource ControlDisabledForegroundBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+            <Setter Property="SelectionBrush" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

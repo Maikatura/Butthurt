@@ -1,0 +1,305 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="using:Butthurt.UI">
+
+    <ControlTheme
+        x:Key="{x:Type CheckBox}"
+        TargetType="CheckBox">
+        <Setter Property="Background" Value="{StaticResource ControlInteractiveBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ControlInteractiveBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
+        <Setter Property="CornerRadius" Value="{StaticResource SmallCornerRadius}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid
+                    Background="{StaticResource TransparentBrush}"
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="6">
+                    <Border
+                        Name="Box"
+                        Grid.Column="0"
+                        Width="16"
+                        Height="16"
+                        MinWidth="{TemplateBinding FontSize}"
+                        MinHeight="{TemplateBinding FontSize}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Cursor="Hand">
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="Background"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="BorderBrush"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                            </Transitions>
+                        </Border.Transitions>
+                        <Panel Name="IndicatorContainer">
+                            <Border
+                                Name="Indicator"
+                                Margin="2"
+                                Background="{StaticResource OverlaySolidBackgroundBrush}"
+                                CornerRadius="{StaticResource ExtraSmallCornerRadius}"
+                                RenderTransform="scale(0.0)">
+                                <Border.Transitions>
+                                    <Transitions>
+                                        <CornerRadiusTransition
+                                            Easing="CubicEaseOut"
+                                            Property="CornerRadius"
+                                            Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                        <TransformOperationsTransition
+                                            Easing="CubicEaseOut"
+                                            Property="RenderTransform"
+                                            Duration="{StaticResource ControlFastestAnimationDuration}" />
+                                    </Transitions>
+                                </Border.Transitions>
+                            </Border>
+                        </Panel>
+                    </Border>
+                    <ContentPresenter
+                        Name="PART_ContentPresenter"
+                        Grid.Column="1"
+                        Margin="{TemplateBinding Padding}"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        IsVisible="{TemplateBinding Content,
+                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        RecognizesAccessKey="True"
+                        TextElement.FontSize="{TemplateBinding FontSize}"
+                        TextElement.FontWeight="{TemplateBinding FontWeight}"
+                        TextElement.Foreground="{TemplateBinding Foreground}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:checked">
+            <Style Selector="^ /template/ Border#Box">
+                <Setter Property="Background" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource ControlAccentInteractiveBorderBrush}" />
+            </Style>
+
+            <Style Selector="^ /template/ Border#Indicator">
+                <Setter Property="RenderTransform" Value="scale(1.0)" />
+            </Style>
+
+            <Style Selector="^:pointerover /template/ Border#Indicator">
+                <Setter Property="RenderTransform" Value="scale(1.2)" />
+            </Style>
+
+            <Style Selector="^:pressed /template/ Border#Indicator">
+                <Setter Property="RenderTransform" Value="scale(0.8)" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:unchecked">
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ Border#Box">
+                    <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^:indeterminate">
+            <Style Selector="^ /template/ Border#Box">
+                <Setter Property="Background" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource ControlAccentInteractiveBorderBrush}" />
+            </Style>
+            <Style Selector="^ /template/ Border#Indicator">
+                <Setter Property="RenderTransform" Value="scale(1.0)" />
+                <Setter Property="CornerRadius" Value="{StaticResource FullCornerRadius}" />
+            </Style>
+            <Style Selector="^ /template/ Panel#IndicatorContainer">
+                <Setter Property="RenderTransform" Value="rotate(45deg)" />
+            </Style>
+
+            <Style Selector="^:pointerover /template/ Border#Indicator">
+                <Setter Property="RenderTransform" Value="scale(1.2)" />
+            </Style>
+
+            <Style Selector="^:pressed /template/ Border#Indicator">
+                <Setter Property="RenderTransform" Value="scale(0.8)" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledInteractiveBorderBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Box">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledInteractiveBorderBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Indicator">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+
+    </ControlTheme>
+
+    <ControlTheme
+        x:Key="AlternativeCheckBoxTheme"
+        TargetType="CheckBox">
+        <Setter Property="Background" Value="{StaticResource ControlInteractiveBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ControlInteractiveBorderBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
+        <Setter Property="CornerRadius" Value="{StaticResource SmallCornerRadius}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Grid
+                    Background="{StaticResource TransparentBrush}"
+                    ColumnDefinitions="Auto,*"
+                    ColumnSpacing="6">
+                    <Border
+                        Name="Box"
+                        Grid.Column="0"
+                        Width="16"
+                        Height="16"
+                        MinWidth="{TemplateBinding FontSize}"
+                        MinHeight="{TemplateBinding FontSize}"
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Cursor="Hand">
+                        <Border.Transitions>
+                            <Transitions>
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="Background"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                <BrushTransition
+                                    Easing="SineEaseOut"
+                                    Property="BorderBrush"
+                                    Duration="{StaticResource ControlFasterAnimationDuration}" />
+                            </Transitions>
+                        </Border.Transitions>
+                        <Panel>
+                            <ui:GlyphIcon
+                                Name="Indeterminate"
+                                FontSize="{TemplateBinding FontSize}"
+                                Foreground="{StaticResource ControlBlackForegroundBrush}"
+                                Opacity="0"
+                                RenderTransform="scale(0.98)"
+                                Symbol="LineHorizontal1">
+                                <ui:GlyphIcon.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition
+                                            Easing="SineEaseOut"
+                                            Property="Opacity"
+                                            Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                        <TransformOperationsTransition
+                                            Easing="BackEaseOut"
+                                            Property="RenderTransform"
+                                            Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                    </Transitions>
+                                </ui:GlyphIcon.Transitions>
+                            </ui:GlyphIcon>
+                            <ui:GlyphIcon
+                                Name="Determinate"
+                                FontSize="{TemplateBinding FontSize}"
+                                Foreground="{StaticResource ControlBlackForegroundBrush}"
+                                Opacity="0"
+                                RenderTransform="scale(0.0)"
+                                Symbol="Checkmark">
+                                <ui:GlyphIcon.Transitions>
+                                    <Transitions>
+                                        <DoubleTransition
+                                            Easing="SineEaseOut"
+                                            Property="Opacity"
+                                            Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                        <TransformOperationsTransition
+                                            Easing="BackEaseOut"
+                                            Property="RenderTransform"
+                                            Duration="{StaticResource ControlFasterAnimationDuration}" />
+                                    </Transitions>
+                                </ui:GlyphIcon.Transitions>
+                            </ui:GlyphIcon>
+                        </Panel>
+                    </Border>
+                    <ContentPresenter
+                        Name="PART_ContentPresenter"
+                        Grid.Column="1"
+                        Margin="{TemplateBinding Padding}"
+                        HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        IsVisible="{TemplateBinding Content,
+                                                    Converter={x:Static ObjectConverters.IsNotNull}}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        RecognizesAccessKey="True"
+                        TextElement.FontSize="{TemplateBinding FontSize}"
+                        TextElement.FontWeight="{TemplateBinding FontWeight}"
+                        TextElement.Foreground="{TemplateBinding Foreground}" />
+                </Grid>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:checked">
+            <Style Selector="^ /template/ Border#Box">
+                <Setter Property="Background" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource ControlAccentInteractiveBorderBrush}" />
+            </Style>
+
+            <Style Selector="^ /template/ ui|GlyphIcon#Determinate">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="RenderTransform" Value="scale(1.0)" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:unchecked">
+            <Style Selector="^:pointerover">
+                <Style Selector="^ /template/ Border#Box">
+                    <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}" />
+                </Style>
+            </Style>
+        </Style>
+
+        <Style Selector="^:indeterminate">
+            <Style Selector="^ /template/ Border#Box">
+                <Setter Property="Background" Value="{StaticResource ControlAccentInteractiveBackgroundBrush}" />
+                <Setter Property="BorderBrush" Value="{StaticResource ControlAccentInteractiveBorderBrush}" />
+            </Style>
+
+            <Style Selector="^ /template/ ui|GlyphIcon#Indeterminate">
+                <Setter Property="Opacity" Value="1" />
+                <Setter Property="RenderTransform" Value="scale(1.0)" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledInteractiveBorderBrush}" />
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ Border#Box">
+            <Setter Property="Background" Value="{StaticResource ControlDisabledInteractiveBackgroundBrush}" />
+            <Setter Property="BorderBrush" Value="{StaticResource ControlDisabledInteractiveBorderBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+        <Style Selector="^:disabled /template/ ui|GlyphIcon#Determinate, ^:disabled /template/ ui|GlyphIcon#Indeterminate">
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

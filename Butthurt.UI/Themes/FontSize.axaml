@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.MergedDictionaries>
+        <!--  Quicksand 的字形要求普通大小为 14 才看得清, 不过能用 Medium 字重补偿  -->
+        <!--  Outfit 则只需要 12 就能很好显示  -->
+        <MergeResourceInclude Source="avares://Butthurt.UI/Themes/FontSize.Large.axaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>

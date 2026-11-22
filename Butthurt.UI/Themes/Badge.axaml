@@ -1,0 +1,99 @@
+<!-- shadcn/ui Badge. Usage:
+       <ui:Badge Content="New" />                                   filled primary
+       <ui:Badge Classes="Secondary Small" Content="3 days" />
+       <ui:Badge Classes="Outline" Content="v2" />
+       <ui:Badge Classes="Success Pill" ShowDot="True" Content="Online" />
+     Status variants are declared after Secondary/Outline so they win when both are set.
+     Variants set the control's own Background/BorderBrush/Foreground (not the template),
+     so a local value on the Badge always overrides them. -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="using:Butthurt.UI">
+    <ControlTheme x:Key="{x:Type ui:Badge}" TargetType="ui:Badge">
+        <Setter Property="Background" Value="{DynamicResource ShellAccentBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ShellClearBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ShellAccentForegroundBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="6" />
+        <Setter Property="Padding" Value="8,2" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="Medium" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <StackPanel Orientation="Horizontal" Spacing="6"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                        <Ellipse Name="PART_Dot" Width="6" Height="6" VerticalAlignment="Center"
+                                 Fill="{TemplateBinding Foreground}"
+                                 IsVisible="{TemplateBinding ShowDot}" />
+                        <ContentPresenter Name="PART_ContentPresenter" VerticalAlignment="Center"
+                                          Content="{TemplateBinding Content}"
+                                          ContentTemplate="{TemplateBinding ContentTemplate}" />
+                    </StackPanel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <!-- ===== Variants ===== -->
+        <Style Selector="^.Secondary">
+            <Setter Property="Background" Value="{DynamicResource PageInsetBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource PageCardBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ShellTextSecondaryBrush}" />
+        </Style>
+        <Style Selector="^.Outline">
+            <Setter Property="Background" Value="{DynamicResource ShellClearBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource PageCardBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource ShellTextPrimaryBrush}" />
+        </Style>
+
+        <Style Selector="^.Success">
+            <Setter Property="Background" Value="{DynamicResource SuccessSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource SuccessBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource SuccessTextBrush}" />
+            <Style Selector="^ /template/ Ellipse#PART_Dot">
+                <Setter Property="Fill" Value="{DynamicResource SuccessBrush}" />
+            </Style>
+        </Style>
+        <Style Selector="^.Warning">
+            <Setter Property="Background" Value="{DynamicResource WarningSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource WarningBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource WarningTextBrush}" />
+            <Style Selector="^ /template/ Ellipse#PART_Dot">
+                <Setter Property="Fill" Value="{DynamicResource WarningBrush}" />
+            </Style>
+        </Style>
+        <Style Selector="^.Danger">
+            <Setter Property="Background" Value="{DynamicResource DangerSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource DangerBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource DangerTextBrush}" />
+            <Style Selector="^ /template/ Ellipse#PART_Dot">
+                <Setter Property="Fill" Value="{DynamicResource DangerBrush}" />
+            </Style>
+        </Style>
+        <Style Selector="^.Info">
+            <Setter Property="Background" Value="{DynamicResource InfoSoftBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource InfoBorderBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource InfoTextBrush}" />
+            <Style Selector="^ /template/ Ellipse#PART_Dot">
+                <Setter Property="Fill" Value="{DynamicResource InfoBrush}" />
+            </Style>
+        </Style>
+
+        <!-- ===== Modifiers ===== -->
+        <Style Selector="^.Pill">
+            <Setter Property="CornerRadius" Value="999" />
+        </Style>
+        <Style Selector="^.Small">
+            <Setter Property="Padding" Value="6,1" />
+            <Setter Property="FontSize" Value="11" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

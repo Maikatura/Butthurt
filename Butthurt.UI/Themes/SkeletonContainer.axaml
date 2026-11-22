@@ -1,0 +1,52 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Butthurt.UI">
+    <ControlTheme
+        x:Key="{x:Type local:SkeletonContainer}"
+        TargetType="local:SkeletonContainer">
+        <Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Panel>
+                    <ContentPresenter
+                        Padding="{TemplateBinding Padding}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        CornerRadius="{TemplateBinding CornerRadius}" />
+                    <Border
+                        Name="Mask"
+                        IsVisible="False"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}">
+                        <Border
+                            Name="Wave"
+                            Background="{StaticResource Overlay7Color}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            Opacity="0" />
+                    </Border>
+                </Panel>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:loading /template/ Border#Mask">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:loading:animated /template/ Border#Wave">
+            <Style.Animations>
+                <Animation
+                    Easing="SineEaseOut"
+                    IterationCount="Infinite"
+                    PlaybackDirection="Alternate"
+                    Duration="0:0:0.8">
+                    <KeyFrame Cue="0%">
+                        <Setter Property="Opacity" Value="0" />
+                    </KeyFrame>
+                    <KeyFrame Cue="100%">
+                        <Setter Property="Opacity" Value="1" />
+                    </KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

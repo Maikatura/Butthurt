@@ -1,0 +1,60 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Butthurt.Contracts.Views.SettingsView">
+
+    <UserControl.Styles>
+        <Style Selector="ToggleSwitch">
+            <Setter Property="OnContent" Value=""/>
+            <Setter Property="OffContent" Value=""/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Styles>
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="Settings"/>
+                <TextBlock Classes="muted" Text="Everything is saved automatically. Game and streaming settings live on their own pages."/>
+            </StackPanel>
+
+            <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Plugins" Margin="0,0,0,6"/>
+                    <StackPanel x:Name="PluginList" Spacing="8"/>
+                    <TextBlock Classes="muted" FontSize="12"
+                               Text="Turned off plugins aren't loaded at all and disappear from the sidebar. Extra plugins can be dropped into the Plugins folder next to Butthurt.exe."/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Advanced" Margin="0,0,0,6"/>
+
+                    <Border Classes="row">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="Settings file"/>
+                                <TextBlock x:Name="SettingsPathText" Classes="muted" FontSize="12"/>
+                            </StackPanel>
+                            <Button Grid.Column="1" Classes="bt small" Content="Open folder" VerticalAlignment="Center"
+                                    Click="OpenFolder_Click"/>
+                        </Grid>
+                    </Border>
+
+                    <Border Classes="row">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock Classes="h3" Text="Reset everything"/>
+                                <TextBlock Classes="muted" FontSize="12" Text="Puts every setting, event and rule back to its default. This also forgets your Twitch login."/>
+                            </StackPanel>
+                            <Button x:Name="ResetButton" Grid.Column="1" Classes="bt small danger" Content="Reset"
+                                    VerticalAlignment="Center" Click="Reset_Click"/>
+                        </Grid>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

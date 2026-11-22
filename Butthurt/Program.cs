@@ -1,8 +1,18 @@
 ﻿using Buttplug.Client;
-using Buttplug.Client.Connectors.WebsocketConnector;
+using Buttplug.Client;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
+
+
+/// IF YOU ARE ASKING WTF IS THIS CODE.
+/// It's the first prototype version of Butthurt.
+/// I make it a long time ago and shouldn't be used anymore c:
+/// Use Butthurt.Desktop - also as a sidenote.
+/// -------------------------------------------------
+/// Always read the code you're running on your computer.
+/// Or if you can't at least run some local AI to review it for you.
+/// If you have to resort to that. :c
 
 class Program
 {

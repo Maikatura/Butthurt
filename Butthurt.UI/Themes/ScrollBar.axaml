@@ -1,0 +1,188 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:sys="using:System">
+
+    <!-- Arrow-less pill scrollbar. The control reserves ScrollBarThickness
+         as its hit area; the visible rail is thin (ScrollBarCompatThickness)
+         until the pointer comes near (IsExpanded), then widens to
+         ScrollBarExpandedThickness with a faint track behind the thumb.
+         Clicking the track still pages (PART_PageUp/DownButton). -->
+    <sys:Double x:Key="ScrollBarCompatThickness">3</sys:Double>
+    <sys:Double x:Key="ScrollBarExpandedThickness">8</sys:Double>
+    <sys:Double x:Key="ScrollBarThickness">12</sys:Double>
+    <!-- Keeps the thumb grabbable on huge ranges (e.g. 30k-row log feeds). -->
+    <sys:Double x:Key="ScrollBarThumbMinLength">28</sys:Double>
+
+    <SolidColorBrush x:Key="ScrollBarTrackBrush" Color="#0FFFFFFF" />
+    <SolidColorBrush x:Key="ScrollBarThumbBrush" Color="#40FFFFFF" />
+    <SolidColorBrush x:Key="ScrollBarThumbHoverBrush" Color="#70FFFFFF" />
+    <SolidColorBrush x:Key="ScrollBarThumbPressedBrush" Color="#A5ADFF" />
+
+    <ControlTheme
+        x:Key="{x:Type ScrollBar}"
+        TargetType="ScrollBar">
+        <Setter Property="Cursor" Value="Arrow" />
+        <Setter Property="ShowDelay" Value="0" />
+        <Setter Property="Background" Value="{StaticResource TransparentBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource ScrollBarThumbBrush}" />
+
+        <Style Selector="^:horizontal">
+            <Setter Property="Height" Value="{StaticResource ScrollBarThickness}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border
+                        Name="Background"
+                        Background="{TemplateBinding Background}">
+                        <Border
+                            Name="TrackBorder"
+                            Height="{StaticResource ScrollBarExpandedThickness}"
+                            Margin="4,0,4,2"
+                            VerticalAlignment="Bottom"
+                            CornerRadius="99">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition
+                                        Easing="SineEaseOut"
+                                        Property="Height"
+                                        Duration="{StaticResource ControlFastestAnimationDuration}" />
+                                    <BrushTransition
+                                        Property="Background"
+                                        Duration="{StaticResource ControlFastestAnimationDuration}" />
+                                </Transitions>
+                            </Border.Transitions>
+                            <Track
+                                DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                Maximum="{TemplateBinding Maximum}"
+                                Minimum="{TemplateBinding Minimum}"
+                                Orientation="{TemplateBinding Orientation}"
+                                ViewportSize="{TemplateBinding ViewportSize}"
+                                Value="{TemplateBinding Value,
+                                                        Mode=TwoWay}">
+                                <Track.DecreaseButton>
+                                    <RepeatButton
+                                        Name="PART_PageUpButton"
+                                        Background="{StaticResource TransparentBrush}"
+                                        Focusable="False" />
+                                </Track.DecreaseButton>
+                                <Track.IncreaseButton>
+                                    <RepeatButton
+                                        Name="PART_PageDownButton"
+                                        Background="{StaticResource TransparentBrush}"
+                                        Focusable="False" />
+                                </Track.IncreaseButton>
+                                <Thumb MinWidth="{StaticResource ScrollBarThumbMinLength}" />
+                            </Track>
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+
+            <Style Selector="^[IsExpanded=False] /template/ Border#TrackBorder">
+                <Setter Property="Height" Value="{StaticResource ScrollBarCompatThickness}" />
+            </Style>
+        </Style>
+
+        <Style Selector="^:vertical">
+            <Setter Property="Width" Value="{StaticResource ScrollBarThickness}" />
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border
+                        Name="Background"
+                        Background="{TemplateBinding Background}">
+                        <Border
+                            Name="TrackBorder"
+                            Width="{StaticResource ScrollBarExpandedThickness}"
+                            Margin="0,4,2,4"
+                            HorizontalAlignment="Right"
+                            CornerRadius="99">
+                            <Border.Transitions>
+                                <Transitions>
+                                    <DoubleTransition
+                                        Easing="SineEaseOut"
+                                        Property="Width"
+                                        Duration="{StaticResource ControlFastestAnimationDuration}" />
+                                    <BrushTransition
+                                        Property="Background"
+                                        Duration="{StaticResource ControlFastestAnimationDuration}" />
+                                </Transitions>
+                            </Border.Transitions>
+                            <Track
+                                DeferThumbDrag="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
+                                IsDirectionReversed="True"
+                                Maximum="{TemplateBinding Maximum}"
+                                Minimum="{TemplateBinding Minimum}"
+                                Orientation="{TemplateBinding Orientation}"
+                                ViewportSize="{TemplateBinding ViewportSize}"
+                                Value="{TemplateBinding Value,
+                                                        Mode=TwoWay}">
+                                <Track.DecreaseButton>
+                                    <RepeatButton
+                                        Name="PART_PageUpButton"
+                                        Background="{StaticResource TransparentBrush}"
+                                        Focusable="False" />
+                                </Track.DecreaseButton>
+                                <Track.IncreaseButton>
+                                    <RepeatButton
+                                        Name="PART_PageDownButton"
+                                        Background="{StaticResource TransparentBrush}"
+                                        Focusable="False" />
+                                </Track.IncreaseButton>
+                                <Thumb MinHeight="{StaticResource ScrollBarThumbMinLength}" />
+                            </Track>
+                        </Border>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+
+            <Style Selector="^[IsExpanded=False] /template/ Border#TrackBorder">
+                <Setter Property="Width" Value="{StaticResource ScrollBarCompatThickness}" />
+            </Style>
+        </Style>
+
+        <!-- Faint rail behind the thumb only while expanded. -->
+        <Style Selector="^[IsExpanded=True] /template/ Border#TrackBorder">
+            <Setter Property="Background" Value="{StaticResource ScrollBarTrackBrush}" />
+        </Style>
+
+        <Style Selector="^ /template/ RepeatButton">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <ContentPresenter
+                        Background="{TemplateBinding Background}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^ /template/ Thumb">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="CornerRadius" Value="99" />
+            <Setter Property="Background" Value="{TemplateBinding Foreground}" />
+            <Setter Property="Transitions">
+                <Transitions>
+                    <BrushTransition
+                        Property="Background"
+                        Duration="{StaticResource ControlFastestAnimationDuration}" />
+                </Transitions>
+            </Setter>
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}" />
+                </ControlTemplate>
+            </Setter>
+        </Style>
+        <Style Selector="^ /template/ Thumb:pointerover">
+            <Setter Property="Background" Value="{StaticResource ScrollBarThumbHoverBrush}" />
+        </Style>
+        <Style Selector="^ /template/ Thumb:pressed">
+            <Setter Property="Background" Value="{StaticResource ScrollBarThumbPressedBrush}" />
+        </Style>
+
+        <Style Selector="^:disabled">
+            <Setter Property="Foreground" Value="{StaticResource ControlDisabledForegroundBrush}" />
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

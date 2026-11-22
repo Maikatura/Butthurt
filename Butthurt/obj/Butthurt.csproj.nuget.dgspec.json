@@ -1,30 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj": {}
+    "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj": {}
   },
   "projects": {
-    "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj": {
+    "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj",
+        "projectUniqueName": "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
         "projectName": "Butthurt",
-        "projectPath": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\Butthurt.csproj",
+        "projectPath": "E:\\Github\\Butthurt\\Butthurt\\Butthurt.csproj",
         "packagesPath": "C:\\Users\\maika\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\maika\\RiderProjects\\Butthurt\\Butthurt\\obj\\",
+        "outputPath": "E:\\Github\\Butthurt\\Butthurt\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\maika\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net8.0"
+          "net9.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net8.0": {
-            "targetAlias": "net8.0",
+          "net9.0": {
+            "framework": "net9.0",
+            "targetAlias": "net9.0",
             "projectReferences": {}
           }
         },
@@ -36,21 +37,18 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "11.0.100"
       },
       "frameworks": {
-        "net8.0": {
-          "targetAlias": "net8.0",
+        "net9.0": {
+          "framework": "net9.0",
+          "targetAlias": "net9.0",
           "dependencies": {
             "Buttplug": {
               "target": "Package",
-              "version": "[3.0.1, )"
-            },
-            "Buttplug.Client.Connectors.WebsocketConnector": {
-              "target": "Package",
-              "version": "[3.0.1, )"
+              "version": "[4.0.0, )"
             },
             "System.Drawing.Common": {
               "target": "Package",
@@ -71,19 +69,19 @@
           "downloadDependencies": [
             {
               "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.11, 8.0.11]"
+              "version": "[9.0.23, 9.0.23]"
             },
             {
               "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.11, 8.0.11]"
+              "version": "[9.0.23, 9.0.23]"
             },
             {
               "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.11, 8.0.11]"
+              "version": "[9.0.23, 9.0.23]"
             },
             {
               "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.11, 8.0.11]"
+              "version": "[9.0.23, 9.0.23]"
             }
           ],
           "frameworkReferences": {
@@ -91,7 +89,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Users\\maika\\.dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\11.0.100/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

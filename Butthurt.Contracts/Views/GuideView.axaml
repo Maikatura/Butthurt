@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Butthurt.Contracts.Views.GuideView">
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="Guide"/>
+                <TextBlock Classes="muted" Text="From zero to buzzing in a few minutes."/>
+            </StackPanel>
+
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <TextBlock Classes="h2" Text="Setup"/>
+                    <StackPanel x:Name="SetupSteps" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Each plugin adds its own sections here -->
+            <StackPanel x:Name="PluginSections" Spacing="20"/>
+
+            <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Troubleshooting"/>
+                    <StackPanel x:Name="Troubleshooting" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <Border Classes="card">
+                <StackPanel Spacing="8">
+                    <TextBlock Classes="h2" Text="Making a plugin"/>
+                    <TextBlock Classes="muted"
+                               Text="Every game or site is its own project (Butthurt.Warcraft, Butthurt.Twitch). Copy one, implement IPlugin from Butthurt.Contracts (pages, status, start and stop), then register it in MainWindow or drop the built DLL into the Plugins folder next to Butthurt.exe."/>
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

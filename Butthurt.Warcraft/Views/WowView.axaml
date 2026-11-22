@@ -1,0 +1,149 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             x:Class="Butthurt.Warcraft.Views.WowView">
+
+    <ScrollViewer Classes="page">
+        <StackPanel Spacing="20" Margin="32,28" MaxWidth="1040">
+
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="World of Warcraft"/>
+                <TextBlock Classes="muted"
+                           Text="Set the game up once, then decide what each in-game event does to your toys and PiShock."/>
+            </StackPanel>
+
+            <!-- Game watcher (with its settings) -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Border Classes="iconbox" Margin="0,0,14,0">
+                            <iconPacks:PackIconLucide Kind="Radar" Width="20" Height="20" Foreground="#FAFAFA"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <TextBlock Classes="h2" Text="Game watcher"/>
+                                <Border x:Name="WatcherPill" Classes="pill" VerticalAlignment="Center">
+                                    <TextBlock x:Name="WatcherPillText" FontSize="11" FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock x:Name="WatcherText" Classes="muted"/>
+                        </StackPanel>
+                        <Button x:Name="WatcherButton" Grid.Column="2" Classes="bt primary" VerticalAlignment="Center"
+                                Margin="14,0,0,0" Click="WatcherButton_Click"/>
+                    </Grid>
+
+                    <Grid ColumnDefinitions="*,16,*">
+                        <Border Classes="row">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <StackPanel Spacing="2" VerticalAlignment="Center">
+                                    <TextBlock Classes="h3" Text="Start with Butthurt"/>
+                                    <TextBlock Classes="muted" FontSize="12" Text="Idle until the game window is in focus."/>
+                                </StackPanel>
+                                <ToggleSwitch x:Name="AutoWatchToggle" Grid.Column="1" OnContent="" OffContent="" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Column="2" Classes="row">
+                            <StackPanel Spacing="4">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <StackPanel Spacing="2">
+                                        <TextBlock Classes="h3" Text="Check the game every"/>
+                                        <TextBlock Classes="muted" FontSize="12" Text="Lower is snappier, 50 ms is plenty."/>
+                                    </StackPanel>
+                                    <TextBlock x:Name="PollText" Grid.Column="1" Classes="h3" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Slider x:Name="PollSlider" Minimum="10" Maximum="250"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Addon installer -->
+            <Border Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Border Classes="iconbox" Margin="0,0,14,0">
+                            <iconPacks:PackIconLucide Kind="Download" Width="20" Height="20" Foreground="#FAFAFA"
+                                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                            <TextBlock Classes="h2" Text="Addon"/>
+                            <TextBlock x:Name="AddonSummary" Classes="muted" TextWrapping="Wrap"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center" Margin="14,0,0,0">
+                            <Button x:Name="AutoInstallButton" Classes="bt primary" VerticalAlignment="Center" Click="AutoInstallButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <iconPacks:PackIconLucide Kind="Sparkles" Width="16" Height="16" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Auto install" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="AddonExpandButton" Classes="bt ghost small" VerticalAlignment="Center"
+                                    ToolTip.Tip="Show the folder and every game version" Click="AddonExpand_Click">
+                                <iconPacks:PackIconLucide x:Name="AddonExpandIcon" Kind="ChevronDown" Width="16" Height="16"/>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Collapsed by default: the folder and every game version -->
+                    <StackPanel x:Name="AddonDetails" Spacing="14" IsVisible="False">
+                    <TextBlock Classes="muted" TextWrapping="Wrap"
+                               Text="Installs the addon that comes with Butthurt. Nothing is downloaded. Reinstall it after updating Butthurt to get new events."/>
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="caption" Text="WORLD OF WARCRAFT FOLDER"/>
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <TextBox x:Name="WowPathBox" Classes="field" Watermark="C:\Program Files (x86)\World of Warcraft"/>
+                            <Button Grid.Column="1" Classes="bt" Margin="8,0,0,0" Click="BrowseButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <iconPacks:PackIconLucide Kind="FolderOpen" Width="16" Height="16" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Browse" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Column="2" Classes="bt" Margin="8,0,0,0" Click="DetectButton_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <iconPacks:PackIconLucide Kind="Search" Width="16" Height="16" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Find it" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+
+                    <TextBlock x:Name="FlavorHint" Classes="muted"/>
+                    <StackPanel x:Name="FlavorList" Spacing="8"/>
+                    <TextBlock Classes="muted" FontSize="12"
+                               Text="Restart the game or type /reload after installing. In game, /butthurt opens the addon's settings window."/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Toy rules (only with the Toys plugin on) -->
+            <Border x:Name="ToyRulesCard" Classes="card">
+                <StackPanel Spacing="14">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <StackPanel Spacing="2">
+                            <TextBlock Classes="h2" Text="Toy rules"/>
+                            <TextBlock Classes="muted" TextWrapping="Wrap"
+                                       Text="What each in-game event does to your toys. Add as many as you like, also several for one event. Overlapping buzzes merge: strongest intensity, longest time."/>
+                        </StackPanel>
+                        <Button x:Name="AddRuleButton" Grid.Column="1" Classes="bt primary" VerticalAlignment="Center" Margin="14,0,0,0">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <iconPacks:PackIconLucide Kind="Plus" Width="16" Height="16" VerticalAlignment="Center"/>
+                                <TextBlock Text="Add rule" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <TextBlock x:Name="NoRulesText" Classes="muted" IsVisible="False"
+                               Text="No rules yet. Add one to decide what makes your toy buzz."/>
+                    <StackPanel x:Name="RuleList" Spacing="8"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Cards from other plugins, e.g. PiShock rules (see PageSections) -->
+            <StackPanel x:Name="ExtraSections" Spacing="20"/>
+
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

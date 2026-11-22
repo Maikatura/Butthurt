@@ -1,0 +1,24 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+             x:Class="Butthurt.Contracts.Views.NotificationControl">
+
+    <Border x:Name="RootBorder"
+            Background="{DynamicResource NotificationBackground}"
+            BorderBrush="{DynamicResource BorderBrush}"
+            BorderThickness="1"
+            CornerRadius="10"
+            Padding="14,10"
+            MinWidth="220"
+            MaxWidth="360"
+            Opacity="0">
+        <StackPanel Orientation="Horizontal" Spacing="10">
+            <Border Width="4" CornerRadius="2" Background="{DynamicResource AccentGradient}"/>
+            <TextBlock x:Name="MessageTextBlock"
+                       VerticalAlignment="Center"
+                       TextWrapping="Wrap"
+                       MaxWidth="310"
+                       Foreground="{DynamicResource NotificationForeground}"/>
+        </StackPanel>
+    </Border>
+</UserControl>

@@ -1,0 +1,41 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Butthurt.UI">
+    <ControlTheme
+        x:Key="{x:Type local:BusyContainer}"
+        TargetType="local:BusyContainer">
+        <Setter Property="Background" Value="{StaticResource OverlayMaskBackgroundBrush}" />
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border ClipToBounds="{TemplateBinding ClipToBounds}">
+                    <Panel>
+                        <ContentPresenter
+                            Name="PART_ContentPresenter"
+                            Padding="{TemplateBinding Padding}"
+                            Content="{TemplateBinding Content}"
+                            ContentTemplate="{TemplateBinding ContentTemplate}" />
+                        <Border
+                            Name="Mask"
+                            IsVisible="False"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}">
+                            <ContentPresenter Content="{TemplateBinding PendingContent}" />
+                        </Border>
+                    </Panel>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+
+        <Style Selector="^:busy /template/ Border#Mask">
+            <Setter Property="IsVisible" Value="True" />
+        </Style>
+        <Style Selector="^:busy /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Effect">
+                <BlurEffect />
+            </Setter>
+        </Style>
+    </ControlTheme>
+</ResourceDictionary>

@@ -1,0 +1,65 @@
+<!-- Control themes for Avalonia's built-in controls, shadcn/ui (dark): zinc grays, near-white
+     primary accent, rounded radii. Originally derived from Huskui.Avalonia (MIT, see
+     LICENSE-Huskui.txt in this folder). Controls without a theme here fall back to FluentTheme,
+     which ButthurtTheme loads first. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="using:Butthurt.UI">
+    <Styles.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/CornerRadii.Shadcn.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Colors.Accent.Zinc.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Colors.Gray.Neutral.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/CornerRadii.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Colors.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Basics.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/FontSize.axaml" />
+
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/AdornerLayer.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Button.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/BusyContainer.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/CheckBox.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ComboBox.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ContextMenu.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Divider.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Flyout.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ItemsControl.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ListBox.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Menu.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/PathIcon.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Popup.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ProgressBar.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ProgressRing.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ScrollBar.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ScrollViewer.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/SelectableTextBlock.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/Separator.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/SkeletonContainer.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/TabControl.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/TextBox.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ToggleButton.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ToggleSwitch.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/ToolTip.axaml" />
+                <ResourceInclude Source="avares://Butthurt.UI/Themes/TransitioningContentControl.axaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+    <StyleInclude Source="avares://Butthurt.UI/Themes/Animations.axaml" />
+
+    <!-- NumericUpDown has no theme of its own here: match the TextBox (same surface, edge,
+         radius and text colour) so number inputs sit cleanly next to text inputs. -->
+    <Style Selector="NumericUpDown">
+        <Setter Property="Background" Value="{StaticResource OverlayInteractiveBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource ControlInteractiveBorderBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource ControlForegroundBrush}" />
+        <Setter Property="CornerRadius" Value="{StaticResource SmallCornerRadius}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <!-- Bare icons take the theme's body size (SymbolIcon's FontSize doesn't inherit). -->
+    <Style Selector="ui|GlyphIcon">
+        <Setter Property="FontSize" Value="{StaticResource MediumFontSize}" />
+    </Style>
+</Styles>

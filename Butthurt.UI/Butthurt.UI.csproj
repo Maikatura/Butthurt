@@ -1,0 +1,23 @@
+<!-- Butthurt.UI: the shared Avalonia design system (shadcn/ui look, dark zinc), brought over from GoonRobot.Desktop.UI.
+     Tokens, control themes (originally derived from Huskui.Avalonia, MIT, see Themes/LICENSE-Huskui.txt)
+     and small components (Badge, Alert, ...). Any Avalonia app gets all of it with one line
+     in App.axaml: <ui:ButthurtTheme /> inside Application.Styles. -->
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <LangVersion>latest</LangVersion>
+        <RootNamespace>Butthurt.UI</RootNamespace>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.3.6" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.6" />
+    </ItemGroup>
+</Project>

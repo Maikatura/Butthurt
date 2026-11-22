@@ -1,0 +1,276 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Butthurt's page vocabulary: pages opt in with Classes="..." (card, row, bt, field, pill, h1…).
+         Values follow shadcn/ui (zinc, dark), the same tokens as Butthurt.UI/Themes/Tokens.axaml (GoonRobot.Desktop's
+         look): the window is the sidebar colour, pages sit on a darker rounded panel, cards are a step lighter with a
+         1px border, the primary button is near-white with dark text. Built-in controls (TextBox, ComboBox, CheckBox,
+         ToggleSwitch, Slider…) get their look from Butthurt.UI's control themes. -->
+
+    <Styles.Resources>
+        <!-- Palette (shadcn zinc). Kept under Butthurt's own names so every page keeps working. -->
+        <Color x:Key="BgColor">#111113</Color>
+        <Color x:Key="SurfaceColor">#09090B</Color>
+        <Color x:Key="CardColor">#111113</Color>
+        <Color x:Key="CardHoverColor">#18181B</Color>
+        <Color x:Key="BorderColor">#27272A</Color>
+        <Color x:Key="AccentColor">#FAFAFA</Color>
+        <Color x:Key="Accent2Color">#60A5FA</Color>
+        <Color x:Key="TextColor">#FAFAFA</Color>
+        <Color x:Key="MutedColor">#A1A1AA</Color>
+        <Color x:Key="DimColor">#71717A</Color>
+        <Color x:Key="SuccessColor">#34D399</Color>
+        <Color x:Key="WarningColor">#FBBF24</Color>
+        <Color x:Key="DangerColor">#F87171</Color>
+
+        <SolidColorBrush x:Key="BgBrush" Color="{StaticResource BgColor}"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
+        <SolidColorBrush x:Key="CardBrush" Color="{StaticResource CardColor}"/>
+        <SolidColorBrush x:Key="CardHoverBrush" Color="{StaticResource CardHoverColor}"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
+        <SolidColorBrush x:Key="StrongBorderBrush" Color="#3F3F46"/>
+        <SolidColorBrush x:Key="HoverBrush" Color="#1F1F23"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
+        <SolidColorBrush x:Key="AccentForegroundBrush" Color="#18181B"/>
+        <SolidColorBrush x:Key="Accent2Brush" Color="{StaticResource Accent2Color}"/>
+        <SolidColorBrush x:Key="TextBrush" Color="{StaticResource TextColor}"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="{StaticResource MutedColor}"/>
+        <SolidColorBrush x:Key="DimBrush" Color="{StaticResource DimColor}"/>
+        <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}"/>
+        <!-- shadcn's "accent" surface: icon wells, the active sidebar item -->
+        <SolidColorBrush x:Key="AccentSoftBrush" Color="#27272A"/>
+
+        <!-- Kept as gradients so older code keeps working, but shadcn is flat: near-white primary. -->
+        <LinearGradientBrush x:Key="AccentGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Offset="0" Color="#FAFAFA"/>
+            <GradientStop Offset="1" Color="#E4E4E7"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="AccentGradientHover" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Offset="0" Color="#E4E4E7"/>
+            <GradientStop Offset="1" Color="#D4D4D8"/>
+        </LinearGradientBrush>
+        <LinearGradientBrush x:Key="HeroGradient" StartPoint="0%,0%" EndPoint="100%,100%">
+            <GradientStop Offset="0" Color="#1C1C20"/>
+            <GradientStop Offset="0.5" Color="#141416"/>
+            <GradientStop Offset="1" Color="#111113"/>
+        </LinearGradientBrush>
+
+        <!-- Used by NotificationControl -->
+        <SolidColorBrush x:Key="NotificationBackground" Color="#18181B"/>
+        <SolidColorBrush x:Key="NotificationForeground" Color="{StaticResource TextColor}"/>
+
+        <FontFamily x:Key="MonoFont">Cascadia Code, Consolas, Courier New</FontFamily>
+    </Styles.Resources>
+
+    <!-- ===== Typography ===== -->
+    <Style Selector="TextBlock.h1">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.h2">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.h3">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.body">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style Selector="TextBlock.muted">
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    <Style Selector="TextBlock.caption">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="LetterSpacing" Value="0.5"/>
+        <Setter Property="Foreground" Value="{StaticResource DimBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.stat">
+        <Setter Property="FontSize" Value="24"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="FontFeatures" Value="+tnum"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="TextBlock.code">
+        <Setter Property="FontFamily" Value="{StaticResource MonoFont}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="#E4E4E7"/>
+        <Setter Property="TextWrapping" Value="NoWrap"/>
+    </Style>
+
+    <!-- ===== Surfaces ===== -->
+    <Style Selector="Border.card">
+        <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="12"/>
+        <Setter Property="Padding" Value="24,20"/>
+    </Style>
+    <Style Selector="Border.row">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="14"/>
+    </Style>
+    <Style Selector="Border.codeblock">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="14"/>
+    </Style>
+    <Style Selector="Border.iconbox">
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="36"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+    </Style>
+    <!-- shadcn badge (outline) -->
+    <Style Selector="Border.pill">
+        <Setter Property="CornerRadius" Value="999"/>
+        <Setter Property="Padding" Value="10,3"/>
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <!-- ===== Buttons: shadcn variants (default = outline, primary, danger = destructive, ghost) ===== -->
+    <Style Selector="Button.bt">
+        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="CornerRadius" Value="8"/>
+        <Setter Property="Padding" Value="16,8"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Transitions">
+            <Transitions>
+                <DoubleTransition Property="Opacity" Duration="0:0:0.15"/>
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Name="PART_Border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <Border.Transitions>
+                        <Transitions>
+                            <BrushTransition Property="Background" Duration="0:0:0.12"/>
+                        </Transitions>
+                    </Border.Transitions>
+                    <ContentPresenter Name="PART_ContentPresenter"
+                                      Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+    <Style Selector="Button.bt:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="{StaticResource HoverBrush}"/>
+    </Style>
+    <Style Selector="Button.bt:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.98)"/>
+    </Style>
+    <Style Selector="Button.bt:disabled">
+        <Setter Property="Opacity" Value="0.5"/>
+    </Style>
+    <Style Selector="Button.bt:focus-visible /template/ Border#PART_Border">
+        <Setter Property="BorderBrush" Value="#71717A"/>
+    </Style>
+
+    <Style Selector="Button.bt.primary">
+        <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource AccentForegroundBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.primary:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="#E4E4E7"/>
+    </Style>
+
+    <Style Selector="Button.bt.danger">
+        <Setter Property="Background" Value="#B91C1C"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="#FAFAFA"/>
+    </Style>
+    <Style Selector="Button.bt.danger:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="#DC2626"/>
+    </Style>
+
+    <Style Selector="Button.bt.ghost">
+        <Setter Property="Background" Value="#00000000"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.ghost:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="{StaticResource HoverBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.ghost:pointerover">
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+
+    <Style Selector="Button.bt.small">
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="CornerRadius" Value="6"/>
+    </Style>
+
+    <!-- Sidebar navigation (shadcn sidebar menu button) -->
+    <Style Selector="Button.bt.nav">
+        <Setter Property="Background" Value="#00000000"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="CornerRadius" Value="6"/>
+        <Setter Property="FontWeight" Value="Medium"/>
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+    <Style Selector="Button.bt.nav:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="{StaticResource HoverBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.nav:pointerover">
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.nav.active">
+        <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+        <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+    </Style>
+    <Style Selector="Button.bt.nav.active:pointerover /template/ Border#PART_Border">
+        <Setter Property="Background" Value="{StaticResource AccentSoftBrush}"/>
+    </Style>
+
+    <!-- ===== Inputs: the control themes do the rest ===== -->
+    <Style Selector="TextBox.field">
+        <Setter Property="FontSize" Value="13"/>
+    </Style>
+
+    <Style Selector="ScrollViewer.page">
+        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
+    </Style>
+</Styles>
