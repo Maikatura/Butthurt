@@ -17,5 +17,7 @@
         <!-- PiShock rules react to Twitch and Fansly events and reuse their conditions and editors -->
         <ProjectReference Include="..\Butthurt.Twitch\Butthurt.Twitch.csproj" />
         <ProjectReference Include="..\Butthurt.Fansly\Butthurt.Fansly.csproj" />
+        <ProjectReference Include="..\Butthurt.Warcraft\Butthurt.Warcraft.csproj" />
+        <ProjectReference Include="..\Butthurt.VRChat\Butthurt.VRChat.csproj" />
     </ItemGroup>
 </Project>

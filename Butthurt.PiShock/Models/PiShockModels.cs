@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Butthurt.Fansly.Models;
 using Butthurt.Twitch.Models;
+using Butthurt.VRChat.Models;
+using Butthurt.Warcraft.Models;
 using IconPacks.Avalonia.Lucide;
 
 namespace Butthurt.PiShock.Models;
@@ -18,7 +20,9 @@ public enum PiShockOp
 public enum PiShockSource
 {
     Twitch,
-    Fansly
+    Fansly,
+    Warcraft,
+    VRChat
 }
 
 public enum ShockerTarget
@@ -38,8 +42,17 @@ public class PiShockShocker
 {
     public string Id { get; set; } = Guid.NewGuid().ToString("N");
     public string Name { get; set; } = "";
+
+    /// <summary>Optional. A share code made on pishock.com; its own limits apply on top of Butthurt's.</summary>
     public string ShareCode { get; set; } = "";
+
+    /// <summary>The hub (PiShock "clientId") and shocker ids. Filled by "Find my shockers" or looked up from the share code.</summary>
+    public int HubId { get; set; }
+    public int ShockerId { get; set; }
+
     public bool Enabled { get; set; } = true;
+
+    public bool HasRoute => (HubId > 0 && ShockerId > 0) || !string.IsNullOrWhiteSpace(ShareCode);
 
     /// <summary>Nothing goes above this, whatever a rule says (1–100). The share code's own limits on pishock.com apply too.</summary>
     public int MaxIntensity { get; set; } = 50;
@@ -63,6 +76,12 @@ public class PiShockRule
     /// <summary>Used when <see cref="Source"/> is Fansly.</summary>
     public FanslyCondition Fansly { get; set; } = new() { Trigger = FanslyTrigger.Tip, MinTip = 5 };
 
+    /// <summary>Used when <see cref="Source"/> is Warcraft: which in-game event, and its cooldown.</summary>
+    public WowCondition Warcraft { get; set; } = new() { Event = WowEventType.Death };
+
+    /// <summary>Used when <see cref="Source"/> is VRChat: an avatar parameter (contact, toggle…) that goes on.</summary>
+    public VRChatParameterCondition VRChat { get; set; } = new();
+
     public PiShockOp Op { get; set; } = PiShockOp.Vibrate;
 
     /// <summary>1–100, capped by each shocker's maximum. Beeps have no intensity.</summary>
@@ -83,11 +102,14 @@ public class PiShockRule
 
 public class PiShockSettings
 {
-    /// <summary>The pishock.com username the API key belongs to.</summary>
+    /// <summary>Whose API key it is, as PiShock reports it (shown on the page, not needed for anything).</summary>
     public string Username { get; set; } = "";
 
     /// <summary>Stored encrypted for the current Windows user, see <c>Secrets</c>.</summary>
     public string? ApiKey { get; set; }
+
+    /// <summary>PiShock's id for the account, looked up from the API key (cleared when it changes).</summary>
+    public int UserId { get; set; }
 
     /// <summary>Shown in the PiShock logs as who sent the command (the viewer's name is added after it).</summary>
     public string SenderName { get; set; } = "Butthurt";

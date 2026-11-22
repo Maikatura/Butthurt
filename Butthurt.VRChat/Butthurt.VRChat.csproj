@@ -16,5 +16,7 @@
         <ProjectReference Include="..\Butthurt.Contracts\Butthurt.Contracts.csproj" />
         <!-- VRChat rules react to Twitch events and reuse its conditions and editor -->
         <ProjectReference Include="..\Butthurt.Twitch\Butthurt.Twitch.csproj" />
+        <!-- ...and to Fansly, with the same rules -->
+        <ProjectReference Include="..\Butthurt.Fansly\Butthurt.Fansly.csproj" />
     </ItemGroup>
 </Project>

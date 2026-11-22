@@ -5,18 +5,20 @@ using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
+using Butthurt.Contracts;
 using Butthurt.Contracts.Models;
+using Butthurt.Contracts.Views;
 using Butthurt.Contracts.Services;
 using Buttplug.Client;
 using IconPacks.Avalonia.Lucide;
 
-namespace Butthurt.Contracts.Views;
+namespace Butthurt.Toys.Views;
 
 public partial class ToysView : UserControl, IPageView
 {
     public string Title => "Toys";
     public PackIconLucideKind Icon => PackIconLucideKind.Vibrate;
-    public SideBarType SidebarType => SideBarType.Header;
+    public SideBarType SidebarType => SideBarType.Hardware;
     public event EventHandler? BackRequested;
 
     private bool _loading;
@@ -36,12 +38,20 @@ public partial class ToysView : UserControl, IPageView
 
         UrlBox.LostFocus += (_, _) => SaveUrl();
 
+        AutoConnectToggle.IsCheckedChanged += (_, _) =>
+        {
+            if (_loading) return;
+            SettingsService.Current.AutoConnect = AutoConnectToggle.IsChecked == true;
+            SettingsService.Save();
+        };
+
         ButthurtService.StateChanged += (_, _) => Dispatcher.UIThread.Post(Refresh);
 
         AttachedToVisualTree += (_, _) =>
         {
             _loading = true;
             UrlBox.Text = SettingsService.Current.IntifaceUrl;
+            AutoConnectToggle.IsChecked = SettingsService.Current.AutoConnect;
             MasterSlider.Value = SettingsService.Current.MasterIntensity * 100;
             MasterText.Text = $"{MasterSlider.Value:0}%";
             _loading = false;

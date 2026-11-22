@@ -20,52 +20,17 @@ public static class PluginManager
     /// <summary>Every known plugin, turned on or not (for the Settings page).</summary>
     public static IReadOnlyList<IPlugin> AllPlugins => _plugins;
 
-    /// <summary>
-    /// The plugins that are turned on (and not hidden because toy features are off).
-    /// Everything else in the app only looks at these.
-    /// </summary>
-    public static IReadOnlyList<IPlugin> Plugins => _plugins.Where(IsActive).ToList();
+    /// <summary>The plugins that are turned on. Everything else in the app only looks at these.</summary>
+    public static IReadOnlyList<IPlugin> Plugins => _plugins.Where(IsEnabled).ToList();
 
-    /// <summary>Whether toy features (Intiface, vibrations, toy-only plugins) are on. See AppSettings.ToysEnabled.</summary>
-    public static bool ToysEnabled => SettingsService.Current.ToysEnabled;
-
-    /// <summary>False for toy-only plugins while toy features are off.</summary>
-    public static bool IsAvailable(IPlugin plugin) => ToysEnabled || !plugin.UsesToys;
-
-    private static bool IsActive(IPlugin plugin) => IsEnabled(plugin) && IsAvailable(plugin);
+    /// <summary>The Toys plugin's id (Butthurt.Toys), which Contracts can't reference directly.</summary>
+    public const string ToysPluginId = "Toys";
 
     /// <summary>
-    /// Turns every toy feature on or off at once: disconnects Intiface and stops toy-only plugins when
-    /// turning off, starts them again when turning back on. Pages update through PluginsChanged.
+    /// Whether toys (Intiface) are in use: the Toys plugin is loaded and turned on. When it's off, vibration
+    /// rules sit out and the app talks about streaming instead of toys.
     /// </summary>
-    public static async Task SetToysEnabled(bool enabled)
-    {
-        if (ToysEnabled == enabled) return;
-
-        var toyPlugins = _plugins.Where(p => p.UsesToys && IsEnabled(p)).ToList();
-
-        if (!enabled)
-        {
-            foreach (var plugin in toyPlugins.Where(_initialized.Contains)) await Safe(plugin, plugin.Stop);
-            await ButthurtService.Stop();
-        }
-
-        SettingsService.Current.ToysEnabled = enabled;
-        SettingsService.Save();
-
-        if (enabled)
-        {
-            foreach (var plugin in toyPlugins)
-            {
-                if (!_initialized.Contains(plugin)) Initialize(plugin);
-                else await Safe(plugin, plugin.Start);
-            }
-        }
-
-        ActivityLog.Add(enabled ? "Toy features turned on" : "Toy features turned off, Butthurt is in streaming mode");
-        PluginsChanged?.Invoke(null, EventArgs.Empty);
-        StatusChanged?.Invoke(null, EventArgs.Empty);
-    }
+    public static bool ToysEnabled => IsOn(ToysPluginId);
 
     /// <summary>Raised when any plugin's status changes. May fire on any thread.</summary>
     public static event EventHandler? StatusChanged;
@@ -108,12 +73,30 @@ public static class PluginManager
         }
     }
 
+    /// <summary>Whether the plugin with this id is loaded and turned on.</summary>
+    public static bool IsOn(string pluginId) => Plugins.Any(p => p.Id == pluginId);
+
     public static bool IsEnabled(IPlugin plugin) => !SettingsService.Current.DisabledPlugins.Contains(plugin.Id);
 
     /// <summary>Initializes every plugin that is turned on. Called once at startup.</summary>
     public static void InitializeAll()
     {
+        MoveOldToySwitch();
         foreach (var plugin in Plugins) Initialize(plugin);
+    }
+
+    /// <summary>
+    /// Before Toys was a plugin, Settings had one "Toy features" switch. If it was off, turn the Toys plugin off
+    /// instead, once.
+    /// </summary>
+    private static void MoveOldToySwitch()
+    {
+        var settings = SettingsService.Current;
+        if (settings.ToysEnabled) return;
+
+        if (!settings.DisabledPlugins.Contains(ToysPluginId)) settings.DisabledPlugins.Add(ToysPluginId);
+        settings.ToysEnabled = true;
+        SettingsService.Save();
     }
 
     /// <summary>Turns a plugin on or off right away: it starts or stops and its pages appear or disappear.</summary>
@@ -126,11 +109,7 @@ public static class PluginManager
         if (!enabled) disabled.Add(plugin.Id);
         SettingsService.Save();
 
-        if (enabled && !IsAvailable(plugin))
-        {
-            // Remembered as on, it starts once toy features are turned back on.
-        }
-        else if (enabled)
+        if (enabled)
         {
             // First time: Initialize does its own auto start. After that, start it like the Start button would.
             if (!_initialized.Contains(plugin)) Initialize(plugin);

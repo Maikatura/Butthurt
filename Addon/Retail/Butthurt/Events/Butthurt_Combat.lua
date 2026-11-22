@@ -22,7 +22,7 @@ end
 
 local function PlayerHit(self, unitTarget, eventType, flagText, amount, schoolMask)
     -- UNIT_COMBAT fires for every unit with a token (target, party, ...), we only care about ourselves.
-    if unitTarget ~= "player" then return; end
+    if not Butthurt:IsPlayerUnit(unitTarget) then return; end
 
     if IsHeal(eventType) then
         Butthurt:Triggered("HEAL")

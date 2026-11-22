@@ -1,205 +1,87 @@
+# Butthurt
 
-## THIS IS A NEW BRANCH!
-
-I am remaking this whole program, so instead of just a console application, It will now have its own GUI. I am not 
-planing to add support for some games that support addons without modding them. Here is a preview on how the new GUI 
-will look like!
+Make your toy react to what happens in your game or on your stream.
+Take damage in World of Warcraft? It buzzes. Someone cheers bits on Twitch? It buzzes.
 
 ![](/img/preview.png)
 
-## Welcome to Butthurt
-So you wanna spice up your world of warcraft gameplay?<br>
-Well why not try Butthurt?<br><br>
-Connect your faviorite lovense toy and play world of warcraft like you never have done before!
+> **New version in progress.** This is a full remake with a proper window instead of a console.
+> Looking for the old console version? It's [here](https://github.com/Maikatura/Butthurt).
 
-### Setup
+## What it can do
 
-1. Install Intiface Central. https://intiface.com/central/ and press **Start Server**.
-2. Turn on your toy and connect it in Intiface Central.
-3. Start Butthurt (check code first or compile it yourself). Install the .NET runtime if it asks for it.
-4. Go to the **World of Warcraft** page, pick your game folder (or press *Find it*) and press **Install**.
-5. Press **Start** on the Home page, switch to WoW and `/reload`.
-6. Type `/butthurt test` in game to feel it without having to die.
+- **World of Warcraft** – react to 15 in-game events: damage, heals, stuns, combat, dying, level ups, quests,
+  boss pulls and kills, PvP kills, ready checks, whispers and more. Make as many rules as you like.
+- **Twitch** – buzz on bits, subs, gifted subs, channel point redeems, follows, raids and chat commands.
+- **Fansly** – buzz on tips, subs and chat commands in your livestream.
+- **VRChat** – let Twitch and Fansly swap your avatar or make you grow and shrink, and let your avatar's
+  contacts (headpats, boops, toggles) buzz your toys or the PiShock.
+- **PiShock** – vibrate, beep or shock from Twitch, Fansly, WoW and VRChat (with safety limits you set).
+- **OBS overlay** – show what's happening on stream with announcements.
 
-Enjoy your new style of playing World of Warcraft :3
+You decide what triggers what and how strong it feels, all inside the app. No coding needed.
 
-### How it works
+## Getting started
 
-WoW addons can't talk to other programs, so the addon flashes a tiny square in the top-left corner of the game
-in a different color per event (damage, heal, death, level up, achievement). Butthurt reads that pixel while WoW
-is the active window and tells Intiface Central to vibrate. Which events are used and how strong they feel is set
-in the app, so you never have to touch Lua. Use *Windowed (Fullscreen)* in WoW so the pixel can be read.
+1. **Download Butthurt** from the [Releases page](../../releases) and unzip it anywhere.
+2. **Install [Intiface Central](https://intiface.com/central/)**, open it and press **Start Server**.
+3. **Turn on your toy** and connect it in Intiface Central.
+4. **Open `Butthurt.exe`.**
+5. Go to the page you want (World of Warcraft, Twitch, …) and follow the steps there.
+   There's also a **Guide** page inside the app.
 
-In game: `/butthurt` opens the settings window (also in the AddOns menu by the minimap and in Options > AddOns), where you can turn events on or off and test them. Commands: `/butthurt toggle`, `/butthurt test [damage|heal|death|level_up|achievement]`, `/butthurt debug`.
+### World of Warcraft quick setup
 
-### Twitch
+1. On the **World of Warcraft** page, press **Find it** (or pick your game folder), then **Install**.
+2. Press **Start** on the Home page.
+3. In WoW, set the display to **Windowed (Fullscreen)** and type `/reload`.
+4. Type `/butthurt test` to feel it without having to die. `/butthurt` opens the settings.
+5. Add **Toy rules** (and **PiShock rules**) for the events you want on the World of Warcraft page.
 
-The Twitch page turns your channel into haptics. Log in with Twitch (you approve it in your browser, Butthurt
-never sees your password) and make rules for what should buzz and how hard:
+The game needs to be the active window for it to work. After updating Butthurt, press **Reinstall** on the
+World of Warcraft page once so the addon knows the newest events.
 
-- **Bits**: a range, e.g. 1–499 soft and 500+ strong, optionally longer for bigger cheers.
-- **Subscriptions**: pick the tiers, e.g. only tier 2 and 3. Prime counts as tier 1. Resubs can be included or not.
-- **Gifted subs**: amount range and tiers.
-- **Channel point redeems**: by reward name, or every redeem (affiliate/partner only).
-- **Follows**, **raids** (minimum viewers) and **chat commands** (e.g. `!buzz`, limited to subs, VIPs or mods, with a cooldown).
+### Just streaming, no toys?
 
-Every rule has its own intensity, duration, cooldown and a Test button.
+Go to **Settings → Plugins** and turn off **Toys** (and PiShock or World of Warcraft if you don't need
+them). Vibration rules sit out and Butthurt becomes a stream/VRChat tool. Turn them back on any time.
 
-**Twitch Client ID:** logging in needs a Twitch app. Register one at https://dev.twitch.tv/console/apps
-(category *Application Integration*, client type *Public*, OAuth redirect URL `http://localhost`) and either paste its
-Client ID on the Twitch page, or put it in `TwitchService.DefaultClientId` before building so streamers don't need
-their own.
+## Common questions
 
-**Rewards made by rules:** tick *Let Butthurt create this reward* on any redeem rule (Twitch or VRChat) and set a
-cost. Butthurt creates the reward on your channel, keeps its cost in sync, hides it while the rule (or its plugin)
-is off and deletes it when you delete the rule. Rules naming the same reward share it.
+**Is it safe? Does it ask for my password?**
+No passwords. Twitch login happens in your own browser. PiShock uses an API key you make on their site.
 
-**Channel point rewards:** the Twitch page can also create rewards by hand that belong to Butthurt. Their redemptions are
-completed automatically, or refunded when nothing could react (for example VRChat wasn't running). Logins from
-before this feature need to log out and in once to allow it.
+**Twitch login says it needs a Client ID?**
+Make a free app at [dev.twitch.tv/console/apps](https://dev.twitch.tv/console/apps)
+(category *Application Integration*, type *Public*, redirect URL `http://localhost`) and paste its Client ID on the Twitch page.
 
-### VRChat
+**Fansly stopped working?**
+Fansly has no official way to do this, so a change on their side can break it until Butthurt is updated.
 
-The VRChat page lets Twitch change your avatar and your size over OSC (turn it on in VRChat: Action Menu →
-Options → OSC). It needs the Twitch plugin turned on and logged in. Every action is a rule with the same Twitch
-conditions as above, for example:
+**My game doesn't react.**
+Make sure WoW is in *Windowed (Fullscreen)*, the addon is installed, you pressed **Start**, and Intiface Central is running.
 
-| When | Then |
-| --- | --- |
-| 20–49 bits | Grow ×1.1 for 30 seconds (stacks: two of them make ×1.21) |
-| 50–299 bits | Switch to avatar A (optionally switch back after a while) |
-| 300+ bits | Switch to avatar B |
-| "Make me tiny" redeem | Shrink ×0.5 for 60 seconds |
-| "Bigger boobies" redeem | Add 0.2 to the `BoobSize` parameter for 2 minutes (`Chest_Scale` on avatar B) |
+---
 
-**Avatar swaps take turns:** when someone redeems an avatar swap while another one is still running, it waits
-in line. Each swap gets its full time, then the next one starts, and when nobody is waiting you go back to the avatar
-you had before. The overlay shows the current swap counting down and who's up next; `{when}` in an announcement says
-"now" or "in 25s".
+## Building it yourself (for developers)
 
-**Pick lists:** Butthurt reads the avatar files VRChat writes when OSC is on
-(`AppData\LocalLow\VRChat\VRChat\OSC`), so avatars can be picked by name and parameters from a searchable list
-with their types, no typing IDs or parameter names by hand.
+You need Windows and the [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0).
 
-**Avatar parameters:** set or add to any avatar parameter (bool, int or float), for a while or until reset. Avatars
-name things differently, so a rule can have a parameter name per avatar plus one for every other avatar. Everything
-that is active (parameters and growth) is sent again after every avatar change, using the new avatar's names and
-its own height, so a redeemed avatar swap doesn't undo it.
-
-Growing sets `/avatar/eyeheight` (your normal height times every active multiplier, within the limits you set) and
-puts you back when the effects run out. Size changes slide smoothly (1.5 seconds by default; set it to 0 on the VRChat
-page to jump instantly). A new grow or shrink halfway through a slide keeps the motion going towards the new
-size instead of stopping and starting again. Avatar changes use `/avatar/change` with the avatar's `avtr_…` ID.
-Some worlds block scaling; avatar changes still work there.
-
-### Fansly
-
-The Fansly page reads your Fansly livestream chat. Type your Fansly username and press **Save**: Butthurt finds
-your chatroom by itself, no password needed. Rules work like Twitch's:
-
-- **Tips**: a dollar range, e.g. $1–$9.99 soft and $10+ strong, optionally longer for bigger tips.
-- **Subscriptions**: pick your tiers by name (or none for every tier), renewals included or not.
-- **Chat commands** (e.g. `!buzz`), for everyone, followers, subscribers or only you, with a cooldown.
-
-Fansly has no public API for this, so Butthurt reads the chat the way the website does. If Fansly changes something
-it can stop working until Butthurt is updated. Normally the chat is read anonymously; if the activity log says Fansly
-wants a login, paste your session token on the Fansly page (it's stored encrypted, treat it like a password).
-
-### PiShock
-
-The PiShock page lets Twitch and Fansly **shock, vibrate or beep** a PiShock. Log in with your pishock.com username and
-an API key (pishock.com → Account → Generate API key), then add a share code per shocker (Share → Create code).
-Every rule picks Twitch or Fansly, the same conditions as above (bits, subs, redeems, tips, chat commands…) and what the
-shocker does:
-
-| When | Then |
-| --- | --- |
-| 100+ bits | Vibrate 40% for 2 seconds, longer for bigger cheers |
-| "Zap me" redeem | Beep, then shock 15% for 1 second |
-| $5+ Fansly tip | Vibrate a random shocker |
-| `!zap` from a Fansly subscriber | Shock 10%, 60 second cooldown |
-
-Safety: every shocker has a maximum intensity and duration no rule can go past, shocks can be turned off with one switch
-(vibrations and beeps keep working) and everything can be paused. Shock rules can beep first as a warning. Commands for
-one shocker take turns, and only a few wait in line so a flood of events can't pile up. Set limits on the share code on
-pishock.com too. Twitch redeem rules can let Butthurt create their reward; it's refunded when nothing could be sent.
-PiShock counts as a toy, so it's hidden in streaming mode.
-
-### Stream overlay and announcements
-
-Turn on **OBS overlay** on the VRChat page and add a Browser source in OBS with the address it shows
-(`http://localhost:7878/` by default, 1920 × 1080, transparent). It shows the queue of running effects with
-countdowns and an announcement every time a rule fires. Pick where each goes (announcements anywhere on a 3 × 3
-grid, the queue in any corner) and how big it is right on the VRChat page; OBS updates live. Everything slides
-and fades smoothly. For two sources placed differently, URL options win over the settings: `?queue=0` / `?alerts=0`,
-`?alerts_at=bottom-left`, `?queue_at=top-right`, `?scale=1.5`.
-
-Want your own look? The page is plain HTML, CSS and JS in the `overlay` folder next to `Butthurt.exe` (**Customize**
-on the VRChat page opens it). The colors, fonts and sizes are at the top of `overlay.css`; refresh the Browser source
-in OBS to see changes. **Changing anything in there can break the overlay**, so keep a copy. Delete the folder and
-restart Butthurt to get the original back.
-
-Every VRChat rule has its own announcement you write yourself, with placeholders: `{user}` `{event}` `{bits}`
-`{amount}` `{bits_min}` `{bits_max}` `{tier}` `{reward}` `{cost}` `{message}` `{multiplier}` `{size}` `{duration}`
-`{avatar}` `{when}` `{wait}` `{parameter}` `{value}` `{rule}`. For example `{user} {bits} bits for {multiplier} growth` becomes
-"X 50 bits for 1.1 growth". Announcements can also be posted in your Twitch chat (needs a fresh Twitch login once).
-
-### Streaming mode (no toys)
-
-Settings → Toys → **Toy features** turns off everything toy related: Intiface, the Toys page, the quick test,
-Twitch's vibration rules and toy-only plugins like World of Warcraft. What's left is a streaming/VRChat tool.
-Your toy settings are kept, turn it back on any time.
-
-### Plugins
-
-Every game or site is its own project, so they are easy to maintain and can be turned on and off on the
-Settings page (a turned off plugin isn't loaded at all):
-
-| Project | What it is |
-| --- | --- |
-| `Butthurt.Contracts` | The core: toys (Intiface), settings, theme, shared pages and the `IPlugin` interface |
-| `Butthurt.UI` | The design system: shadcn/ui control themes and colour tokens (same look as GoonRobot.Desktop, derived from Huskui.Avalonia, MIT) |
-| `Butthurt.Warcraft` | World of Warcraft: the corner pixel watcher, event settings and addon installer |
-| `Butthurt.Twitch` | Twitch: login, EventSub, rules and channel point rewards |
-| `Butthurt.VRChat` | VRChat: avatar changes, growing and avatar parameters over OSC, driven by Twitch rules |
-| `Butthurt.Fansly` | Fansly: livestream chat listener (tips, subscriptions, chat commands) and its rules |
-| `Butthurt.PiShock` | PiShock: shock, vibrate or beep shockers from Twitch and Fansly rules |
-| `Butthurt.Desktop` | The app window, registers the built-in plugins |
-
-To add a game, copy one of the plugin projects, implement `IPlugin` and register it in `MainWindow`, or drop the
-built DLL into the `Plugins` folder next to Butthurt.exe.
-
-### Todo list
-- [x] Update addon to 12.0
-- [x] Addon settings in app (events, intensity and duration are picked in the app).
-- [x] Add addon install button. (copies the addon that ships with the app, nothing is downloaded)
-- [x] Functional UI for Toys.
-- [x] User guide how to setup and add new events (Guide page in the app).
-- [x] Twitch support (bits, subs per tier, gifts, redeems, follows, raids, chat commands).
-- [x] Plugins that can be turned on and off.
-- [x] VRChat: avatar changes and stacking growth from Twitch rules.
-- [x] Butthurt-managed channel point rewards with auto fulfil/refund.
-- [x] Rules create and delete their own Twitch rewards.
-- [x] VRChat avatar parameters that survive avatar changes.
-- [x] Smooth growing and shrinking.
-- [x] Streaming mode: turn off every toy feature.
-- [x] OBS overlay with the queue and custom announcements (also in Twitch chat).
-- [x] Fansly support (tips, subscriptions, chat commands).
-- [x] PiShock: shock, vibrate or beep from Twitch and Fansly rules.
-
-### Making a release
-
-Pushing a version tag builds Butthurt on GitHub and puts it on the Releases page. Normal commits don't trigger it.
-
-```bash
-git tag v0.2.0
-git push origin v0.2.0
+```powershell
+git clone https://github.com/Maikatura/Butthurt.git
+cd Butthurt
+dotnet run --project Butthurt.Desktop
 ```
 
-The release gets `Butthurt-v0.2.0-win-x64.zip` (no .NET install needed, the addon is included for the
-install button) plus addon-only zips. The tag is also written into the addons' version, so the app knows
-when an installed addon is out of date. Tags with a dash, like `v0.2.0-beta`, become pre-releases.
+To make a standalone `.exe` (no .NET install needed to run it):
 
-#### Note!
+```powershell
+dotnet publish Butthurt.Desktop -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -o publish
+```
 
-I will not be able to finish the new UI for midnight release because this is not the most priority program I make. If you wanna use it on release with Midnight refer to the old console version that can be found [here](https://github.com/Maikatura/Butthurt).
+**How the code is laid out:** every game, site or device is its own project (`Butthurt.Warcraft`, `Butthurt.Twitch`,
+`Butthurt.Toys`, …). `Butthurt.Contracts` is the shared core with the `IPlugin` interface, and `Butthurt.Desktop`
+is the app window. To add something new, copy a plugin project, implement `IPlugin` and register it in `MainWindow`.
+
+**Releases:** pushing a tag like `v0.2.0` builds the app on GitHub and puts it on the Releases page.
+Tags with a dash (`v0.2.0-beta`) become pre-releases.

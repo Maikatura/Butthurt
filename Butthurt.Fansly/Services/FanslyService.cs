@@ -565,7 +565,7 @@ public static class FanslyService
     public static void Handle(FanslyEvent e)
     {
         var rules = Settings.Rules ?? new List<FanslyRule>();
-        // Vibration rules sit out while toy features are off.
+        // Vibration rules sit out while the Toys plugin is off.
         var matching = PluginManager.ToysEnabled
             ? rules.Where(r => FanslyRules.Matches(r, e) && FanslyRules.TryUseCooldown(r)).ToList()
             : new List<FanslyRule>();

@@ -66,9 +66,6 @@ public class WarcraftPlugin : IPlugin
         return new PluginStatus(PluginStatusLevel.Active, "Watching", detail) { SidebarText = "Watching WoW" };
     }
 
-    // Its events only make toys buzz, so it goes away with the toy features.
-    public bool UsesToys => true;
-
     public PluginAction HomeAction => new("Auto install addon", PackIconLucideKind.Download, AddonInstaller.AutoInstallAndNotify);
 
     public Control CreateGuideSection() => GuideSection.Create();

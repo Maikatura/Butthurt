@@ -12,32 +12,26 @@ using Butthurt.Fansly.Services;
 using Butthurt.PiShock.Models;
 using Butthurt.Twitch.Models;
 using Butthurt.Twitch.Services;
+using Butthurt.VRChat.Models;
+using Butthurt.VRChat.Services;
+using Butthurt.Warcraft.Models;
+using Butthurt.Warcraft.Views;
 
 namespace Butthurt.PiShock.Services;
 
 /// <summary>
-/// Talks to PiShock's HTTP API (https://apidocs.pishock.com):
-///
-///   POST https://do.pishock.com/api/apioperate
-///   {"Username":"…","Apikey":"…","Code":"share code","Name":"who sent it","Op":0|1|2,"Intensity":1-100,"Duration":1-15}
-///
-/// Op 0 shocks, 1 vibrates, 2 beeps. PiShock always answers 200 with plain text: "Operation Succeeded." or
-/// what went wrong ("Not Authorized.", "Device currently not connected.", "Shocker is Paused…").
+/// Turns rules into PiShock commands (sent by <see cref="PiShockClient"/>), with the safety limits on top.
 ///
 /// Commands for one shocker take turns: the next one is sent once the previous one has finished, so overlapping
 /// events don't cut each other off or arrive all at once. The queue is short on purpose, extra ones are dropped.
 /// </summary>
 public static class PiShockService
 {
-    private const string OperateUrl = "https://do.pishock.com/api/apioperate";
-    private const string Success = "Operation Succeeded.";
 
     /// <summary>Most commands one shocker may have waiting. More than this are dropped, not saved up.</summary>
     private const int MaxQueued = 5;
 
     private const double MaxScale = 5;
-
-    private static readonly HttpClient Http = new() { Timeout = TimeSpan.FromSeconds(15) };
 
     private static readonly Dictionary<string, ShockerQueue> Queues = new();
     private static readonly Dictionary<string, DateTime> LastFired = new();
@@ -60,8 +54,8 @@ public static class PiShockService
 
     private static PiShockSettings Settings => PiShockPlugin.Settings;
 
-    public static bool HasLogin => !string.IsNullOrWhiteSpace(Settings.Username) && !string.IsNullOrEmpty(ApiKey);
-    public static bool HasShockers => Settings.Shockers.Any(s => s.Enabled && !string.IsNullOrWhiteSpace(s.ShareCode));
+    public static bool HasLogin => !string.IsNullOrEmpty(ApiKey);
+    public static bool HasShockers => Settings.Shockers.Any(s => s.Enabled && s.HasRoute);
     public static bool IsReady => HasLogin && HasShockers && !Settings.Paused;
 
     private static string? ApiKey => Secrets.Unprotect(Settings.ApiKey);
@@ -70,8 +64,51 @@ public static class PiShockService
     {
         key = key?.Trim();
         Settings.ApiKey = string.IsNullOrEmpty(key) ? null : Secrets.Protect(key);
+        Settings.Username = "";
+        LastError = null;
+        PiShockClient.ResetLogin();
         SettingsService.Save();
         StatusChanged?.Invoke(null, EventArgs.Empty);
+    }
+
+    /// <summary>Asks PiShock whose key it is. Returns an error message, or null when the key works.</summary>
+    public static async Task<string?> CheckLogin()
+    {
+        if (!HasLogin) return "add your PiShock API key first";
+        var error = await PiShockClient.CheckLogin(ApiKey!);
+        LastError = error == null ? null : $"PiShock: {error}";
+        StatusChanged?.Invoke(null, EventArgs.Empty);
+        return error;
+    }
+
+    /// <summary>
+    /// Adds every shocker on the account that isn't in the list yet. Returns how many were added, or an error message.
+    /// </summary>
+    public static async Task<(int Added, string? Error)> FindMyShockers()
+    {
+        if (!HasLogin) return (0, "Add your PiShock API key first.");
+
+        var (devices, error) = await PiShockClient.GetMyShockers(ApiKey!);
+        if (error != null) return (0, error);
+        if (devices.Count == 0) return (0, "PiShock says there are no shockers on this account.");
+
+        var added = 0;
+        foreach (var device in devices)
+        {
+            if (Settings.Shockers.Any(s => s.ShockerId == device.ShockerId && s.HubId == device.HubId)) continue;
+
+            Settings.Shockers.Add(new PiShockShocker
+            {
+                Name = device.Name.Length > 0 ? device.Name : $"Shocker {device.ShockerId}",
+                HubId = device.HubId,
+                ShockerId = device.ShockerId
+            });
+            added++;
+        }
+
+        SettingsService.Save();
+        StatusChanged?.Invoke(null, EventArgs.Empty);
+        return (added, null);
     }
 
     #region Rules
@@ -82,13 +119,25 @@ public static class PiShockService
     public static bool Matches(PiShockRule rule, FanslyEvent e) =>
         rule.Enabled && rule.Source == PiShockSource.Fansly && FanslyRules.Matches(rule.Fansly, e);
 
+    public static bool Matches(PiShockRule rule, WowEventDefinition e) =>
+        rule.Enabled && rule.Source == PiShockSource.Warcraft && rule.Warcraft.Event == e.Type;
+
+    public static bool Matches(PiShockRule rule, ParameterChange change) =>
+        rule.Enabled && rule.Source == PiShockSource.VRChat && VRChatTriggers.Rises(rule.VRChat, change);
+
     /// <summary>
     /// The rule's cooldown. Kept apart from Twitch's and Fansly's own (the condition's id is the key there too,
     /// but a PiShock rule is its own thing). True when it may fire, and starts the cooldown.
     /// </summary>
     public static bool TryUseCooldown(PiShockRule rule)
     {
-        var seconds = rule.Source == PiShockSource.Twitch ? rule.Twitch.CooldownSeconds : rule.Fansly.CooldownSeconds;
+        var seconds = rule.Source switch
+        {
+            PiShockSource.Twitch => rule.Twitch.CooldownSeconds,
+            PiShockSource.Fansly => rule.Fansly.CooldownSeconds,
+            PiShockSource.VRChat => rule.VRChat.CooldownSeconds,
+            _ => rule.Warcraft.CooldownSeconds
+        };
         lock (LastFired)
         {
             if (seconds > 0 && LastFired.TryGetValue(rule.Id, out var last) && DateTime.UtcNow - last < TimeSpan.FromSeconds(seconds))
@@ -117,7 +166,7 @@ public static class PiShockService
     {
         if (!HasLogin)
         {
-            Fail($"PiShock: skipped {Label(rule)}, add your PiShock username and API key first");
+            Fail($"PiShock: skipped {Label(rule)}, add your PiShock API key first");
             return false;
         }
 
@@ -160,8 +209,8 @@ public static class PiShockService
     /// <summary>One short command to one shocker, for the shocker's own test buttons. Returns an error message or null.</summary>
     public static string? TestShocker(PiShockShocker shocker, PiShockOp op)
     {
-        if (!HasLogin) return "Add your PiShock username and API key first.";
-        if (string.IsNullOrWhiteSpace(shocker.ShareCode)) return "This shocker has no share code.";
+        if (!HasLogin) return "Add your PiShock API key first.";
+        if (!shocker.HasRoute) return "This shocker isn't linked to PiShock yet. Use Find my shockers, or add a share code.";
         if (Settings.Paused) return "PiShock is paused.";
         if (op == PiShockOp.Shock && !Settings.ShocksAllowed) return "Shocks are turned off.";
 
@@ -178,11 +227,12 @@ public static class PiShockService
         var old = Interlocked.Exchange(ref _stop, new CancellationTokenSource());
         old.Cancel();
         old.Dispose();
+        PiShockClient.CloseBroker();
     }
 
     private static List<PiShockShocker> TargetsFor(PiShockRule rule)
     {
-        var usable = Settings.Shockers.Where(s => s.Enabled && !string.IsNullOrWhiteSpace(s.ShareCode)).ToList();
+        var usable = Settings.Shockers.Where(s => s.Enabled && s.HasRoute).ToList();
         return rule.Target switch
         {
             ShockerTarget.One => usable.Where(s => s.Id == rule.ShockerId).ToList(),
@@ -252,64 +302,46 @@ public static class PiShockService
         return true;
     }
 
-    /// <summary>One apioperate call. True when PiShock says it worked.</summary>
+    /// <summary>One command. True when PiShock accepted it.</summary>
     private static async Task<bool> Send(PiShockShocker shocker, PiShockOp op, int intensity, int durationSeconds, string who, string what)
     {
         var name = string.IsNullOrWhiteSpace(Settings.SenderName) ? "Butthurt" : Settings.SenderName.Trim();
         if (!string.IsNullOrWhiteSpace(who)) name = $"{name} ({who})";
         if (name.Length > 60) name = name[..60];
 
-        var body = new Dictionary<string, object>
-        {
-            ["Username"] = Settings.Username.Trim(),
-            ["Apikey"] = ApiKey ?? "",
-            ["Code"] = shocker.ShareCode.Trim(),
-            ["Name"] = name,
-            ["Op"] = (int)op,
-            ["Duration"] = durationSeconds
-        };
-        if (op != PiShockOp.Beep) body["Intensity"] = intensity;
-
         var description = op == PiShockOp.Beep
             ? $"beep {durationSeconds}s"
             : $"{op.DisplayName().ToLowerInvariant()} {intensity}% {durationSeconds}s";
 
-        try
+        if (await PiShockClient.Operate(shocker, op, intensity, durationSeconds, name) is { } error)
         {
-            using var content = new StringContent(JsonSerializer.Serialize(body), Encoding.UTF8, "application/json");
-            using var response = await Http.PostAsync(OperateUrl, content);
-            var text = (await response.Content.ReadAsStringAsync()).Trim();
+            Fail($"PiShock: {what} on {shocker.Name} failed: {error}");
 
-            if (response.IsSuccessStatusCode && text.StartsWith(Success, StringComparison.OrdinalIgnoreCase))
-            {
-                LastError = null;
-                LastAction = $"{what}: {description} on {shocker.Name}";
-                LastActionTime = DateTime.Now;
-                ActivityLog.Add($"PiShock: {LastAction}", LogLevel.Success);
-                StatusChanged?.Invoke(null, EventArgs.Empty);
-                return true;
-            }
-
-            Fail($"PiShock: {what} on {shocker.Name} failed: {Explain(text, (int)response.StatusCode)}");
-        }
-        catch (Exception e)
-        {
-            Fail($"PiShock: couldn't reach PiShock for {what}: {e.Message}");
+            // Tests run in the background; whoever pressed the button should see why it didn't work.
+            if (who == "Test") Notify($"{what} on {shocker.Name} failed: {error}");
+            return false;
         }
 
-        return false;
+        if (who == "Test") Notify($"{what} sent to {shocker.Name}.");
+
+        LastError = null;
+        LastAction = $"{what}: {description} on {shocker.Name}";
+        LastActionTime = DateTime.Now;
+        ActivityLog.Add($"PiShock: {LastAction}", LogLevel.Success);
+        StatusChanged?.Invoke(null, EventArgs.Empty);
+        return true;
     }
 
-    /// <summary>PiShock's answers with a hint on what to do about them.</summary>
-    private static string Explain(string answer, int status)
+    private static void Notify(string message)
     {
-        if (answer.Length == 0) return $"PiShock answered {status} without a message";
-        if (answer.StartsWith("Not Authorized", StringComparison.OrdinalIgnoreCase)) return "Not authorized. Check your username and API key";
-        if (answer.Contains("doesn", StringComparison.OrdinalIgnoreCase) && answer.Contains("exist", StringComparison.OrdinalIgnoreCase))
-            return "this share code doesn't exist. Check it on pishock.com";
-        if (answer.Contains("used by somebody else", StringComparison.OrdinalIgnoreCase))
-            return "this share code is already used by someone else. Make a new one for Butthurt";
-        return answer.Length > 160 ? answer[..160] + "…" : answer;
+        try
+        {
+            _ = NotificationService.ShowAsync(message, 6000);
+        }
+        catch
+        {
+            // No window to show it in (tests), the activity log has it.
+        }
     }
 
     private static void Fail(string message)
@@ -327,9 +359,13 @@ public static class PiShockService
 
     #region Summaries
 
-    public static string ConditionSummary(PiShockRule rule) => rule.Source == PiShockSource.Twitch
-        ? $"Twitch {rule.Twitch.Trigger.DisplayName().ToLowerInvariant()} · {TwitchRules.ConditionSummary(rule.Twitch)}"
-        : $"Fansly {rule.Fansly.Trigger.DisplayName().ToLowerInvariant()} · {FanslyRules.ConditionSummary(rule.Fansly)}";
+    public static string ConditionSummary(PiShockRule rule) => rule.Source switch
+    {
+        PiShockSource.Twitch => $"{rule.Twitch.Trigger.DisplayName()} · {TwitchRules.ConditionSummary(rule.Twitch)}",
+        PiShockSource.Fansly => $"{rule.Fansly.Trigger.DisplayName()} · {FanslyRules.ConditionSummary(rule.Fansly)}",
+        PiShockSource.VRChat => VRChatTriggers.ConditionSummary(rule.VRChat),
+        _ => WowConditionEditor.Summary(rule.Warcraft)
+    };
 
     public static string Summary(PiShockRule rule)
     {

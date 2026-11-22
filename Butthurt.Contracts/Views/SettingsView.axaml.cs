@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using Avalonia;
@@ -20,71 +21,46 @@ public partial class SettingsView : UserControl, IPageView
     public SideBarType SidebarType => SideBarType.Footer;
     public event EventHandler? BackRequested;
 
-    private bool _loading;
     private bool _confirmReset;
 
     public SettingsView()
     {
         InitializeComponent();
-
-        AutoConnectToggle.IsCheckedChanged += (_, _) =>
-        {
-            if (_loading) return;
-            SettingsService.Current.AutoConnect = AutoConnectToggle.IsChecked == true;
-            SettingsService.Save();
-        };
-
-        ToysToggle.IsCheckedChanged += async (_, _) =>
-        {
-            if (_loading) return;
-            var on = ToysToggle.IsChecked == true;
-            ToysToggle.IsEnabled = false;
-            await PluginManager.SetToysEnabled(on);
-            ToysToggle.IsEnabled = true;
-            Load();
-            await NotificationService.ShowAsync(on
-                ? "Toy features are back."
-                : "Toy features are off. Butthurt is now just for streaming and VRChat.");
-        };
-
         AttachedToVisualTree += (_, _) => Load();
     }
 
     private void Load()
     {
-        _loading = true;
-        ToysToggle.IsChecked = PluginManager.ToysEnabled;
-        StartupCard.IsVisible = PluginManager.ToysEnabled; // only holds the Intiface option
-        AutoConnectToggle.IsChecked = SettingsService.Current.AutoConnect;
         SettingsPathText.Text = SettingsService.SettingsFile;
-        _loading = false;
 
         _confirmReset = false;
         ResetButton.Content = "Reset";
 
+        // Grouped like the sidebar: Hardware, Streaming, Games.
         PluginList.Children.Clear();
-        foreach (var plugin in PluginManager.AllPlugins)
+        foreach (var group in PluginManager.AllPlugins.GroupBy(p => p.Category).OrderBy(g => g.Key))
         {
-            PluginList.Children.Add(CreatePluginRow(plugin));
+            var caption = Ui.Text(group.Key.DisplayName(), "caption");
+            caption.Margin = new Thickness(2, PluginList.Children.Count == 0 ? 0 : 10, 0, 0);
+            PluginList.Children.Add(caption);
+            foreach (var plugin in group) PluginList.Children.Add(CreatePluginRow(plugin));
         }
     }
 
     private Control CreatePluginRow(IPlugin plugin)
     {
         var enabled = PluginManager.IsEnabled(plugin);
-        var available = PluginManager.IsAvailable(plugin);
         var detail = Ui.Text(PluginDetail(plugin), "muted", 12);
 
         var toggle = new ToggleSwitch
         {
-            IsChecked = enabled, OnContent = "", OffContent = "", VerticalAlignment = VerticalAlignment.Center,
-            IsEnabled = available
+            IsChecked = enabled, OnContent = "", OffContent = "", VerticalAlignment = VerticalAlignment.Center
         };
 
         var row = new Border
         {
             Classes = { "row" },
-            Opacity = enabled && available ? 1 : 0.6,
+            Opacity = enabled ? 1 : 0.6,
             Child = new Grid
             {
                 ColumnDefinitions = new ColumnDefinitions("Auto,*,Auto"),
@@ -125,8 +101,7 @@ public partial class SettingsView : UserControl, IPageView
     private static string PluginDetail(IPlugin plugin)
     {
         var assembly = plugin.GetType().Assembly.GetName().Name;
-        return !PluginManager.IsAvailable(plugin) ? $"{assembly} · Needs toy features, turn them on above"
-            : PluginManager.IsEnabled(plugin) ? $"{assembly} · {plugin.GetStatus().Headline}"
+        return PluginManager.IsEnabled(plugin) ? $"{assembly} · {plugin.GetStatus().Headline}"
             : $"{assembly} · Off, nothing from this plugin runs";
     }
 

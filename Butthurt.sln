@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butthurt.PiShock", "Butthur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butthurt.UI", "Butthurt.UI\Butthurt.UI.csproj", "{7197EBAC-8B93-4752-9C2D-56CA81605D7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Butthurt.Toys", "Butthurt.Toys\Butthurt.Toys.csproj", "{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -136,6 +138,18 @@ Global
 		{7197EBAC-8B93-4752-9C2D-56CA81605D7B}.Release|x64.Build.0 = Release|Any CPU
 		{7197EBAC-8B93-4752-9C2D-56CA81605D7B}.Release|x86.ActiveCfg = Release|Any CPU
 		{7197EBAC-8B93-4752-9C2D-56CA81605D7B}.Release|x86.Build.0 = Release|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Debug|x64.Build.0 = Debug|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Debug|x86.Build.0 = Debug|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Release|x64.ActiveCfg = Release|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Release|x64.Build.0 = Release|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Release|x86.ActiveCfg = Release|Any CPU
+		{4DC4D08B-9B16-40A3-AD9F-6C3B0615270D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

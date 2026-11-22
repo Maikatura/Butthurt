@@ -43,6 +43,11 @@ public partial class FanslyView : UserControl, IPageView
         };
 
         FanslyService.StateChanged += (_, _) => Dispatcher.UIThread.Post(UpdateAccount);
+        PluginManager.PluginsChanged += (_, _) => Dispatcher.UIThread.Post(() =>
+        {
+            UpdateAccount();
+            BuildExtraSections();
+        });
 
         AttachedToVisualTree += (_, _) =>
         {
@@ -53,6 +58,7 @@ public partial class FanslyView : UserControl, IPageView
 
             UpdateAccount();
             BuildRuleList();
+            BuildExtraSections();
         };
     }
 
@@ -117,7 +123,8 @@ public partial class FanslyView : UserControl, IPageView
 
     private void UpdateAccount()
     {
-        VibrationRulesCard.IsVisible = PluginManager.ToysEnabled;
+        // Toy rules only matter with the Toys plugin on ("Toys" is Butthurt.Toys' plugin id).
+        VibrationRulesCard.IsVisible = PluginManager.IsOn("Toys");
         PageSubtitle.Text = PluginManager.ToysEnabled
             ? "Turn tips, subscriptions and chat commands from your Fansly livestream into vibrations (or PiShock zaps)."
             : "Connect your Fansly livestream chat so tips, subscriptions and chat commands can drive your other plugins.";
@@ -158,6 +165,13 @@ public partial class FanslyView : UserControl, IPageView
     }
 
     #endregion
+
+    /// <summary>Cards other plugins put on this page, e.g. PiShock rules. Rebuilt when plugins are turned on or off.</summary>
+    private void BuildExtraSections()
+    {
+        ExtraSections.Children.Clear();
+        foreach (var card in PageSections.CreateFor(FanslyPlugin.PluginId)) ExtraSections.Children.Add(card);
+    }
 
     #region Rules
 

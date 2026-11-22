@@ -8,8 +8,8 @@ namespace Butthurt.Contracts.Models;
 public class AppSettings
 {
     /// <summary>
-    /// Off: Butthurt is a streaming/VRChat tool only. No Intiface, toy pages, vibration rules or
-    /// toy-only plugins anywhere in the app.
+    /// The old "Toy features" switch from before Toys was a plugin. Only read once at startup: if it was off,
+    /// the Toys plugin gets turned off instead and this goes back to true. Use PluginManager.ToysEnabled.
     /// </summary>
     public bool ToysEnabled { get; set; } = true;
 

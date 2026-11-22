@@ -14,6 +14,7 @@ using Butthurt.Contracts.Services;
 using Butthurt.Contracts.Views;
 using Butthurt.Fansly;
 using Butthurt.PiShock;
+using Butthurt.Toys;
 using Butthurt.Twitch;
 using Butthurt.VRChat;
 using Butthurt.Warcraft;
@@ -38,17 +39,18 @@ public partial class MainWindow : Window
 
         // Built-in plugins 👇 (each one is its own project). Extra ones can be dropped into the Plugins folder.
         // They can be turned on and off on the Settings page.
-        PluginManager.Register(new WarcraftPlugin());
-        PluginManager.Register(new TwitchPlugin());
-        PluginManager.Register(new VRChatPlugin());
-        PluginManager.Register(new FanslyPlugin());
+        // In sidebar order (hardware, streaming, games), so the Home cards and status list follow it.
+        PluginManager.Register(new ToysPlugin());
         PluginManager.Register(new PiShockPlugin());
+        PluginManager.Register(new TwitchPlugin());
+        PluginManager.Register(new FanslyPlugin());
+        PluginManager.Register(new WarcraftPlugin());
+        PluginManager.Register(new VRChatPlugin());
         PluginManager.LoadFromFolder(System.IO.Path.Combine(AppContext.BaseDirectory, "Plugins"));
 
         _corePages.AddRange(new IPageView[]
         {
             new HomeView(),
-            new ToysView(),
             new SettingsView(),
             new GuideView(),
             new RoadmapView(),
@@ -95,10 +97,9 @@ public partial class MainWindow : Window
         return pages;
     }
 
-    /// <summary>Core pages plus the pages of every plugin that is turned on. The Toys page goes away with toy features.</summary>
+    /// <summary>Core pages plus the pages of every plugin that is turned on.</summary>
     private IEnumerable<IPageView> AllPages() =>
-        _corePages.Where(p => p is not ToysView || PluginManager.ToysEnabled)
-            .Concat(PluginManager.Plugins.SelectMany(PagesOf));
+        _corePages.Concat(PluginManager.Plugins.SelectMany(PagesOf));
 
     private void BuildSidebar()
     {
@@ -161,20 +162,10 @@ public partial class MainWindow : Window
     {
         NotificationService.Initialize(NotificationPanel);
 
-        ButthurtService.DeviceAdded += (_, args) =>
-        {
-            _ = NotificationService.ShowAsync($"Toy connected: {args.Device.Name}");
-        };
-        ButthurtService.StateChanged += (_, _) => Dispatcher.UIThread.Post(UpdateStatus);
         PluginManager.StatusChanged += (_, _) => Dispatcher.UIThread.Post(UpdateStatus);
 
         PluginManager.InitializeAll();
         OverlayService.ApplySettings();
-
-        if (SettingsService.Current.AutoConnect)
-        {
-            _ = ButthurtService.Start();
-        }
     }
 
     private void UpdateStatus()
@@ -182,26 +173,6 @@ public partial class MainWindow : Window
         var success = (IBrush)this.FindResource("SuccessBrush")!;
         var warning = (IBrush)this.FindResource("WarningBrush")!;
         var off = (IBrush)this.FindResource("DimBrush")!;
-
-        IntifaceRow.IsVisible = PluginManager.ToysEnabled;
-        ToysRow.IsVisible = PluginManager.ToysEnabled;
-
-        if (ButthurtService.IsConnected)
-        {
-            IntifaceDot.Fill = success;
-            IntifaceStatusText.Text = "Intiface connected";
-        }
-        else
-        {
-            IntifaceDot.Fill = ButthurtService.IsConnecting ? warning : off;
-            IntifaceStatusText.Text = ButthurtService.IsConnecting ? "Connecting…" : "Intiface offline";
-        }
-
-        var toyCount = ButthurtService.Devices.Count;
-        ToysDot.Fill = toyCount > 0 ? success : ButthurtService.IsScanning ? warning : off;
-        ToysStatusText.Text = ButthurtService.IsScanning ? "Scanning for toys…"
-            : toyCount == 1 ? "1 toy ready"
-            : $"{toyCount} toys ready";
 
         foreach (var (plugin, (dot, text)) in _pluginStatusRows)
         {

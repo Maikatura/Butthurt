@@ -124,7 +124,7 @@
                 <StackPanel Spacing="14">
                     <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Spacing="2">
-                            <TextBlock Classes="h2" Text="Vibration rules"/>
+                            <TextBlock Classes="h2" Text="Toy rules"/>
                             <TextBlock Classes="muted"
                                        Text="When something happens on your channel every matching rule fires. Overlapping buzzes merge: strongest intensity, longest time."/>
                         </StackPanel>
@@ -141,6 +141,9 @@
                     <StackPanel x:Name="RuleList" Spacing="8"/>
                 </StackPanel>
             </Border>
+
+            <!-- Cards from other plugins, e.g. PiShock rules (see PageSections) -->
+            <StackPanel x:Name="ExtraSections" Spacing="20"/>
 
         </StackPanel>
     </ScrollViewer>

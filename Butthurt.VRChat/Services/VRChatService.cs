@@ -105,6 +105,12 @@ public static class VRChatService
     /// <summary>Raised when the connection, avatar, size or effects change. May fire on any thread.</summary>
     public static event EventHandler? StatusChanged;
 
+    /// <summary>
+    /// Every avatar parameter value VRChat reports (contacts, toggles, sliders…), as a number: bools are 0 or 1.
+    /// May fire on any thread, and often.
+    /// </summary>
+    public static event EventHandler<(string Name, double Value)>? ParameterReceived;
+
     private static VRChatSettings Settings => VRChatPlugin.Settings;
 
     /// <summary>Whether the VRChat game is open at all. Checked at most every couple of seconds.</summary>
@@ -786,11 +792,20 @@ public static class VRChatService
                 break;
 
             case var address when address.StartsWith(ParameterPrefix, StringComparison.Ordinal):
+                var parameter = address[ParameterPrefix.Length..];
                 lock (_lock)
                 {
-                    if (_seenParameters.Count < 500) _seenParameters.Add(address[ParameterPrefix.Length..]);
+                    if (_seenParameters.Count < 500) _seenParameters.Add(parameter);
                 }
 
+                double? value = message.First switch
+                {
+                    bool b => b ? 1 : 0,
+                    int i => i,
+                    float f => f,
+                    _ => null
+                };
+                if (value is { } number) ParameterReceived?.Invoke(null, (parameter, number));
                 break;
 
             case EyeHeightAddress when message.First is float height:

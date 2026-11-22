@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Butthurt.Contracts;
+using Butthurt.Contracts.Models;
 using Butthurt.Contracts.Plugins;
 using Butthurt.Contracts.Services;
 using Butthurt.Contracts.Views;
@@ -33,6 +34,7 @@ public class FanslyPlugin : IPlugin
     public string Id => PluginId;
     public string Name => "Fansly";
     public PackIconLucideKind Icon => PackIconLucideKind.Radio;
+    public SideBarType Category => SideBarType.Streaming;
 
     public event EventHandler? StatusChanged;
 
@@ -69,7 +71,7 @@ public class FanslyPlugin : IPlugin
     };
 
     public Control CreateGuideSection() => Ui.Card("Fansly",
-        "Tips, subscriptions and chat commands from your Fansly livestream drive vibration rules here and PiShock rules on the PiShock page.",
+        "Tips, subscriptions and chat commands from your Fansly livestream drive the Toy rules and PiShock rules on the Fansly page.",
         Ui.NumberedStep(1, "Add your username", "Type your Fansly username on the Fansly page and press Save. Butthurt finds your livestream chat by itself, no password needed."),
         Ui.NumberedStep(2, "Make rules", "Each rule says what has to happen (a tip in a dollar range, a sub tier, a chat command) and how strong and long it buzzes."),
         Ui.NumberedStep(3, "Go live", "Butthurt reads the chat while you stream. Every rule has a Test button to try it first."),

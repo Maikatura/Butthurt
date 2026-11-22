@@ -30,11 +30,6 @@ public partial class HomeView : UserControl, IPageView
     {
         InitializeComponent();
 
-        TestIntensitySlider.PropertyChanged += (_, e) =>
-        {
-            if (e.Property == Slider.ValueProperty) TestIntensityText.Text = $"{TestIntensitySlider.Value:0}%";
-        };
-
         ButthurtService.StateChanged += (_, _) => Dispatcher.UIThread.Post(UpdateStatus);
         PluginManager.StatusChanged += (_, _) => Dispatcher.UIThread.Post(UpdateStatus);
         PluginManager.PluginsChanged += (_, _) =>
@@ -54,9 +49,11 @@ public partial class HomeView : UserControl, IPageView
         };
     }
 
-    // The toy connection is what makes things buzz, the plugins are cheap and usually already running.
-    // Without toys, "running" means any plugin is doing something.
-    private bool IsRunning => PluginManager.ToysEnabled
+    // With the Toys plugin on, the toy connection is what makes things buzz (the other plugins are cheap and usually
+    // already running). Otherwise "running" means any plugin is doing something.
+    private static bool ToysPluginOn => PluginManager.Plugins.Any(p => p.Id == "Toys");
+
+    private bool IsRunning => ToysPluginOn
         ? ButthurtService.IsConnected
         : PluginManager.Plugins.Any(p => p.GetStatus().Level != PluginStatusLevel.Off);
 
@@ -67,16 +64,12 @@ public partial class HomeView : UserControl, IPageView
         {
             if (!IsRunning)
             {
+                // The Toys plugin connects to Intiface (and says so when it can't).
                 await PluginManager.StartAll();
-                if (PluginManager.ToysEnabled && !await ButthurtService.Start())
-                {
-                    await NotificationService.ShowAsync("Could not reach Intiface Central. Is the server started?");
-                }
             }
             else
             {
                 await PluginManager.StopAll();
-                await ButthurtService.Stop();
             }
         }
         finally
@@ -86,30 +79,10 @@ public partial class HomeView : UserControl, IPageView
         }
     }
 
-    private async void TestButton_Click(object? sender, RoutedEventArgs e)
-    {
-        if (!ButthurtService.IsConnected)
-        {
-            await NotificationService.ShowAsync("Connect to Intiface Central first.");
-            return;
-        }
-
-        if (ButthurtService.Devices.Count == 0)
-        {
-            await NotificationService.ShowAsync("No toys connected yet, try scanning on the Toys page.");
-            return;
-        }
-
-        ActivityLog.Add($"Test buzz at {TestIntensitySlider.Value:0}%", LogLevel.Event);
-        await ButthurtService.Vibrate(TestIntensitySlider.Value / 100.0, 1000);
-    }
-
-    private void ManageToys_Click(object? sender, RoutedEventArgs e) => NavigationService.NavigateTo<ToysView>();
-
     private void BuildPluginCards()
     {
-        // Plugins can be turned on and off, so start over (the first two cards are Intiface and toys).
-        while (StatusGrid.Children.Count > 2) StatusGrid.Children.RemoveAt(StatusGrid.Children.Count - 1);
+        // Plugins can be turned on and off, so start over.
+        StatusGrid.Children.Clear();
         _pluginCards.Clear();
 
         foreach (var plugin in PluginManager.Plugins)
@@ -191,22 +164,14 @@ public partial class HomeView : UserControl, IPageView
         StatusGrid.Columns = StatusGrid.Bounds.Width is > 0 and < 1000 ? Math.Min(2, Math.Max(cards, 1)) : Math.Clamp(cards, 1, 4);
     }
 
-    /// <summary>Shows or hides everything about toys, see AppSettings.ToysEnabled.</summary>
+    /// <summary>Talks about toys or about streaming, depending on whether the Toys plugin is on.</summary>
     private void ApplyToyMode()
     {
         var toys = PluginManager.ToysEnabled;
 
-        IntifaceCard.IsVisible = toys;
-        ToysCard.IsVisible = toys;
-        QuickTestCard.IsVisible = toys;
-
-        // Without the quick test card, recent activity gets the whole row.
-        Grid.SetColumn(ActivityCard, toys ? 2 : 0);
-        Grid.SetColumnSpan(ActivityCard, toys ? 1 : 3);
-
         HeroTitle.Text = toys ? "Get physically notified." : "Let your stream play along.";
         HeroText.Text = toys
-            ? "Connect your toy through Intiface Central and feel every hit you take in game, and every cheer, sub and redeem on stream."
+            ? "Connect your toys or PiShock and feel every hit you take in game, and every cheer, sub, tip and redeem on stream."
             : "Bits, subs and redeems on Twitch change your VRChat avatar, size and parameters, all through rules you control.";
         EmptyActivityText.Text = toys
             ? "Nothing yet. Events from the game and your toys will show up here."
@@ -225,40 +190,12 @@ public partial class HomeView : UserControl, IPageView
         StartStopButton.Classes.Set("primary", !running);
         StartStopButton.Classes.Set("danger", running);
 
-        if (ButthurtService.IsConnected)
-        {
-            IntifaceText.Text = "Connected";
-            IntifaceSubText.Text = SettingsService.Current.IntifaceUrl;
-        }
-        else if (ButthurtService.IsConnecting)
-        {
-            IntifaceText.Text = "Connecting…";
-            IntifaceSubText.Text = SettingsService.Current.IntifaceUrl;
-        }
-        else
-        {
-            IntifaceText.Text = "Offline";
-            IntifaceSubText.Text = ButthurtService.LastError ?? "Press Start to connect";
-        }
-
-        var devices = ButthurtService.Devices;
-        var enabled = devices.Count(d => ButthurtService.IsDeviceEnabled(d.Name));
-        ToysText.Text = devices.Count == 1 ? "1 connected" : $"{devices.Count} connected";
-        ToysSubText.Text = ButthurtService.IsScanning ? "Scanning…"
-            : devices.Count == 0 ? "Turn on your toy and scan"
-            : $"{enabled} enabled for haptics";
-
         foreach (var (plugin, (headline, detail)) in _pluginCards)
         {
             var status = plugin.GetStatus();
             headline.Text = status.Headline;
             detail.Text = status.Detail;
         }
-
-        TestButton.IsEnabled = ButthurtService.IsConnected;
-        TestHintText.Text = ButthurtService.IsConnected
-            ? "Every enabled toy buzzes, scaled by your master intensity."
-            : "Connect to Intiface Central to test.";
     }
 
     private void UpdateActivity()

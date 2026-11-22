@@ -10,9 +10,13 @@ if not Butthurt then return; end
 
 -- In-game settings window. Vibration strength lives in the desktop app, this window only decides
 -- what the addon flashes, so everything here is about events and the corner pixel.
+-- Blizzard's own window, checkboxes and buttons, laid out like the desktop app: events grouped by category,
+-- two per line, so the window stays short.
 
-local WINDOW_WIDTH = 340
-local ROW_HEIGHT = 26
+local WINDOW_WIDTH = 470
+local PAD = 16
+local COLUMN_GAP = 10
+local ROW_HEIGHT = 24
 local ACCENT = "|cFFFF4D8D"
 
 local window
@@ -24,11 +28,11 @@ local function CreateLabel(parent, text, font)
     return label
 end
 
-local function CreateCheckbox(parent, text, onClick)
+local function CreateCheckbox(parent, text, onClick, font)
     local check = CreateFrame("CheckButton", nil, parent, "UICheckButtonTemplate")
     check:SetSize(24, 24)
-    check.label = CreateLabel(check, text)
-    check.label:SetPoint("LEFT", check, "RIGHT", 4, 0)
+    check.label = CreateLabel(check, text, font)
+    check.label:SetPoint("LEFT", check, "RIGHT", 2, 1)
     check:SetScript("OnClick", function(self) onClick(self:GetChecked()) end)
     return check
 end
@@ -44,18 +48,22 @@ local function SetSwatchColor(swatch, colorName)
     swatch:SetColorTexture(unpack(color))
 end
 
-local function CreateButton(parent, text, width, onClick)
+local function CreateButton(parent, text, width, onClick, height, small)
     local button = CreateFrame("Button", nil, parent, "UIPanelButtonTemplate")
-    button:SetSize(width, 22)
+    button:SetSize(width, height or 22)
     button:SetText(text)
+    if small then
+        button:SetNormalFontObject("GameFontHighlightSmall")
+        button:SetHighlightFontObject("GameFontHighlightSmall")
+    end
     button:SetScript("OnClick", onClick)
     return button
 end
 
-local function CreateSlider(parent, minValue, maxValue, step, onChange)
+local function CreateSlider(parent, width, minValue, maxValue, step, onChange)
     local slider = CreateFrame("Slider", nil, parent, "BackdropTemplate")
     slider:SetOrientation("HORIZONTAL")
-    slider:SetSize(WINDOW_WIDTH - 60, 16)
+    slider:SetSize(width, 16)
     slider:SetBackdrop({
         bgFile = "Interface\\Buttons\\UI-SliderBar-Background",
         edgeFile = "Interface\\Buttons\\UI-SliderBar-Border",
@@ -70,10 +78,36 @@ local function CreateSlider(parent, minValue, maxValue, step, onChange)
     return slider
 end
 
-local function CreateSection(parent, text, anchor, offset)
-    local header = CreateLabel(parent, text, "GameFontNormal")
-    header:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, offset or -16)
-    return header
+--- A thin gold-ish line, like the dividers in Blizzard's own panels.
+local function CreateDivider(parent, y)
+    local line = parent:CreateTexture(nil, "ARTWORK")
+    line:SetColorTexture(1, 0.82, 0, 0.18)
+    line:SetHeight(1)
+    line:SetPoint("TOPLEFT", parent, "TOPLEFT", PAD, y)
+    line:SetPoint("TOPRIGHT", parent, "TOPRIGHT", -PAD, y)
+    return line
+end
+
+-- One event: color swatch, checkbox with its name, and a small Test button on the right.
+local function CreateEventRow(parent, info, width)
+    local row = CreateFrame("Frame", nil, parent)
+    row:SetSize(width, ROW_HEIGHT)
+
+    row.swatch = CreateSwatch(row, 9)
+    row.swatch:SetPoint("LEFT", row, "LEFT", 2, 0)
+    SetSwatchColor(row.swatch, info.key)
+
+    row.check = CreateCheckbox(row, info.label, function(checked)
+        Butthurt:SetEventEnabled(info.key, checked)
+        Butthurt:RefreshWindow()
+    end, "GameFontHighlightSmall")
+    row.check:SetPoint("LEFT", row.swatch, "RIGHT", 2, 0)
+
+    row.test = CreateButton(row, "Test", 44, function() Butthurt:Triggered(info.key, true) end, 20, true)
+    row.test:SetPoint("RIGHT", row, "RIGHT", 0, 0)
+
+    row.key = info.key
+    return row
 end
 
 local function CreateWindow()
@@ -91,7 +125,7 @@ local function CreateWindow()
         close:SetPoint("TOPRIGHT", -4, -4)
     end
 
-    frame:SetSize(WINDOW_WIDTH, 100)
+    frame:SetWidth(WINDOW_WIDTH)
     frame:SetPoint("CENTER")
     frame:SetFrameStrata("DIALOG")
     frame:SetClampedToScreen(true)
@@ -105,92 +139,138 @@ local function CreateWindow()
     -- Escape closes it like any other Blizzard window.
     table.insert(UISpecialFrames, frame:GetName())
 
-    local title = CreateLabel(frame, ACCENT .. "Butthurt|r", "GameFontHighlight")
+    local version = C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata(name, "Version") or ""
+    local title = CreateLabel(frame, ACCENT .. "Butthurt|r  |cFF808080" .. version .. "|r", "GameFontHighlight")
     title:SetPoint("TOP", frame, "TOP", 0, -5)
 
-    local version = C_AddOns and C_AddOns.GetAddOnMetadata and C_AddOns.GetAddOnMetadata(name, "Version") or ""
-    local subtitle = CreateLabel(frame, "Haptic feedback " .. version, "GameFontDisableSmall")
-    subtitle:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -34)
+    local inner = WINDOW_WIDTH - PAD * 2
+    local y = -34
 
-    -- Master switch
+    -- Master switch on the left, the live corner pixel on the right.
     frame.enabled = CreateCheckbox(frame, "Haptics enabled", function(checked)
         ButthurtDB.enabled = checked
         Butthurt:RefreshWindow()
     end)
-    frame.enabled:SetPoint("TOPLEFT", subtitle, "BOTTOMLEFT", -4, -8)
+    frame.enabled:SetPoint("TOPLEFT", PAD - 4, y)
 
-    -- Live preview of the corner pixel, handy to see the addon is doing something.
-    local pixelLabel = CreateLabel(frame, "Corner pixel:", "GameFontHighlightSmall")
-    pixelLabel:SetPoint("TOPLEFT", frame.enabled, "BOTTOMLEFT", 4, -6)
-    frame.pixelSwatch = CreateSwatch(frame, 12)
-    frame.pixelSwatch:SetPoint("LEFT", pixelLabel, "RIGHT", 6, 0)
+    -- One swatch per corner box, right aligned, so you can watch overlapping events land in their own box.
+    -- Fixed width, so the swatches don't jump around as the text changes. Placed by RefreshBoxLabels.
     frame.pixelText = CreateLabel(frame, "", "GameFontHighlightSmall")
-    frame.pixelText:SetPoint("LEFT", frame.pixelSwatch, "RIGHT", 6, 0)
-
-    -- Events
-    local eventsHeader = CreateSection(frame, "Events", pixelLabel, -16)
-    frame.eventRows = {}
-    local previous = eventsHeader
-    for index, info in ipairs(Butthurt.EventInfo) do
-        local row = CreateFrame("Frame", nil, frame)
-        row:SetSize(WINDOW_WIDTH - 32, ROW_HEIGHT)
-        row:SetPoint("TOPLEFT", previous, "BOTTOMLEFT", 0, index == 1 and -6 or 0)
-
-        row.swatch = CreateSwatch(row, 10)
-        row.swatch:SetPoint("LEFT", row, "LEFT", 2, 0)
-        SetSwatchColor(row.swatch, info.key)
-
-        row.check = CreateCheckbox(row, info.label, function(checked)
-            Butthurt:SetEventEnabled(info.key, checked)
-        end)
-        row.check:SetPoint("LEFT", row.swatch, "RIGHT", 4, 0)
-
-        row.test = CreateButton(row, "Test", 56, function()
-            Butthurt:Triggered(info.key, true)
-        end)
-        row.test:SetPoint("RIGHT", row, "RIGHT", 0, 0)
-
-        row.key = info.key
-        frame.eventRows[#frame.eventRows + 1] = row
-        previous = row
+    frame.pixelText:SetWidth(84)
+    frame.pixelText:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -PAD, y - 6)
+    frame.boxSwatches = {}
+    for i = 1, Butthurt.MAX_BOXES do
+        frame.boxSwatches[i] = CreateSwatch(frame, 10)
     end
+    frame.pixelLabel = CreateLabel(frame, "Corner boxes:", "GameFontDisableSmall")
+    y = y - 32
+
+    CreateDivider(frame, y)
+    y = y - 10
+
+    -- Events, grouped like the app, two per line.
+    local eventsHeader = CreateLabel(frame, "Events", "GameFontNormal")
+    eventsHeader:SetPoint("TOPLEFT", PAD, y)
+    local eventsHint = CreateLabel(frame, "Test flashes the corner once, even when the event is off.", "GameFontDisableSmall")
+    eventsHint:SetPoint("LEFT", eventsHeader, "RIGHT", 10, 0)
+    y = y - 20
+
+    frame.eventRows = {}
+    local columnWidth = (inner - COLUMN_GAP) / 2
+    for _, group in ipairs(Butthurt.EventGroups) do
+        local caption = CreateLabel(frame, group, "GameFontNormalSmall")
+        caption:SetPoint("TOPLEFT", PAD + 2, y - 4)
+        y = y - 20
+
+        local column = 0
+        for _, info in ipairs(Butthurt.EventInfo) do
+            if info.group == group then
+                local row = CreateEventRow(frame, info, columnWidth)
+                row:SetPoint("TOPLEFT", PAD + column * (columnWidth + COLUMN_GAP), y)
+                frame.eventRows[#frame.eventRows + 1] = row
+
+                column = column + 1
+                if column == 2 then
+                    column = 0
+                    y = y - ROW_HEIGHT
+                end
+            end
+        end
+        if column == 1 then y = y - ROW_HEIGHT end
+        y = y - 4
+    end
+    y = y - 6
+
+    CreateDivider(frame, y)
+    y = y - 12
 
     -- Flash length
-    local flashHeader = CreateSection(frame, "Flash length", previous, -14)
+    local flashHeader = CreateLabel(frame, "Flash length", "GameFontNormal")
+    flashHeader:SetPoint("TOPLEFT", PAD, y)
     frame.flashValue = CreateLabel(frame, "", "GameFontHighlightSmall")
     frame.flashValue:SetPoint("LEFT", flashHeader, "RIGHT", 8, 0)
-    frame.flashSlider = CreateSlider(frame, 0.1, 1.0, 0.05, function(value)
+    local flashHint = CreateLabel(frame, "Raise this if the app misses quick hits.", "GameFontDisableSmall")
+    flashHint:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -PAD, y - 2)
+    y = y - 22
+
+    frame.flashSlider = CreateSlider(frame, inner - 8, 0.1, 1.0, 0.05, function(value)
         ButthurtDB.flashDuration = value
         frame.flashValue:SetFormattedText("%.2f s", value)
     end)
-    frame.flashSlider:SetPoint("TOPLEFT", flashHeader, "BOTTOMLEFT", 4, -10)
-    local flashHint = CreateLabel(frame, "Raise this if the app misses quick hits.", "GameFontDisableSmall")
-    flashHint:SetPoint("TOPLEFT", frame.flashSlider, "BOTTOMLEFT", -4, -6)
+    frame.flashSlider:SetPoint("TOPLEFT", PAD + 4, y)
+    y = y - 26
+
+    -- Corner boxes: how many events can be lit at once, and how big each box is. The app works both out
+    -- by itself, nothing to set there.
+    local boxesHeader = CreateLabel(frame, "Corner boxes", "GameFontNormal")
+    boxesHeader:SetPoint("TOPLEFT", PAD, y)
+    frame.boxesValue = CreateLabel(frame, "", "GameFontHighlightSmall")
+    frame.boxesValue:SetPoint("LEFT", boxesHeader, "RIGHT", 8, 0)
+    local boxesHint = CreateLabel(frame, "More boxes, fewer events missed.", "GameFontDisableSmall")
+    boxesHint:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -PAD, y - 2)
+    y = y - 20
+
+    local half = (inner - COLUMN_GAP) / 2
+    local countCaption = CreateLabel(frame, "Count", "GameFontDisableSmall")
+    countCaption:SetPoint("TOPLEFT", PAD + 4, y)
+    local sizeCaption = CreateLabel(frame, "Size", "GameFontDisableSmall")
+    sizeCaption:SetPoint("TOPLEFT", PAD + half + COLUMN_GAP + 4, y)
+    y = y - 14
+
+    local function OnBoxSettingChanged(key, value)
+        value = math.floor(value + 0.5)
+        if ButthurtDB[key] ~= value then
+            ButthurtDB[key] = value
+            Butthurt:LayoutBoxes()
+        end
+        Butthurt:RefreshBoxLabels()
+    end
+
+    frame.boxCountSlider = CreateSlider(frame, half - 8, 1, Butthurt.MAX_BOXES, 1, function(value)
+        OnBoxSettingChanged("boxCount", value)
+    end)
+    frame.boxCountSlider:SetPoint("TOPLEFT", PAD + 4, y)
+    frame.boxSizeSlider = CreateSlider(frame, half - 8, Butthurt.MIN_BOX_SIZE, Butthurt.MAX_BOX_SIZE, 1, function(value)
+        OnBoxSettingChanged("boxSize", value)
+    end)
+    frame.boxSizeSlider:SetPoint("TOPLEFT", PAD + half + COLUMN_GAP + 4, y)
+    y = y - 26
 
     -- Misc
     frame.debug = CreateCheckbox(frame, "Print events to chat (debug)", function(checked)
         ButthurtDB.debug = checked
-    end)
-    frame.debug:SetPoint("TOPLEFT", flashHint, "BOTTOMLEFT", -4, -10)
+    end, "GameFontHighlightSmall")
+    frame.debug:SetPoint("TOPLEFT", PAD - 4, y)
+    y = y - 28
 
-    local footer = CreateLabel(frame, "Vibration strength and length are set in the Butthurt app.", "GameFontDisableSmall")
-    footer:SetPoint("TOPLEFT", frame.debug, "BOTTOMLEFT", 4, -10)
-    footer:SetWidth(WINDOW_WIDTH - 32)
+    local footer = CreateLabel(frame, "Vibration strength, PiShock and the rest are set in the Butthurt app.", "GameFontDisableSmall")
+    footer:SetPoint("TOPLEFT", PAD, y)
+    footer:SetWidth(inner)
+    y = y - 14 - 12
 
-    -- Grow the window to fit everything above. The layout isn't known until the frame has been drawn once.
-    frame:SetHeight(440)
-    local function FitHeight()
-        local top, bottom = frame:GetTop(), footer:GetBottom()
-        if top and bottom then
-            frame:SetHeight(top - bottom + 18)
-        end
-    end
+    frame:SetHeight(-y)
 
-    frame:SetScript("OnShow", function()
-        Butthurt:RefreshWindow()
-        FitHeight()
-        C_Timer.After(0, FitHeight)
-    end)
+    frame:SetScript("OnShow", function() Butthurt:RefreshWindow() end)
 
     -- Keep the pixel preview up to date while the window is open.
     local elapsedSinceUpdate = 0
@@ -199,11 +279,29 @@ local function CreateWindow()
         if elapsedSinceUpdate < 0.05 then return; end
         elapsedSinceUpdate = 0
 
-        SetSwatchColor(self.pixelSwatch, Butthurt.currentColor)
-        if Butthurt.currentColor == "IDLE" then
-            self.pixelText:SetText(ButthurtDB.enabled and "idle" or "|cFFEF4444haptics off|r")
+        local count = Butthurt:GetBoxCount()
+        local lit, newest = 0, nil
+        for i, swatch in ipairs(self.boxSwatches) do
+            local box = Butthurt.boxes[i]
+            local shown = i <= count and box ~= nil
+            swatch:SetShown(shown)
+            if shown then
+                SetSwatchColor(swatch, box.color)
+                if box.color ~= "IDLE" then
+                    lit = lit + 1
+                    if not newest or box.litAt > newest.litAt then newest = box end
+                end
+            end
+        end
+
+        if not ButthurtDB.enabled and lit == 0 then
+            self.pixelText:SetText("|cFFEF4444haptics off|r")
+        elseif lit == 0 then
+            self.pixelText:SetText("idle")
+        elseif lit == 1 then
+            self.pixelText:SetText((newest.color:lower():gsub("_", " ")))
         else
-            self.pixelText:SetText((Butthurt.currentColor:lower():gsub("_", " ")))
+            self.pixelText:SetFormattedText("%d at once", lit)
         end
     end)
 
@@ -217,11 +315,31 @@ function Butthurt:RefreshWindow()
     window.debug:SetChecked(ButthurtDB.debug)
     window.flashSlider:SetValue(ButthurtDB.flashDuration)
     window.flashValue:SetFormattedText("%.2f s", ButthurtDB.flashDuration)
+    window.boxCountSlider:SetValue(self:GetBoxCount())
+    window.boxSizeSlider:SetValue(self:GetBoxSize())
+    self:RefreshBoxLabels()
 
     for _, row in ipairs(window.eventRows) do
-        row.check:SetChecked(self:IsEventEnabled(row.key))
-        row.check:SetAlpha(ButthurtDB.enabled and 1 or 0.5)
+        local on = self:IsEventEnabled(row.key)
+        row.check:SetChecked(on)
+        -- Turned off events (or everything, with haptics off) read as grayed out.
+        if on then row.check.label:SetTextColor(1, 1, 1) else row.check.label:SetTextColor(0.5, 0.5, 0.5) end
+        row:SetAlpha(ButthurtDB.enabled and 1 or 0.5)
     end
+end
+
+--- The "4 boxes, 6 px" text, and the box swatches in a row left of the status text, as many as there are boxes.
+function Butthurt:RefreshBoxLabels()
+    if not window then return; end
+    local count = self:GetBoxCount()
+    window.boxesValue:SetFormattedText("%d %s, %d px", count, count == 1 and "box" or "boxes", self:GetBoxSize())
+
+    for i, swatch in ipairs(window.boxSwatches) do
+        swatch:ClearAllPoints()
+        swatch:SetPoint("RIGHT", window.pixelText, "LEFT", -6 - (count - i) * 12, 0)
+    end
+    window.pixelLabel:ClearAllPoints()
+    window.pixelLabel:SetPoint("RIGHT", window.boxSwatches[1], "LEFT", -6, 0)
 end
 
 function Butthurt:ToggleWindow()

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
+using Butthurt.Contracts.Models;
 using IconPacks.Avalonia.Lucide;
 
 namespace Butthurt.Contracts.Plugins;
@@ -36,6 +37,9 @@ public interface IPlugin
     string Name { get; }
     PackIconLucideKind Icon { get; }
 
+    /// <summary>Which group it's listed under in Settings (Hardware, Streaming, Games), like its pages in the sidebar.</summary>
+    SideBarType Category => SideBarType.Plugins;
+
     /// <summary>Called once at startup, after settings are loaded.</summary>
     void Initialize();
 
@@ -54,12 +58,6 @@ public interface IPlugin
     event EventHandler? StatusChanged;
 
     PluginAction? HomeAction => null;
-
-    /// <summary>
-    /// The plugin only exists to make toys buzz (e.g. World of Warcraft). It disappears completely
-    /// while toy features are turned off in Settings.
-    /// </summary>
-    bool UsesToys => false;
 
     /// <summary>Extra section for the Guide page, explaining how this plugin works.</summary>
     Control? CreateGuideSection() => null;

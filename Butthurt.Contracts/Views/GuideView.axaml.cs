@@ -17,7 +17,7 @@ public partial class GuideView : UserControl, IPageView
     {
         InitializeComponent();
 
-        // Plugins and toy features can be turned on and off, so build everything each time the page is shown.
+        // Plugins can be turned on and off, so build everything each time the page is shown.
         AttachedToVisualTree += (_, _) =>
         {
             var toys = PluginManager.ToysEnabled;
@@ -42,12 +42,6 @@ public partial class GuideView : UserControl, IPageView
             foreach (var (title, body) in steps) SetupSteps.Children.Add(Ui.NumberedStep(step++, title, body));
 
             Troubleshooting.Children.Clear();
-            if (toys)
-            {
-                Troubleshooting.Children.Add(Ui.InfoRow("Intiface won't connect",
-                    "Check that the server is started in Intiface Central and that the address on the Toys page matches (default ws://localhost:12345)."));
-            }
-
             Troubleshooting.Children.Add(Ui.InfoRow("Something happened but nothing changed",
                 "Look at Recent activity on the Home page. It says why an action was skipped."));
 

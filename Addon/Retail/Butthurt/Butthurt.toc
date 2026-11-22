@@ -3,7 +3,7 @@
 ## Notes: Alert yourself from dangerous situations.
 ## Author: Maikatura
 ## IconTexture: 982414
-## Version: v0.2.0
+## Version: v0.3.0
 ## OptionalDeps: Ace3
 ## X-Embeds: Ace3
 ## SavedVariables: ButthurtDB
@@ -21,3 +21,4 @@ UI\Butthurt_Window.lua
 # Events
 Events\Butthurt_Combat.lua
 Events\Butthurt_Player.lua
+Events\Butthurt_World.lua

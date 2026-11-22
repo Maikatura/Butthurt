@@ -556,7 +556,7 @@ public static class TwitchService
     public static void Handle(TwitchEvent e)
     {
         var rules = Settings.Rules ?? new List<TwitchRule>();
-        // The vibration rules sit out while toy features are off (they don't count for refunds either).
+        // The vibration rules sit out while the Toys plugin is off (they don't count for refunds either).
         var matching = PluginManager.ToysEnabled
             ? rules.Where(r => TwitchRules.Matches(r, e) && TwitchRules.TryUseCooldown(r)).ToList()
             : new List<TwitchRule>();

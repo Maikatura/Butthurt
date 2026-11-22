@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Butthurt.Contracts;
+using Butthurt.Contracts.Models;
 using Butthurt.Contracts.Plugins;
 using Butthurt.Contracts.Services;
 using Butthurt.Contracts.Views;
@@ -34,6 +35,7 @@ public class TwitchPlugin : IPlugin
     public string Id => PluginId;
     public string Name => "Twitch";
     public PackIconLucideKind Icon => PackIconLucideKind.Twitch;
+    public SideBarType Category => SideBarType.Streaming;
 
     public event EventHandler? StatusChanged;
 

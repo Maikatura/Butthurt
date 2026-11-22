@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Butthurt.Fansly.Models;
 using Butthurt.Twitch.Models;
 
 namespace Butthurt.VRChat.Models;
@@ -15,6 +16,13 @@ public enum VRChatAction
 
     /// <summary>Set (or add to) an avatar parameter, kept through avatar changes while it lasts.</summary>
     SetParameter
+}
+
+/// <summary>Where the events of a VRChat rule come from.</summary>
+public enum VRChatSource
+{
+    Twitch,
+    Fansly
 }
 
 public enum ParameterType
@@ -51,8 +59,14 @@ public class VRChatRule
     public string Name { get; set; } = "";
     public bool Enabled { get; set; } = true;
 
-    /// <summary>The same conditions Twitch's own rules use (bits range, tiers, reward name, cooldown…).</summary>
+    /// <summary>Twitch or Fansly. The rule shows on that platform's page.</summary>
+    public VRChatSource Source { get; set; } = VRChatSource.Twitch;
+
+    /// <summary>Twitch rules: the same conditions Twitch's own rules use (bits range, tiers, reward name, cooldown…).</summary>
     public TwitchCondition When { get; set; } = new() { Trigger = TwitchTrigger.Bits, MinAmount = 20 };
+
+    /// <summary>Fansly rules: tip range, tiers, chat command, cooldown.</summary>
+    public FanslyCondition Fansly { get; set; } = new() { Trigger = FanslyTrigger.Tip, MinTip = 5 };
 
     public VRChatAction Action { get; set; }
 
@@ -103,6 +117,38 @@ public class VRChatRule
     }
 }
 
+/// <summary>
+/// "When this avatar parameter goes on (or above a value) in VRChat". Contacts (headpats, boops…), toggles and
+/// sliders all show up as parameters over OSC. Fires once each time the value rises past the threshold.
+/// Shared by the toy rules on the VRChat page and PiShock's VRChat rules.
+/// </summary>
+public class VRChatParameterCondition
+{
+    public string Id { get; set; } = Guid.NewGuid().ToString("N");
+
+    /// <summary>The avatar parameter's name, e.g. "Headpat" or "Contact_Boop".</summary>
+    public string Parameter { get; set; } = "";
+
+    /// <summary>Fires when the value goes from below this to this or more. 0.5 means "turns on" for bools.</summary>
+    public double Threshold { get; set; } = 0.5;
+
+    public int CooldownSeconds { get; set; }
+}
+
+/// <summary>"When this happens on my avatar, buzz the toys like this."</summary>
+public class VRChatToyRule : VRChatParameterCondition
+{
+    public string Name { get; set; } = "";
+    public bool Enabled { get; set; } = true;
+
+    // 0.0 - 1.0
+    public double Intensity { get; set; } = 0.5;
+    public int DurationMs { get; set; } = 800;
+
+    /// <summary>Keep buzzing for as long as the parameter stays on (e.g. while you're being headpatted).</summary>
+    public bool WhileOn { get; set; }
+}
+
 public class VRChatSettings
 {
     public string OscHost { get; set; } = "127.0.0.1";
@@ -134,6 +180,9 @@ public class VRChatSettings
     public bool PostAnnouncementsInChat { get; set; }
 
     public List<VRChatRule>? Rules { get; set; }
+
+    /// <summary>Avatar parameters that make the toys buzz (the "Toy rules" on the VRChat page).</summary>
+    public List<VRChatToyRule> ToyRules { get; set; } = new();
 
     /// <summary>The example from the readme: grow for 20 bits, avatar A for 50, avatar B for 300.</summary>
     public static List<VRChatRule> DefaultRules() => new()

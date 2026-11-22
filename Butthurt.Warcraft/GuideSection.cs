@@ -68,13 +68,13 @@ internal static class GuideSection
             Children =
             {
                 Ui.Card("World of Warcraft",
-                    "WoW addons can't talk to other programs, so the addon flashes a small square in the top-left corner of the game in a color that stands for the event. Butthurt reads that pixel while the game is the active window.",
+                    "WoW addons can't talk to other programs, so the addon flashes small boxes in the top-left corner of the game, each in a color that stands for an event, so events that happen together each get their own box. Butthurt reads them while the game is the active window and works out how many there are by itself. Change the count and size in the addon's window.",
                     legend,
                     Ui.NumberedStep(1, "Install the addon", "Press Auto install addon on the Home page, then /reload in game."),
                     Ui.NumberedStep(2, "Try it", "Type /butthurt in game to open the addon's window and press Test on any event."),
-                    Ui.InfoRow("Nothing happens in game", "Make sure WoW is the active window and the watcher says Watching. The addon window's Corner pixel should change color when you press Test."),
+                    Ui.InfoRow("Nothing happens in game", "Make sure WoW is the active window and the watcher says Watching. The addon window's Corner boxes should change color when you press Test."),
                     Ui.InfoRow("The addon is out of date", "Tick Load out of date AddOns on the character select AddOns screen, or update Butthurt."),
-                    Ui.InfoRow("Exclusive fullscreen", "Use Windowed (Fullscreen) in WoW's graphics settings so the corner pixel can be read.")),
+                    Ui.InfoRow("Exclusive fullscreen", "Use Windowed (Fullscreen) in WoW's graphics settings so the corner boxes can be read.")),
 
                 Ui.Card("Adding a WoW event", "For tinkerers. Change the addon and the Butthurt.Warcraft project, then rebuild.",
                     Ui.NumberedStep(1, "Pick a color and flash it from the addon",

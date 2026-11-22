@@ -56,6 +56,11 @@ public partial class TwitchView : UserControl, IPageView
 
         TwitchService.StateChanged += (_, _) => Dispatcher.UIThread.Post(UpdateAccount);
         TwitchService.RewardsChanged += (_, _) => Dispatcher.UIThread.Post(RefreshRewards);
+        PluginManager.PluginsChanged += (_, _) => Dispatcher.UIThread.Post(() =>
+        {
+            UpdateAccount();
+            BuildExtraSections();
+        });
 
         AttachedToVisualTree += async (_, _) =>
         {
@@ -66,6 +71,7 @@ public partial class TwitchView : UserControl, IPageView
 
             UpdateAccount();
             BuildRuleList();
+            BuildExtraSections();
             RefreshRewards();
 
             // Reward names for the redeem rules' suggestions, only available for affiliates and partners.
@@ -117,8 +123,8 @@ public partial class TwitchView : UserControl, IPageView
 
     private void UpdateAccount()
     {
-        // Vibration rules only exist with toy features on.
-        VibrationRulesCard.IsVisible = PluginManager.ToysEnabled;
+        // Toy rules only matter with the Toys plugin on ("Toys" is Butthurt.Toys' plugin id).
+        VibrationRulesCard.IsVisible = PluginManager.IsOn("Toys");
         PageSubtitle.Text = PluginManager.ToysEnabled
             ? "Turn bits, subs, redeems, raids and chat commands into vibrations. You decide exactly what counts."
             : "Connect your channel so bits, subs, redeems, raids and chat commands can drive your other plugins, like VRChat.";
@@ -182,6 +188,13 @@ public partial class TwitchView : UserControl, IPageView
     private static void OpenUrl(string url) => Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
 
     #endregion
+
+    /// <summary>Cards other plugins put on this page, e.g. PiShock rules. Rebuilt when plugins are turned on or off.</summary>
+    private void BuildExtraSections()
+    {
+        ExtraSections.Children.Clear();
+        foreach (var card in PageSections.CreateFor(TwitchPlugin.PluginId)) ExtraSections.Children.Add(card);
+    }
 
     #region Channel point rewards
 

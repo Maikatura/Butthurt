@@ -32,6 +32,7 @@
       <!-- Design system: shadcn/ui control themes (same look as GoonRobot.Desktop) -->
       <ProjectReference Include="..\Butthurt.UI\Butthurt.UI.csproj" />
       <!-- Built-in plugins, registered in MainWindow -->
+      <ProjectReference Include="..\Butthurt.Toys\Butthurt.Toys.csproj" />
       <ProjectReference Include="..\Butthurt.Warcraft\Butthurt.Warcraft.csproj" />
       <ProjectReference Include="..\Butthurt.Twitch\Butthurt.Twitch.csproj" />
       <ProjectReference Include="..\Butthurt.VRChat\Butthurt.VRChat.csproj" />

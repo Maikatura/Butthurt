@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Buttplug.Client;
+using Butthurt.Contracts.Plugins;
 
 namespace Butthurt.Contracts.Services;
 
@@ -44,7 +45,7 @@ public static class ButthurtService
 
     public static async Task<bool> Start(string url)
     {
-        if (!SettingsService.Current.ToysEnabled) return false;
+        if (!PluginManager.ToysEnabled) return false;
         if (IsConnected || IsConnecting) return IsConnected;
 
         if (!_exitHooked)
@@ -190,8 +191,8 @@ public static class ButthurtService
 
     private static async Task Vibrate(double intensity, int durationMs, IEnumerable<ButtplugClientDevice> targets)
     {
-        // Toy features off: stay quiet, no "didn't vibrate" warnings either.
-        if (!SettingsService.Current.ToysEnabled) return;
+        // Toys plugin off: stay quiet, no "didn't vibrate" warnings either.
+        if (!PluginManager.ToysEnabled) return;
 
         if (!IsConnected)
         {

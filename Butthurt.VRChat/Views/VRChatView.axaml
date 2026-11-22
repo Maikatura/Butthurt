@@ -16,18 +16,8 @@
 
             <StackPanel Spacing="4">
                 <TextBlock Classes="h1" Text="VRChat"/>
-                <TextBlock Classes="muted" Text="Let your Twitch chat change your avatar and your size. Every action is a rule you control."/>
+                <TextBlock Classes="muted" Text="Set VRChat up once. Twitch and Fansly change your avatar and size (rules on their pages), and your avatar's contacts and toggles can buzz your toys or the PiShock (rules below)."/>
             </StackPanel>
-
-            <!-- Twitch link: VRChat rules only get events through the Twitch plugin -->
-            <Border x:Name="TwitchBanner" Classes="row" BorderBrush="#5B4A1F" IsVisible="False">
-                <Grid ColumnDefinitions="Auto,*,Auto">
-                    <iconPacks:PackIconLucide Kind="Twitch" Width="18" Height="18" Foreground="#FCD34D"
-                                              VerticalAlignment="Center" Margin="0,0,12,0"/>
-                    <TextBlock x:Name="TwitchBannerText" Grid.Column="1" Classes="muted" Foreground="#FCD34D" VerticalAlignment="Center"/>
-                    <Button x:Name="TwitchBannerButton" Grid.Column="2" Classes="bt small" Margin="12,0,0,0" Click="TwitchBanner_Click"/>
-                </Grid>
-            </Border>
 
             <!-- Connection and live size -->
             <Border Classes="card">
@@ -87,26 +77,18 @@
                 </StackPanel>
             </Border>
 
-            <!-- Rules -->
+            <!-- Stream rules live on the Twitch and Fansly pages -->
             <Border Classes="card">
-                <StackPanel Spacing="14">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <StackPanel Spacing="2">
-                            <TextBlock Classes="h2" Text="Rules"/>
-                            <TextBlock Classes="muted"
-                                       Text="When something happens on Twitch, do something in VRChat. Grow rules can stack: ×1.1 twice is ×1.21."/>
-                        </StackPanel>
-                        <Button x:Name="AddRuleButton" Grid.Column="1" Classes="bt primary" VerticalAlignment="Center" Margin="14,0,0,0">
-                            <StackPanel Orientation="Horizontal" Spacing="8">
-                                <iconPacks:PackIconLucide Kind="Plus" Width="16" Height="16" VerticalAlignment="Center"/>
-                                <TextBlock Text="Add rule" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-                    </Grid>
-
-                    <TextBlock x:Name="NoRulesText" Classes="muted" IsVisible="False" Text="No rules yet."/>
-                    <StackPanel x:Name="RuleList" Spacing="8"/>
-                </StackPanel>
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Classes="h2" Text="Stream rules"/>
+                        <TextBlock x:Name="RuleLinksText" Classes="muted" TextWrapping="Wrap"/>
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="14,0,0,0">
+                        <Button x:Name="OpenTwitchRulesButton" Classes="bt small" Content="Twitch rules" Click="OpenTwitchRules_Click"/>
+                        <Button x:Name="OpenFanslyRulesButton" Classes="bt small" Content="Fansly rules" Click="OpenFanslyRules_Click"/>
+                    </StackPanel>
+                </Grid>
             </Border>
 
             <!-- Stream overlay and announcements -->
@@ -288,6 +270,9 @@
                 </StackPanel>
             </Border>
 
+
+            <!-- VRChat as a source: avatar parameters that make your toys buzz or the PiShock go off -->
+            <StackPanel x:Name="TriggerSections" Spacing="20"/>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

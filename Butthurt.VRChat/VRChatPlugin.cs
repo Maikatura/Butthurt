@@ -7,6 +7,9 @@ using Butthurt.Contracts;
 using Butthurt.Contracts.Plugins;
 using Butthurt.Contracts.Services;
 using Butthurt.Contracts.Views;
+using Butthurt.Fansly;
+using Butthurt.Fansly.Models;
+using Butthurt.Fansly.Services;
 using Butthurt.Twitch;
 using Butthurt.Twitch.Models;
 using Butthurt.Twitch.Services;
@@ -31,9 +34,12 @@ public class VRChatPlugin : IPlugin
         }
     }
 
-    /// <summary>The rules only get events while the Twitch plugin is turned on and connected.</summary>
+    /// <summary>Twitch rules only get events while the Twitch plugin is turned on and connected.</summary>
     public static bool IsTwitchPluginOn =>
         PluginManager.AllPlugins.FirstOrDefault(p => p.Id == TwitchPlugin.PluginId) is { } twitch && PluginManager.IsEnabled(twitch);
+
+    public static bool IsFanslyPluginOn =>
+        PluginManager.AllPlugins.FirstOrDefault(p => p.Id == FanslyPlugin.PluginId) is { } fansly && PluginManager.IsEnabled(fansly);
 
     private bool _active;
 
@@ -48,8 +54,12 @@ public class VRChatPlugin : IPlugin
         // VRChat redeem rules can have Butthurt manage their reward too. Registered here (not in Initialize)
         // so that while this plugin is turned off its rewards are only hidden, not deleted.
         TwitchService.RegisterRewardSource(() => Settings.Rules!
-            .Where(r => r.When.Trigger == TwitchTrigger.Redeem && r.When.ManageReward)
+            .Where(r => r.Source == VRChatSource.Twitch && r.When.Trigger == TwitchTrigger.Redeem && r.When.ManageReward)
             .Select(r => new DesiredReward(r.When.Match, r.When.RewardCost, r.Enabled && PluginManager.IsEnabled(this))));
+
+        // What Twitch and Fansly do in VRChat is set on their pages; this page is the VRChat setup.
+        PageSections.Register(TwitchPlugin.PluginId, this, () => new VRChatRulesCard(VRChatSource.Twitch), order: 10);
+        PageSections.Register(FanslyPlugin.PluginId, this, () => new VRChatRulesCard(VRChatSource.Fansly), order: 10);
     }
 
     public void Initialize()
@@ -62,6 +72,8 @@ public class VRChatPlugin : IPlugin
         };
         TwitchService.StateChanged += (_, _) => StatusChanged?.Invoke(this, EventArgs.Empty);
         TwitchService.EventReceived += (_, e) => OnTwitchEvent(e);
+        FanslyService.EventReceived += (_, e) => OnFanslyEvent(e);
+        VRChatTriggers.Initialize();
 
         if (Settings.AutoStart) VRChatService.Start();
     }
@@ -71,9 +83,23 @@ public class VRChatPlugin : IPlugin
         // Turned off: the subscription stays, but nothing happens.
         if (!_active) return;
 
-        foreach (var rule in Settings.Rules!.Where(r => r.Enabled))
+        foreach (var rule in Settings.Rules!.Where(r => r.Enabled && r.Source == VRChatSource.Twitch).ToList())
         {
             if (!TwitchRules.Matches(rule.When, e) || !TwitchRules.TryUseCooldown(rule.When)) continue;
+
+            var worked = VRChatService.Apply(rule);
+            e.ReportResult(worked);
+            if (worked) Announcer.Announce(rule, e);
+        }
+    }
+
+    private void OnFanslyEvent(FanslyEvent e)
+    {
+        if (!_active) return;
+
+        foreach (var rule in Settings.Rules!.Where(r => r.Enabled && r.Source == VRChatSource.Fansly).ToList())
+        {
+            if (!FanslyRules.Matches(rule.Fansly, e) || !FanslyRules.TryUseCooldown(rule.Fansly)) continue;
 
             var worked = VRChatService.Apply(rule);
             e.ReportResult(worked);
@@ -91,8 +117,9 @@ public class VRChatPlugin : IPlugin
         if (rule.Announce)
         {
             var wait = rule.Action == VRChatAction.ChangeAvatar ? VRChatService.LastSwapWaitSeconds : 0;
-            OverlayService.Alert(Announcer.Text(rule, TwitchRules.SampleFor(rule.When), VRChatService.CurrentMultiplier,
-                VRChatService.CurrentAvatarId, wait));
+            OverlayService.Alert(rule.Source == VRChatSource.Fansly
+                ? Announcer.Text(rule, FanslyRules.SampleFor(rule.Fansly), VRChatService.CurrentMultiplier, VRChatService.CurrentAvatarId, wait)
+                : Announcer.Text(rule, TwitchRules.SampleFor(rule.When), VRChatService.CurrentMultiplier, VRChatService.CurrentAvatarId, wait));
         }
 
         return worked;
@@ -127,18 +154,22 @@ public class VRChatPlugin : IPlugin
         }
 
         var size = VRChatService.CurrentMultiplier;
-        var detail = !IsTwitchPluginOn ? "Turn on the Twitch plugin for rules"
-            : TwitchService.State != TwitchState.Connected ? "Twitch isn't connected, rules wait for it"
-            : Math.Abs(size - 1) > 0.001 ? $"Size ×{size:0.##}, {VRChatService.ActiveEffects.Count} effect(s)"
-            : "Ready for Twitch rules";
+        var twitchLive = IsTwitchPluginOn && TwitchService.State == TwitchState.Connected;
+        var fanslyLive = IsFanslyPluginOn && FanslyService.State == FanslyState.Connected;
+        var detail = Math.Abs(size - 1) > 0.001 ? $"Size ×{size:0.##}, {VRChatService.ActiveEffects.Count} effect(s)"
+            : VRChatTriggers.LastTrigger is { } trigger ? $"Last: {trigger}"
+            : twitchLive && fanslyLive ? "Ready for Twitch and Fansly rules"
+            : twitchLive ? "Ready for Twitch rules"
+            : fanslyLive ? "Ready for Fansly rules"
+            : "Connect Twitch or Fansly for stream rules";
         return new PluginStatus(PluginStatusLevel.Active, "Connected", detail) { SidebarText = "VRChat connected" };
     }
 
     public Control CreateGuideSection() => Ui.Card("VRChat",
         "Let Twitch change your avatar and your size. Butthurt talks to VRChat over OSC, VRChat's built-in remote control.",
         Ui.NumberedStep(1, "Turn on OSC in VRChat", "Open the Action Menu → Options → OSC → Enabled. Butthurt sends on port 9000 and listens on 9001, VRChat's defaults."),
-        Ui.NumberedStep(2, "Turn on the Twitch plugin", "VRChat rules react to Twitch, so the Twitch plugin has to be on and logged in."),
-        Ui.NumberedStep(3, "Make rules", "Pick what has to happen on Twitch and what VRChat should do: switch to an avatar (optionally switching back later) or grow/shrink for a while."),
+        Ui.NumberedStep(2, "Make stream rules", "On the Twitch or Fansly page, under VRChat rules: pick what has to happen (bits, a sub, a tip, a redeem…) and what VRChat should do: switch avatar (optionally switching back later), grow/shrink for a while or change a parameter."),
+        Ui.NumberedStep(3, "Let your avatar buzz you", "On the VRChat page, Toy rules and PiShock rules react to your avatar's parameters: a headpat contact, a boop, a toggle. Touch it in game and it shows up under \"Recently changed\" to click."),
         Ui.InfoRow("Stacking", "Grow rules that stack multiply: two ×1.1 grows make you ×1.21. Each one runs out on its own, then you're back to your normal height."),
         Ui.InfoRow("Avatar parameters", "Set or add to any parameter of your avatar (toggles, sliders, ints). Give it a different name per avatar if your avatars call it differently. Whatever is active is sent again after every avatar change, so a redeemed avatar swap doesn't undo it."),
         Ui.InfoRow("Stream overlay", "Turn on the OBS overlay on the VRChat page and add its address as a Browser source in OBS. It shows the queue and an announcement for every rule, with a message you write per rule using placeholders like {user}, {bits} and {multiplier}."),

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Butthurt.Contracts.Services;
+using Butthurt.Fansly.Models;
+using Butthurt.Fansly.Services;
 using Butthurt.Twitch.Models;
 using Butthurt.Twitch.Services;
 using Butthurt.VRChat.Models;
@@ -10,7 +12,7 @@ using Butthurt.VRChat.Models;
 namespace Butthurt.VRChat.Services;
 
 /// <summary>
-/// Turns a rule and the Twitch event that fired it into the user's announcement text, and sends it
+/// Turns a rule and the Twitch or Fansly event that fired it into the user's announcement text, and sends it
 /// to the stream overlay and (optionally) Twitch chat. Also keeps the overlay's queue up to date.
 /// </summary>
 public static class Announcer
@@ -21,10 +23,11 @@ public static class Announcer
         ("user", "who did it"),
         ("event", "what they did, e.g. \"cheered 50 bits\""),
         ("bits", "bits cheered"),
-        ("amount", "bits, gifts, raid viewers or sub months"),
+        ("tip", "Fansly tip in dollars"),
+        ("amount", "bits, gifts, raid viewers, sub months or tip"),
         ("bits_min", "the rule's minimum"),
         ("bits_max", "the rule's maximum (∞ when none)"),
-        ("tier", "sub tier"),
+        ("tier", "sub tier (Fansly: the tier's name)"),
         ("reward", "redeem name"),
         ("cost", "redeem cost in points"),
         ("message", "their chat message or redeem text"),
@@ -61,22 +64,69 @@ public static class Announcer
             ["reward"] = e.RewardTitle,
             ["cost"] = cost,
             ["message"] = e.Message,
-            ["multiplier"] = rule.Multiplier.ToString("0.##", inv),
-            ["size"] = sizeAfter.ToString("0.##", inv),
-            ["duration"] = (rule.Action == VRChatAction.ChangeAvatar ? rule.RevertAfterSeconds : rule.DurationSeconds).ToString(inv),
-            ["avatar"] = AvatarLibrary.DisplayName(rule.AvatarId),
-            ["wait"] = waitSeconds.ToString(inv),
-            ["when"] = waitSeconds > 0 ? $"in {waitSeconds}s" : "now",
-            ["parameter"] = rule.ParameterNameFor(avatarId) ?? "",
-            ["value"] = rule.ParameterType == ParameterType.Bool
-                ? (rule.ParameterValue >= 0.5 ? "on" : "off")
-                : rule.ParameterValue.ToString("0.##", inv),
-            ["rule"] = rule.Name,
-        };
+            ["tip"] = "0",
+        }.WithAction(rule, sizeAfter, avatarId, waitSeconds);
+    }
+
+    /// <summary>The placeholder values for a rule firing on a Fansly event.</summary>
+    public static Dictionary<string, string> Values(VRChatRule rule, FanslyEvent e, double sizeAfter, string? avatarId, int waitSeconds = 0)
+    {
+        var inv = CultureInfo.InvariantCulture;
+        var tip = e.TipDollars.ToString("0.00", inv);
+
+        return new Dictionary<string, string>
+        {
+            ["user"] = e.UserName,
+            ["event"] = EventText(e),
+            ["bits"] = "0",
+            ["tip"] = tip,
+            ["amount"] = e.Type == FanslyTrigger.Tip ? tip : e.Months.ToString(inv),
+            ["bits_min"] = rule.Fansly.MinTip.ToString("0.##", inv),
+            ["bits_max"] = rule.Fansly.MaxTip > 0 ? rule.Fansly.MaxTip.ToString("0.##", inv) : "∞",
+            ["min"] = rule.Fansly.MinTip.ToString("0.##", inv),
+            ["max"] = rule.Fansly.MaxTip > 0 ? rule.Fansly.MaxTip.ToString("0.##", inv) : "∞",
+            ["tier"] = e.TierName,
+            ["months"] = e.Months.ToString(inv),
+            ["reward"] = "",
+            ["cost"] = "",
+            ["message"] = e.Message,
+        }.WithAction(rule, sizeAfter, avatarId, waitSeconds);
+    }
+
+    /// <summary>What the rule does: size, avatar, parameter… The same for Twitch and Fansly.</summary>
+    private static Dictionary<string, string> WithAction(this Dictionary<string, string> values, VRChatRule rule, double sizeAfter,
+        string? avatarId, int waitSeconds)
+    {
+        var inv = CultureInfo.InvariantCulture;
+        values["multiplier"] = rule.Multiplier.ToString("0.##", inv);
+        values["size"] = sizeAfter.ToString("0.##", inv);
+        values["duration"] = (rule.Action == VRChatAction.ChangeAvatar ? rule.RevertAfterSeconds : rule.DurationSeconds).ToString(inv);
+        values["avatar"] = AvatarLibrary.DisplayName(rule.AvatarId);
+        values["wait"] = waitSeconds.ToString(inv);
+        values["when"] = waitSeconds > 0 ? $"in {waitSeconds}s" : "now";
+        values["parameter"] = rule.ParameterNameFor(avatarId) ?? "";
+        values["value"] = rule.ParameterType == ParameterType.Bool
+            ? (rule.ParameterValue >= 0.5 ? "on" : "off")
+            : rule.ParameterValue.ToString("0.##", inv);
+        values["rule"] = rule.Name;
+        return values;
     }
 
     public static string Text(VRChatRule rule, TwitchEvent e, double sizeAfter, string? avatarId, int waitSeconds = 0) =>
         MessageTemplate.Format(rule.EffectiveAnnouncement, Values(rule, e, sizeAfter, avatarId, waitSeconds));
+
+    public static string Text(VRChatRule rule, FanslyEvent e, double sizeAfter, string? avatarId, int waitSeconds = 0) =>
+        MessageTemplate.Format(rule.EffectiveAnnouncement, Values(rule, e, sizeAfter, avatarId, waitSeconds));
+
+    /// <summary>Sends the rule's announcement for a Fansly event to the overlay. Butthurt can't write in Fansly chat.</summary>
+    public static void Announce(VRChatRule rule, FanslyEvent e)
+    {
+        if (!rule.Announce) return;
+
+        var wait = rule.Action == VRChatAction.ChangeAvatar ? VRChatService.LastSwapWaitSeconds : 0;
+        var text = Text(rule, e, VRChatService.CurrentMultiplier, VRChatService.CurrentAvatarId, wait);
+        if (!string.IsNullOrWhiteSpace(text)) OverlayService.Alert(text);
+    }
 
     /// <summary>Sends the rule's announcement to the overlay and, if turned on, Twitch chat.</summary>
     public static void Announce(VRChatRule rule, TwitchEvent e)
@@ -111,6 +161,17 @@ public static class Announcer
         TwitchTrigger.Follow => "followed",
         TwitchTrigger.Raid => $"raided with {e.Amount} viewers",
         TwitchTrigger.ChatCommand => $"used {e.Message.Split(' ')[0]}",
+        _ => "did something"
+    };
+
+    /// <summary>"tipped $5.00", "subscribed (Plus)", "used !grow"…</summary>
+    private static string EventText(FanslyEvent e) => e.Type switch
+    {
+        FanslyTrigger.Tip => $"tipped ${e.TipDollars:0.00}",
+        FanslyTrigger.Subscription => e.Months > 1
+            ? $"resubscribed{(e.TierName.Length > 0 ? $" ({e.TierName})" : "")}"
+            : $"subscribed{(e.TierName.Length > 0 ? $" ({e.TierName})" : "")}",
+        FanslyTrigger.ChatCommand => $"used {e.Message.Split(' ')[0]}",
         _ => "did something"
     };
 
